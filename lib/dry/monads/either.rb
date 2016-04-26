@@ -51,6 +51,7 @@ module Dry
         def bind(proc = nil)
           self
         end
+        alias_method :>>, :bind
 
         def fmap
           self
