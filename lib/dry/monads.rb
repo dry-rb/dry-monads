@@ -1,3 +1,6 @@
+require 'dry/monads/either'
+require 'dry/monads/maybe'
+
 module Dry
   module Monads
     def self.Maybe(value)
