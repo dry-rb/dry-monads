@@ -1,5 +1,6 @@
 RSpec.describe(Dry::Monads::Either) do
   include Dry::Monads::Either::Mixin
+  include Dry::Monads::Maybe::Mixin
 
   context 'going happy path' do
     let(:right) { Right(message: 'success') }
@@ -129,6 +130,19 @@ RSpec.describe(Dry::Monads::Either) do
       end
 
       expect(result).to eq(Left(value: -2))
+    end
+  end
+
+  describe 'can be corced to Maybe' do
+    let(:right) { Right(message: 'success') }
+    let(:left) { Left('failure') }
+
+    example 'from right' do
+      expect(right.to_maybe).to eq(Some(message: 'success'))
+    end
+
+    example 'from left' do
+      expect(left.to_maybe).to eq(None())
     end
   end
 end
