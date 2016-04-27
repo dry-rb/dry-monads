@@ -8,7 +8,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     expect(some.value).to eq(3)
   end
 
-  example 'unwrapping none'  do
+  example 'unwrapping none' do
     expect(none.value).to be_nil
   end
 
@@ -18,25 +18,25 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     example 'using named method with lambda' do
-      expect(some.bind -> x { x * 2 }).to eql(6)
+      expect(some.bind -> (x) { x * 2 }).to eql(6)
     end
 
     example 'using shift operator' do
-      expect(some >> -> x { x * 2 }).to eql(6)
+      expect(some >> -> (x) { x * 2 }).to eql(6)
     end
   end
 
   context 'bind none' do
     example 'using named method with block' do
-      expect(none.bind { |x| x * 2 } ).to eql(None())
+      expect(none.bind { |x| x * 2 }).to eql(None())
     end
 
     example 'using named method with proc' do
-      expect(none.bind -> x { x * 2 } ).to eql(None())
+      expect(none.bind -> (x) { x * 2 }).to eql(None())
     end
 
     example 'using shift operator' do
-      expect(none >> -> x { x * 2 } ).to eql(None())
+      expect(none >> -> (x) { x * 2 }).to eql(None())
     end
   end
 
@@ -47,7 +47,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       example 'using proc' do
-        expect(some.fmap -> x { x * 2 }).to eq(Some(6))
+        expect(some.fmap -> (x) { x * 2 }).to eq(Some(6))
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       example 'using proc' do
-        expect(none.fmap -> x { x * 2 }).to eql(None())
+        expect(none.fmap -> (x) { x * 2 }).to eql(None())
       end
     end
   end
@@ -76,7 +76,7 @@ RSpec.describe(Dry::Monads::Maybe) do
 
   describe 'chaining' do
     let(:inc) { :succ.to_proc }
-    let(:maybe_inc) { -> x { Maybe(x.succ) } }
+    let(:maybe_inc) { -> (x) { Maybe(x.succ) } }
 
     context 'going happy' do
       example 'using lambda with lifting' do
@@ -106,7 +106,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       example 'using block' do
-        expect(some.bind(-> _ { none }).fmap(inc).or { |_| 5 }).to eq(5)
+        expect(some.bind(-> (_) { none }).fmap(inc).or { |_| 5 }).to eq(5)
       end
     end
   end

@@ -8,7 +8,7 @@ module Dry
       end
 
       class Right < Either
-        alias_method :value, :right
+        alias value right
 
         def initialize(right)
           @right = right
@@ -21,20 +21,20 @@ module Dry
             proc.call(value)
           end
         end
-        alias_method :>>, :bind
+        alias >> bind
 
         def fmap(proc = nil, &block)
           Right.new(bind(&(proc || block)))
         end
 
-        def or(val = nil)
+        def or(_val = nil)
           self
         end
 
         def to_s
           "Right(#{value.inspect})"
         end
-        alias_method :inspect, :to_s
+        alias inspect to_s
 
         def to_maybe
           Maybe::Some.new(value)
@@ -42,16 +42,16 @@ module Dry
       end
 
       class Left < Either
-        alias_method :value, :left
+        alias value left
 
         def initialize(left)
           @left = left
         end
 
-        def bind(proc = nil)
+        def bind(_proc = nil)
           self
         end
-        alias_method :>>, :bind
+        alias >> bind
 
         def fmap
           self
@@ -72,7 +72,7 @@ module Dry
         def to_s
           "Left(#{value.inspect})"
         end
-        alias_method :inspect, :to_s
+        alias inspect to_s
 
         def to_maybe
           Maybe::None.instance

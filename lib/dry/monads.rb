@@ -11,7 +11,7 @@ module Dry
       Maybe::Some.new(value)
     end
 
-    def self.None()
+    def self.None
       Maybe::Some::None.instance
     end
 

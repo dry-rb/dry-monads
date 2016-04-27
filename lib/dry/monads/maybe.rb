@@ -28,20 +28,20 @@ module Dry
             proc.call(value)
           end
         end
-        alias_method :>>, :bind
+        alias >> bind
 
         def fmap(proc = nil, &block)
           self.class.lift(bind(&(proc || block)))
         end
 
-        def or(val = nil)
+        def or(_val = nil)
           self
         end
 
         def to_s
           "Some(#{value.inspect})"
         end
-        alias_method :inspect, :to_s
+        alias inspect to_s
       end
 
       class None < Maybe
@@ -52,12 +52,12 @@ module Dry
           nil
         end
 
-        def bind(proc = nil)
+        def bind(_proc = nil)
           self
         end
-        alias_method :>>, :bind
+        alias >> bind
 
-        def fmap(proc = nil)
+        def fmap(_proc = nil)
           self
         end
 
@@ -76,7 +76,7 @@ module Dry
         def to_s
           'None'
         end
-        alias_method :inspect, :to_s
+        alias inspect to_s
       end
 
       module Mixin
@@ -92,7 +92,7 @@ module Dry
           Some.new(value)
         end
 
-        def None()
+        def None
           None.instance
         end
       end
