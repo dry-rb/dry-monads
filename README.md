@@ -52,6 +52,10 @@ end
 add_two = -> x { x + 2 }
 
 M.Maybe(5).bind(add_two).bind(add_two) # => Some(9)
+
+# >> (right shift) is an alias for bind
+
+M.Maybe >> :succ.to_proc >> add_two # => Some(8)
 ```
 
 #### `fmap`
