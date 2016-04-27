@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'dry/monads/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'dry-monad'
+  spec.name          = 'dry-monads'
   spec.version       = Dry::Monads::VERSION.dup
   spec.authors       = ["Nikita Shilnikov"]
   spec.email         = ["fg@flashgordon.ru"]
