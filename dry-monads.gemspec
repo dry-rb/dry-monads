@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['fg@flashgordon.ru']
   spec.license       = 'MIT'
 
-  spec.summary       = ''
+  spec.summary       = 'Common monads for Ruby.'
   spec.description   = spec.summary
   spec.homepage      = 'https://github.com/dry-rb/dry-monads'
 
