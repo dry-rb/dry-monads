@@ -29,24 +29,34 @@ $ gem install dry-monads
 The `Maybe` mondad is used when a series of computations that could return `nil`
 at any point.
 
-#### `>>` or `bind`
+#### `bind` or `>>`
 
 ```
 require 'dry/monads'
 
-maybe_user = Dry::Monads::Maybe(user) >> -> (u) {
-  Dry::Monads::Maybe(user.address) >> -> (a) {
-    Dry::Monads::Maybe(a.street)
-  }
-}
+M = Dry::Monads
+
+maybe_user = M.Maybe(user).bind do |u|
+  M.Maybe(user.address).bind do |a|
+    M.Maybe(a.street)
+  end
+end
 
 # If user with address exists
 # => Some("Street Address")
 # If user or address is nil
 # => None()
+
+# You also can pass a proc to #bind
+
+add_two = -> x { x + 2 }
+
+M.Maybe(5).bind(add_two).bind(add_two) # => Some(9)
 ```
 
 #### `fmap`
+
+Similar to `bind` but lifts the result for you.
 
 ```
 require 'dry/monads'
@@ -79,20 +89,21 @@ class EitherCalculator
   attr_accessor :input
 
   def calculate
-    i = input.to_i
-    Right(i) >> -> (value) {
+    i = Integer(input)
+
+    Right(i).bind do |value|
       if value > 1
         Right(value + 3)
       else
         Left("value was less than 1")
       end
-    } >> -> (value) {
+    end.bind do |value|
       if value % 2 == 0
         Right(value * 2)
       else
         Left("value was not even")
       end
-    }
+    end
   end
 end
 
@@ -105,13 +116,13 @@ result = c.calculate
 result # => Right(12)
 result.value # => 12
 
-# If if failed in the first proc
+# If if failed in the first block
 c.input = 0
 result = c.calculate
 result # => Left("value was less than 1")
 result.value # => "value was less than 1"
 
-# if it failed in the second proc
+# if it failed in the second block
 c.input = 2
 result = c.calculate
 result # => Left("value was not even")
@@ -120,21 +131,27 @@ result.value # => "value was not even"
 
 #### `fmap`
 
-An exmple of using `fmap` with `Right` and `Left`.
+An example of using `fmap` with `Right` and `Left`.
 
 ```
 require 'dry/monads'
 
 result = if foo > bar
-  Dry::Monads::Right(10)
+  Dry::Monads.Right(10)
 else
-  Dry::Monads::Left("wrong")
+  Dry::Monads.Left("wrong")
 end.fmap { |x| x * 2 }
 
 # If everything went right
 result # => Right(20)
 # If it did not
 result # => Left("wrong")
+
+# #fmap accepts proc as well as #bind
+
+upcase = s:upcase.to_proc
+
+Right('hello').fmap(upcase) # => Right("HELLO")
 ```
 
 #### `or`
@@ -142,22 +159,24 @@ result # => Left("wrong")
 An example of using `or` with `Right` and `Left`.
 
 ```
-Dry::Monads::Right(10).or(Dry::Monads::Right(99)) # => Right(10)
-Dry::Monads::Left("error").or(Dry::Monads::Left("new error")) # => Left("new error")
-Dry::Monads::Left("error").or { |err| Dry::Monads::Left("new #{err}") } # => Left("new error")
+M = Dry::Monads
+
+M.Right(10).or(M.Right(99)) # => Right(10)
+M.Left("error").or(M.Left("new error")) # => Left("new error")
+M.Left("error").or { |err| M.Left("new #{err}") } # => Left("new error")
 ```
 
 #### `to_maybe`
 
-Sometimes it's usefule to turn an 'Either' into a 'Maybe'
+Sometimes it's useful to turn an 'Either' into a 'Maybe'
 
 ```
 require 'dry/monads'
 
 result = if foo > bar
-  Dry::Monads::Right(10)
+  Dry::Monads.Right(10)
 else
-  Dry::Monads::Left("wrong")
+  Dry::Monads.Left("wrong")
 end.to_maybe
 
 # If everything went right
