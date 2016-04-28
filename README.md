@@ -1,4 +1,8 @@
+[codeclimate]: https://codeclimate.com/github/dry-rb/dry-monads
+
 # dry-monads
+
+[![Code Climate](https://codeclimate.com/github/dry-rb/dry-monads/badges/gpa.svg)][codeclimate]
 
 Monads for Ruby.
 
