@@ -7,3 +7,8 @@ begin
   require 'pry/stack_explorer'
 rescue LoadError
 end
+
+if RUBY_ENGINE == "rbx"
+  require "codeclimate-test-reporter"
+  CodeClimate::TestReporter.start
+end
