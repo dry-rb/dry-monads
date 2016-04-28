@@ -31,8 +31,8 @@ at any point.
 
 #### `bind` or `>>`
 
-```
-require 'dry/monads'
+```ruby
+require 'dry-monads'
 
 M = Dry::Monads
 
@@ -62,8 +62,8 @@ M.Maybe >> :succ.to_proc >> add_two # => Some(8)
 
 Similar to `bind` but lifts the result for you.
 
-```
-require 'dry/monads'
+```ruby
+require 'dry-monads'
 
 Dry::Monads::Maybe(user).fmap(&:address).fmap(&:street)
 
@@ -84,8 +84,8 @@ can be thought of as "everything went right" and the `Left` is used when
 
 #### `Either::Mixin`
 
-```
-require 'dry/monads'
+```ruby
+require 'dry-monads'
 
 class EitherCalculator
   include Dry::Monads::Either::Mixin
@@ -137,13 +137,15 @@ result.value # => "value was not even"
 
 An example of using `fmap` with `Right` and `Left`.
 
-```
-require 'dry/monads'
+```ruby
+require 'dry-monads'
+
+M = Dry::Monads
 
 result = if foo > bar
-  Dry::Monads.Right(10)
+  M.Right(10)
 else
-  Dry::Monads.Left("wrong")
+  M.Left("wrong")
 end.fmap { |x| x * 2 }
 
 # If everything went right
@@ -153,16 +155,16 @@ result # => Left("wrong")
 
 # #fmap accepts proc as well as #bind
 
-upcase = s:upcase.to_proc
+upcase = :upcase.to_proc
 
-Right('hello').fmap(upcase) # => Right("HELLO")
+M.Right('hello').fmap(upcase) # => Right("HELLO")
 ```
 
 #### `or`
 
 An example of using `or` with `Right` and `Left`.
 
-```
+```ruby
 M = Dry::Monads
 
 M.Right(10).or(M.Right(99)) # => Right(10)
@@ -174,8 +176,8 @@ M.Left("error").or { |err| M.Left("new #{err}") } # => Left("new error")
 
 Sometimes it's useful to turn an 'Either' into a 'Maybe'
 
-```
-require 'dry/monads'
+```ruby
+require 'dry-monads'
 
 result = if foo > bar
   Dry::Monads.Right(10)
@@ -187,6 +189,27 @@ end.to_maybe
 result # => Some(10)
 # If it did not
 result # => None()
+```
+
+### Try monad
+
+Examples of using the `Try` monad.
+
+```ruby
+require 'dry-monads'
+
+extend Dry::Monads::Try::Mixin
+
+res = Try() { 10 / 2 }
+res.value if res.success?
+# => 5
+
+res = Try() { 10 / 0 }
+res.exception if res.failure?
+# => #<ZeroDivisionError: divided by 0>
+
+Try(NoMethodError, NotImplementedError) { 10 / 0 }
+# => raise ZeroDivisionError: divided by 0 exception
 ```
 
 ## Development
