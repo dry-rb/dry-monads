@@ -7,7 +7,7 @@ RSpec.describe(Dry::Monads::Either) do
 
     context 'using map' do
       example 'with block' do
-        result = right.fmap do |message: |
+        result = right.fmap do |_|
           { message: 'happy' }
         end
 
@@ -15,7 +15,7 @@ RSpec.describe(Dry::Monads::Either) do
       end
 
       example 'with proc' do
-        result = right.fmap(-> message: { { message: 'happy' } })
+        result = right.fmap(-> (_) { { message: 'happy' } })
 
         expect(result.value).to eql(message: 'happy')
       end
@@ -23,7 +23,7 @@ RSpec.describe(Dry::Monads::Either) do
 
     context 'using bind' do
       example 'with block' do
-        result = right.bind do |message: |
+        result = right.bind do |_|
           Right(message: 'happy')
         end
 
@@ -31,7 +31,7 @@ RSpec.describe(Dry::Monads::Either) do
       end
 
       example 'with proc' do
-        result = right.bind(-> message: { Right(message: 'happy') })
+        result = right.bind(-> (_) { Right(message: 'happy') })
 
         expect(result.value).to eql(message: 'happy')
       end
@@ -42,8 +42,8 @@ RSpec.describe(Dry::Monads::Either) do
     let(:left) { Left(error: 'failure') }
 
     example 'with block' do
-      result = left.or do |error: |
-        { error: 'Error: %s' % error }
+      result = left.or do |h|
+        { error: 'Error: %s' % h.fetch(:error) }
       end
 
       expect(result).to eql(error: 'Error: failure')
@@ -105,11 +105,11 @@ RSpec.describe(Dry::Monads::Either) do
     let(:right) { Right(value: 0) }
 
     example 'big happy chain' do
-      result = right.fmap do |value: |
-        { value: value + 1 }
-      end.bind do |value: |
-        if value > 0
-          Right(value: value + 1)
+      result = right.fmap do |r|
+        { value: r[:value] + 1 }
+      end.bind do |r|
+        if r[:value] > 0
+          Right(value: r[:value] + 1)
         else
           Left(value: 0)
         end
@@ -121,12 +121,12 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     example 'big unhappy chain' do
-      result = right.bind do |value: |
-        Right(value: value + 1)
-      end.bind do |value: |
-        Left(value: -value - 1)
-      end.bind do |value: |
-        Right(value: value + 2)
+      result = right.bind do |r|
+        Right(value: r[:value] + 1)
+      end.bind do |r|
+        Left(value: -r[:value] - 1)
+      end.bind do |r|
+        Right(value: r[:value] + 2)
       end
 
       expect(result).to eq(Left(value: -2))
