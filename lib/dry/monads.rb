@@ -1,5 +1,6 @@
 require 'dry/monads/either'
 require 'dry/monads/maybe'
+require 'dry/monads/try'
 
 module Dry
   module Monads
