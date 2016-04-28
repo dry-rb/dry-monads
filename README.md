@@ -1,6 +1,6 @@
 [codeclimate]: https://codeclimate.com/github/dry-rb/dry-monads
 
-# dry-monads
+# dry-monads [![Join the chat at https://gitter.im/dry-rb/chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dry-rb/chat)
 
 [![Code Climate](https://codeclimate.com/github/dry-rb/dry-monads/badges/gpa.svg)][codeclimate]
 
