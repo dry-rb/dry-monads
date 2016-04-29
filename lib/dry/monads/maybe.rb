@@ -13,6 +13,14 @@ module Dry
         other.is_a?(Maybe) && value == other.value
       end
 
+      def none?
+        is_a?(None)
+      end
+
+      def some?
+        is_a?(Some)
+      end
+
       class Some < Maybe
         attr_reader :value
 

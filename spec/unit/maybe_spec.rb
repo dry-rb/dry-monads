@@ -1,26 +1,25 @@
-RSpec.describe(Dry::Monads::Either) do
-  either = Dry::Monads::Either
+RSpec.describe(Dry::Monads::Maybe) do
   maybe = Dry::Monads::Maybe
 
   let(:upcase) { :upcase.to_proc }
 
-  describe either::Right do
-    subject { either::Right.new('foo') }
+  describe maybe::Some do
+    subject { described_class.new('foo') }
 
-    let(:upcased_subject) { either::Right.new('FOO') }
+    let(:upcased_subject) { described_class.new('FOO') }
 
-    it { is_expected.to be_success }
-    it { is_expected.not_to be_failure }
+    it { is_expected.to be_some }
+    it { is_expected.not_to be_none }
 
-    it { is_expected.to eq(either::Right.new('foo')) }
-    it { is_expected.not_to eq(either::Left.new('foo')) }
+    it { is_expected.to eq(described_class.new('foo')) }
+    it { is_expected.not_to eq(maybe::None.new) }
 
     it 'dumps to string' do
-      expect(subject.to_s).to eql('Right("foo")')
+      expect(subject.to_s).to eql('Some("foo")')
     end
 
     it 'has custom inspection' do
-      expect(subject.inspect).to eql('Right("foo")')
+      expect(subject.inspect).to eql('Some("foo")')
     end
 
     describe '#bind' do
@@ -38,7 +37,7 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     describe '#fmap' do
-      it 'accepts a proc and does not lift the result to either' do
+      it 'accepts a proc and does not lift the result to maybe' do
         expect(subject.fmap(upcase)).to eq(upcased_subject)
       end
 
@@ -48,38 +47,31 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     describe '#or' do
-      it 'accepts value as an alternative' do
+      it 'accepts a value as an alternative' do
         expect(subject.or('baz')).to be(subject)
       end
 
-      it 'accepts block as an alternative' do
+      it 'accepts a block as an alternative' do
         expect(subject.or { 'baz' }).to be(subject)
       end
     end
-
-    describe '#to_maybe' do
-      let(:subject) { either::Right.new('foo').to_maybe }
-
-      it { is_expected.to be_instance_of maybe::Some }
-      it { is_expected.to eq(maybe::Some.new('foo')) }
-    end
   end
 
-  describe either::Left do
-    subject { either::Left.new('bar') }
+  describe maybe::None do
+    subject { described_class.new }
 
-    it { is_expected.not_to be_success }
-    it { is_expected.to be_failure }
+    it { is_expected.not_to be_some }
+    it { is_expected.to be_none }
 
-    it { is_expected.to eq(either::Left.new('bar')) }
-    it { is_expected.not_to eq(either::Right.new('bar')) }
+    it { is_expected.to eq(described_class.new) }
+    it { is_expected.not_to eq(maybe::Some.new('foo')) }
 
     it 'dumps to string' do
-      expect(subject.to_s).to eql('Left("bar")')
+      expect(subject.to_s).to eql('None')
     end
 
     it 'has custom inspection' do
-      expect(subject.inspect).to eql('Left("bar")')
+      expect(subject.inspect).to eql('None')
     end
 
    describe '#bind' do
@@ -114,13 +106,6 @@ RSpec.describe(Dry::Monads::Either) do
       it 'accepts block as an alternative' do
         expect(subject.or { 'baz' }).to eql('baz')
       end
-    end
-
-    describe '#to_maybe' do
-      let(:subject) { either::Left.new('bar').to_maybe }
-
-      it { is_expected.to be_instance_of maybe::None }
-      it { is_expected.to eq(maybe::None.new) }
     end
   end
 end
