@@ -151,4 +151,26 @@ RSpec.describe(Dry::Monads::Either) do
       expect(left.to_maybe).to eq(None())
     end
   end
+
+  describe 'Left' do
+    let(:left) { Left('failure') }
+
+    describe 'fmap' do
+      example do
+        expect(left.fmap).to eq(left)
+      end
+    end
+
+    describe 'or' do
+      example 'cannot pass a block and a value' do
+        expect { left.or(1) { "ok" } }.to raise_error(ArgumentError)
+      end
+    end
+
+    describe 'to_s' do
+      example do
+        expect(left.to_s).to eq('Left("failure")')
+      end
+    end
+  end
 end

@@ -72,6 +72,12 @@ RSpec.describe(Dry::Monads::Maybe) do
     example 'but you can build None by hand' do
       expect(Dry::Monads::Maybe::Mixin::None.new).to eq(None())
     end
+
+    describe 'or' do
+      example 'cannot pass a block and a value' do
+        expect { none.or(1) { "ok" } }.to raise_error(ArgumentError)
+      end
+    end
   end
 
   describe 'chaining' do
