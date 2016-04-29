@@ -1,10 +1,16 @@
+[gitter]: https://gitter.im/dry-rb/chat
+[gem]: https://rubygems.org/gems/dry-monads
 [travis]: https://travis-ci.org/dry-rb/dry-monads
-[codeclimate]: https://codeclimate.com/github/dry-rb/dry-monads
+[code_climate]: https://codeclimate.com/github/dry-rb/dry-monads
+[inch]: http://inch-ci.org/github/dry-rb/dry-monads
 
-# dry-monads [![Join the chat at https://gitter.im/dry-rb/chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dry-rb/chat)
+# dry-monads [![Join the Gitter chat](https://badges.gitter.im/Join%20Chat.svg)][gitter]
 
-[![Build Status](https://travis-ci.org/dry-rb/dry-monads.svg?branch=master)][travis]
-[![Code Climate](https://codeclimate.com/github/dry-rb/dry-monads/badges/gpa.svg)][codeclimate]
+[![Gem Version](https://img.shields.io/gem/v/dry-monads.svg)][gem]
+[![Build Status](https://img.shields.io/travis/dry-rb/dry-monads.svg)][travis]
+[![Code Climate](https://img.shields.io/codeclimate/github/dry-rb/dry-monads.svg)][code_climate]
+[![Test Coverage](https://img.shields.io/codeclimate/coverage/github/dry-rb/dry-monads.svg)][code_climate]
+[![API Documentation Coverage](http://inch-ci.org/github/dry-rb/dry-monads.svg)][inch]
 
 Monads for Ruby.
 
