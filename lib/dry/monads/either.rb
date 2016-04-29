@@ -7,13 +7,15 @@ module Dry
         other.is_a?(Either) && right == other.right && left == other.left
       end
 
-      def success?
+      def right?
         is_a? Right
       end
+      alias success? right?
 
-      def failure?
+      def left?
         is_a? Left
       end
+      alias failure? left?
 
       class Right < Either
         alias value right
