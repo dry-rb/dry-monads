@@ -28,10 +28,10 @@ module Dry
         rescue => e
           Failure.new(e)
         end
-        alias_method :>>, :bind
+        alias >> bind
 
-        def fmap(&f)
-          Try.lift @catchable, -> { f.call(@value) }
+        def fmap(&_f)
+          Try.lift @catchable, -> { yield(@value) }
         end
 
         def to_maybe
@@ -48,12 +48,12 @@ module Dry
           @exception = exception
         end
 
-        def bind(f)
+        def bind(_f)
           self
         end
-        alias_method :>>, :bind
+        alias >> bind
 
-        def fmap(&f)
+        def fmap(&_f)
           self
         end
 

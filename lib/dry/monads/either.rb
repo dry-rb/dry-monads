@@ -70,7 +70,7 @@ module Dry
             if val.nil?
               yield(value)
             else
-              raise ArgumentError.new('You can pass a block or a value, not both')
+              raise ArgumentError, 'You can pass a block or a value, not both'
             end
           else
             val

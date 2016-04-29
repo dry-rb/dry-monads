@@ -124,7 +124,7 @@ RSpec.describe(Dry::Monads::Try) do
 
     example do
       aggregate_failures do
-        expect{ try }.to raise_error(ZeroDivisionError)
+        expect { try }.to raise_error(ZeroDivisionError)
       end
     end
   end

@@ -17,7 +17,7 @@ module Dry
         attr_reader :value
 
         def initialize(value)
-          raise ArgumentError.new('nil cannot be some') if value.nil?
+          raise ArgumentError, 'nil cannot be some' if value.nil?
           @value = value
         end
 
@@ -66,7 +66,7 @@ module Dry
             if val.nil?
               yield
             else
-              raise ArgumentError.new('You can pass a block or a value, not both')
+              raise ArgumentError, 'You can pass a block or a value, not both'
             end
           else
             val

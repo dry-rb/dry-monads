@@ -49,7 +49,7 @@ RSpec.describe(Dry::Monads::Either) do
 
     example 'with block' do
       result = left.or do |h|
-        { error: 'Error: %s' % h.fetch(:error) }
+        { error: 'Error: ' + h.fetch(:error) }
       end
 
       expect(result).to eql(error: 'Error: failure')
