@@ -63,11 +63,7 @@ module Dry
 
         def or(val = nil)
           if block_given?
-            if val.nil?
-              yield
-            else
-              raise ArgumentError, 'You can pass a block or a value, not both'
-            end
+            yield(value)
           else
             val
           end

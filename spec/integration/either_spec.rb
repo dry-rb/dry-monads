@@ -5,8 +5,6 @@ RSpec.describe(Dry::Monads::Either) do
   context 'going happy path' do
     let(:right) { Right(message: 'success') }
 
-    it { expect(right.success?).to eq(true) }
-    it { expect(right.failure?).to eq(false) }
 
     context 'using map' do
       example 'with block' do

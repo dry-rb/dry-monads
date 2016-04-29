@@ -25,7 +25,7 @@ module Dry
         def bind(proc = nil)
           if block_given?
             yield(value)
-          else
+          else proc
             proc.call(value)
           end
         end
@@ -61,17 +61,13 @@ module Dry
         end
         alias >> bind
 
-        def fmap
+        def fmap(_proc = nil)
           self
         end
 
         def or(val = nil)
           if block_given?
-            if val.nil?
-              yield(value)
-            else
-              raise ArgumentError, 'You can pass a block or a value, not both'
-            end
+            yield(value)
           else
             val
           end
