@@ -117,6 +117,22 @@ RSpec.describe(Dry::Monads::Try) do
         expect(try.exception).to be_kind_of(NotImplementedError)
       end
     end
+
+    context 'bind' do
+      let(:try) { Try(ZeroDivisionError) { 10 / 2 } }
+      let(:failed_inc) { -> n { n / 0 } }
+      let(:exception_inc) { -> _ { raise NotImplementedError } }
+
+      example 'failure' do
+        result = try.bind(failed_inc)
+
+        expect(result).to be_kind_of(Dry::Monads::Try::Failure)
+      end
+
+      example 'exception' do
+        expect { try.bind(exception_inc) }.to raise_error(NotImplementedError)
+      end
+    end
   end
 
   context 'exception raised if not within a list of catchable exceptions' do
