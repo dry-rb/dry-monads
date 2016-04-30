@@ -4,7 +4,6 @@ require 'dry-monads'
 
 begin
   require 'pry'
-  require 'pry/stack_explorer'
 rescue LoadError
 end
 
