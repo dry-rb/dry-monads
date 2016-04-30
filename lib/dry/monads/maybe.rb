@@ -30,10 +30,10 @@ module Dry
         end
 
         def bind(proc = nil)
-          if block_given?
-            yield(value)
-          else
+          if proc
             proc.call(value)
+          else
+            yield(value)
           end
         end
         alias >> bind

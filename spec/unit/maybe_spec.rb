@@ -1,5 +1,5 @@
 RSpec.describe(Dry::Monads::Maybe) do
-  maybe = Dry::Monads::Maybe
+  maybe = described_class
 
   let(:upcase) { :upcase.to_proc }
 

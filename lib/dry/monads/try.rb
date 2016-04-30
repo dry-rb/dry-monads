@@ -18,20 +18,30 @@ module Dry
       end
 
       class Success < Try
+        attr_reader :catchable
+
         def initialize(exceptions, value)
           @catchable = exceptions
           @value = value
         end
 
-        def bind(f)
-          f.call(@value)
-        rescue => e
+        def bind(proc = nil)
+          if proc
+            proc.call(value)
+          else
+            yield(@value)
+          end
+        rescue *catchable => e
           Failure.new(e)
         end
         alias >> bind
 
-        def fmap(&_f)
-          Try.lift @catchable, -> { yield(@value) }
+        def fmap(proc = nil, &block)
+          Try.lift(catchable, -> { (block || proc).call(@value) })
+        end
+
+        def ==(other)
+          other.is_a?(Success) && @value == other.value && @catchable == other.catchable
         end
 
         def to_maybe
@@ -41,6 +51,11 @@ module Dry
         def to_either
           Dry::Monads::Right(@value)
         end
+
+        def to_s
+          "Try::Success(#{value.inspect})"
+        end
+        alias inspect to_s
       end
 
       class Failure < Try
@@ -48,12 +63,12 @@ module Dry
           @exception = exception
         end
 
-        def bind(_f)
+        def bind(_f = nil)
           self
         end
         alias >> bind
 
-        def fmap(&_f)
+        def fmap(_f = nil)
           self
         end
 
@@ -64,6 +79,15 @@ module Dry
         def to_either
           Dry::Monads::Left(@exception)
         end
+
+        def ==(other)
+          other.is_a?(Failure) && @exception == other.exception
+        end
+
+        def to_s
+          "Try::Failure(#{exception.class}: #{exception.message})"
+        end
+        alias inspect to_s
       end
 
       module Mixin

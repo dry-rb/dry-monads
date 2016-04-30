@@ -1,5 +1,5 @@
 RSpec.describe(Dry::Monads::Either) do
-  either = Dry::Monads::Either
+  either = described_class
   maybe = Dry::Monads::Maybe
 
   let(:upcase) { :upcase.to_proc }
@@ -12,7 +12,7 @@ RSpec.describe(Dry::Monads::Either) do
     it { is_expected.to be_success }
     it { is_expected.not_to be_failure }
 
-    it { is_expected.to eq(either::Right.new('foo')) }
+    it { is_expected.to eq(described_class.new('foo')) }
     it { is_expected.not_to eq(either::Left.new('foo')) }
 
     it 'dumps to string' do
@@ -38,7 +38,7 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     describe '#fmap' do
-      it 'accepts a proc and does not lift the result to either' do
+      it 'accepts a proc and lifts the result to either' do
         expect(subject.fmap(upcase)).to eq(upcased_subject)
       end
 
@@ -71,7 +71,7 @@ RSpec.describe(Dry::Monads::Either) do
     it { is_expected.not_to be_success }
     it { is_expected.to be_failure }
 
-    it { is_expected.to eq(either::Left.new('bar')) }
+    it { is_expected.to eq(described_class.new('bar')) }
     it { is_expected.not_to eq(either::Right.new('bar')) }
 
     it 'dumps to string' do
