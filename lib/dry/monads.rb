@@ -4,23 +4,25 @@ require 'dry/monads/try'
 
 module Dry
   module Monads
-    def self.Maybe(value)
+    extend self
+
+    def Maybe(value)
       Maybe.lift(value)
     end
 
-    def self.Some(value)
+    def Some(value)
       Maybe::Some.new(value)
     end
 
-    def self.None
+    def None
       Maybe::Some::None.instance
     end
 
-    def self.Right(value)
+    def Right(value)
       Either::Right.new(value)
     end
 
-    def self.Left(value)
+    def Left(value)
       Either::Left.new(value)
     end
   end
