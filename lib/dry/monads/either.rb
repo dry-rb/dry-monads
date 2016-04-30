@@ -31,7 +31,6 @@ module Dry
             yield(value)
           end
         end
-        alias >> bind
 
         def fmap(proc = nil, &block)
           Right.new(bind(&(proc || block)))
@@ -61,7 +60,6 @@ module Dry
         def bind(_proc = nil)
           self
         end
-        alias >> bind
 
         def fmap(_proc = nil)
           self

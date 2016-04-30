@@ -42,7 +42,7 @@ RSpec.describe(Dry::Monads::Try) do
   end
 
   context 'bind success' do
-    let(:try) { Try { 20 / 10 } >> -> (number) { Try { 10 / number } } }
+    let(:try) { Try { 20 / 10 }.bind -> (number) { Try { 10 / number } } }
 
     example do
       expect(try.value).to eq(5)
@@ -50,7 +50,7 @@ RSpec.describe(Dry::Monads::Try) do
   end
 
   context 'bind failure' do
-    let(:try) { Try { 20 / 0 } >> -> (number) { Try { 10 / number } } }
+    let(:try) { Try { 20 / 0 }.bind -> (number) { Try { 10 / number } } }
 
     example do
       expect(try.exception).to be_kind_of(ZeroDivisionError)

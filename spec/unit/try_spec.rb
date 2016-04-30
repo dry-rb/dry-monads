@@ -40,10 +40,6 @@ RSpec.describe(Dry::Monads::Try) do
         expect(subject.bind { |s| s.upcase }).to eql('FOO')
       end
 
-      it 'has right shift alias' do
-        expect(subject >> upcase).to eql('FOO')
-      end
-
       it 'captures checked exceptions and return Failure object' do
         expect(subject.bind { raise division_error }).to be_an_instance_of try::Failure
       end
@@ -117,10 +113,6 @@ RSpec.describe(Dry::Monads::Try) do
 
       it 'accepts a block and returns itself' do
         expect(subject.bind { |s| s.upcase }).to be subject
-      end
-
-      it 'has right shift alias' do
-        expect(subject >> upcase).to be subject
       end
     end
 

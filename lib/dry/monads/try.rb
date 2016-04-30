@@ -34,7 +34,6 @@ module Dry
         rescue *catchable => e
           Failure.new(e)
         end
-        alias >> bind
 
         def fmap(proc = nil, &block)
           Try.lift(catchable, -> { (block || proc).call(@value) })
@@ -66,7 +65,6 @@ module Dry
         def bind(_f = nil)
           self
         end
-        alias >> bind
 
         def fmap(_f = nil)
           self

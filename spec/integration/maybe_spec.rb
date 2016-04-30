@@ -32,10 +32,6 @@ RSpec.describe(Dry::Monads::Maybe) do
     example 'using named method with lambda' do
       expect(some.bind -> (x) { x * 2 }).to eql(6)
     end
-
-    example 'using shift operator' do
-      expect(some >> -> (x) { x * 2 }).to eql(6)
-    end
   end
 
   context 'bind none' do
@@ -45,10 +41,6 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     example 'using named method with proc' do
       expect(none.bind -> (x) { x * 2 }).to eql(None())
-    end
-
-    example 'using shift operator' do
-      expect(none >> -> (x) { x * 2 }).to eql(None())
     end
   end
 

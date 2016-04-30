@@ -34,10 +34,6 @@ RSpec.describe(Dry::Monads::Either) do
       it 'accepts a block too' do
         expect(subject.bind { |s| s.upcase }).to eql('FOO')
       end
-
-      it 'has right shift alias' do
-        expect(subject >> upcase).to eql('FOO')
-      end
     end
 
     describe '#fmap' do
@@ -95,10 +91,6 @@ RSpec.describe(Dry::Monads::Either) do
 
       it 'accepts a block and returns itself' do
         expect(subject.bind { |s| s.upcase }).to be subject
-      end
-
-      it 'has right shift alias' do
-        expect(subject >> upcase).to be subject
       end
     end
 
