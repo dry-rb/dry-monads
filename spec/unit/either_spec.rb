@@ -9,7 +9,10 @@ RSpec.describe(Dry::Monads::Either) do
 
     let(:upcased_subject) { either::Right.new('FOO') }
 
+    it { is_expected.to be_right }
     it { is_expected.to be_success }
+
+    it { is_expected.not_to be_left }
     it { is_expected.not_to be_failure }
 
     it { is_expected.to eq(described_class.new('foo')) }
@@ -68,7 +71,10 @@ RSpec.describe(Dry::Monads::Either) do
   describe either::Left do
     subject { either::Left.new('bar') }
 
+    it { is_expected.not_to be_right }
     it { is_expected.not_to be_success }
+
+    it { is_expected.to be_left }
     it { is_expected.to be_failure }
 
     it { is_expected.to eq(described_class.new('bar')) }
