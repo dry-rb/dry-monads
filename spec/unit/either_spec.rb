@@ -84,7 +84,7 @@ RSpec.describe(Dry::Monads::Either) do
       expect(subject.inspect).to eql('Left("bar")')
     end
 
-   describe '#bind' do
+    describe '#bind' do
       it 'accepts a proc and returns itseld' do
         expect(subject.bind(upcase)).to be subject
       end
