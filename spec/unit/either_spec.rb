@@ -60,7 +60,7 @@ RSpec.describe(Dry::Monads::Either) do
     describe '#to_maybe' do
       let(:subject) { either::Right.new('foo').to_maybe }
 
-      it { is_expected.to be_instance_of maybe::Some }
+      it { is_expected.to be_an_instance_of maybe::Some }
       it { is_expected.to eq(maybe::Some.new('foo')) }
     end
   end
@@ -119,7 +119,7 @@ RSpec.describe(Dry::Monads::Either) do
     describe '#to_maybe' do
       let(:subject) { either::Left.new('bar').to_maybe }
 
-      it { is_expected.to be_instance_of maybe::None }
+      it { is_expected.to be_an_instance_of maybe::None }
       it { is_expected.to eq(maybe::None.new) }
     end
   end

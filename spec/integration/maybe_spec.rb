@@ -1,15 +1,27 @@
 RSpec.describe(Dry::Monads::Maybe) do
+  maybe = described_class
+
   include Dry::Monads::Maybe::Mixin
 
   let(:some) { Some(3) }
   let(:none) { None() }
 
-  example 'unwarpping some' do
-    expect(some.value).to eq(3)
-  end
+  context 'building values' do
+    describe '#None' do
+      subject { none }
 
-  example 'unwrapping none' do
-    expect(none.value).to be_nil
+      it { is_expected.to eq(maybe::None.new) }
+
+      it 'returns the same object every time' do
+        expect(none).to be None()
+      end
+    end
+
+    describe '#Some' do
+      subject { some }
+
+      it { is_expected.to eq maybe::Some.new(3) }
+    end
   end
 
   context 'bind some' do
@@ -59,18 +71,6 @@ RSpec.describe(Dry::Monads::Maybe) do
       example 'using proc' do
         expect(none.fmap -> (x) { x * 2 }).to eql(None())
       end
-    end
-  end
-
-  describe 'None' do
-    let(:none) { None() }
-
-    example 'None() returns the object every time' do
-      expect(None()).to be(None())
-    end
-
-    example 'but you can build None by hand' do
-      expect(Dry::Monads::Maybe::Mixin::None.new).to eq(None())
     end
   end
 

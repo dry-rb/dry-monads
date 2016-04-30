@@ -5,7 +5,6 @@ RSpec.describe(Dry::Monads::Either) do
   context 'going happy path' do
     let(:right) { Right(message: 'success') }
 
-
     context 'using map' do
       example 'with block' do
         result = right.fmap do |_|
@@ -41,9 +40,6 @@ RSpec.describe(Dry::Monads::Either) do
 
   context 'going unhappy path' do
     let(:left) { Left(error: 'failure') }
-
-    it { expect(left.success?).to eq(false) }
-    it { expect(left.failure?).to eq(true) }
 
     example 'with block' do
       result = left.or do |h|
@@ -114,8 +110,6 @@ RSpec.describe(Dry::Monads::Either) do
       end.bind do |r|
         if r[:value] > 0
           Right(value: r[:value] + 1)
-        else
-          Left(value: 0)
         end
       end.or do
         Left('error')
@@ -134,19 +128,6 @@ RSpec.describe(Dry::Monads::Either) do
       end
 
       expect(result).to eq(Left(value: -2))
-    end
-  end
-
-  describe 'can be corced to Maybe' do
-    let(:right) { Right(message: 'success') }
-    let(:left) { Left('failure') }
-
-    example 'from right' do
-      expect(right.to_maybe).to eq(Some(message: 'success'))
-    end
-
-    example 'from left' do
-      expect(left.to_maybe).to eq(None())
     end
   end
 end

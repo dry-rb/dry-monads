@@ -36,6 +36,12 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
+    describe '#value' do
+      it 'returns wrapped value' do
+        expect(subject.value).to eql('foo')
+      end
+    end
+
     describe '#fmap' do
       it 'accepts a proc and does not lift the result to maybe' do
         expect(subject.fmap(upcase)).to eq(upcased_subject)
@@ -74,7 +80,13 @@ RSpec.describe(Dry::Monads::Maybe) do
       expect(subject.inspect).to eql('None')
     end
 
-   describe '#bind' do
+    describe '#value' do
+      it 'returns wrapped value' do
+        expect(subject.value).to be nil
+      end
+    end
+
+    describe '#bind' do
       it 'accepts a proc and returns itseld' do
         expect(subject.bind(upcase)).to be subject
       end

@@ -1,45 +1,51 @@
 RSpec.describe(Dry::Monads) do
-  M = Dry::Monads
+  let(:m) { described_class }
+  either = Dry::Monads::Either
+  maybe = Dry::Monads::Maybe
 
-  describe 'Maybe' do
-    include Dry::Monads::Maybe::Mixin
+  describe 'maybe monad' do
+    describe '.Maybe' do
+      describe 'lifting to Some' do
+        subject { m.Some(5) }
 
-    context 'some' do
-      let(:maybe) { M.Maybe(5) }
+        it { is_expected.to eq maybe::Some.new(5) }
+      end
 
-      example { expect(maybe).to eq(Some(5)) }
+      describe 'lifting to None' do
+        subject { m.Maybe(nil) }
+
+        it { is_expected.to eq maybe::None.new }
+      end
     end
 
-    context 'none' do
-      let(:maybe) { M.Maybe(nil) }
+    describe '.Some' do
+      subject { m.Some(10) }
 
-      example { expect(maybe).to eq(None()) }
+      it { is_expected.to eq maybe::Some.new(10) }
+
+      example 'lifting nil produces an error' do
+        expect { m.Some(nil) }.to raise_error(ArgumentError)
+      end
     end
 
-    describe 'Some' do
-      subject { M.Some(10) }
+    describe '.None' do
+      subject { m.None() }
 
-      it { is_expected.to be_kind_of(Dry::Monads::Maybe::Some) }
-    end
-
-    describe 'None' do
-      subject { M.None() }
-
-      it { is_expected.to be_kind_of(Dry::Monads::Maybe::None) }
+      it { is_expected.to eq maybe::None.new }
     end
   end
 
-  describe 'Either' do
-    describe 'Right' do
-      subject { M.Right("everything went right") }
+  describe 'either monad' do
+    describe '.Right' do
+      subject { m.Right('everything went right') }
 
-      it { is_expected.to be_kind_of(Dry::Monads::Either::Right) }
+      it { is_expected.to eq either::Right.new('everything went right') }
     end
 
-    describe 'Left' do
-      subject { M.Left("something has gone wrong") }
+    describe '.Left' do
+      subject { m.Left('something has gone wrong') }
 
-      it { is_expected.to be_kind_of(Dry::Monads::Either::Left) }
+      it { is_expected.to eq either::Left.new('something has gone wrong') }
     end
   end
 end

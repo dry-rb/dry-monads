@@ -45,7 +45,7 @@ RSpec.describe(Dry::Monads::Try) do
       end
 
       it 'captures checked exceptions and return Failure object' do
-        expect(subject.bind { raise division_error }).to be_instance_of try::Failure
+        expect(subject.bind { raise division_error }).to be_an_instance_of try::Failure
       end
 
       it 'does not rescue unchecked exceptions' do
