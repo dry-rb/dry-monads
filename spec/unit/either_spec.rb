@@ -122,6 +122,14 @@ RSpec.describe(Dry::Monads::Either) do
       end
     end
 
+    describe '#to_either' do
+      let(:subject) { either::Left.new('bar').to_either }
+
+      it 'returns self' do
+        is_expected.to eq(either::Left.new('bar'))
+      end
+    end
+
     describe '#to_maybe' do
       let(:subject) { either::Left.new('bar').to_maybe }
 
