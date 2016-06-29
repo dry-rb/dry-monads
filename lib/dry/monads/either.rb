@@ -17,6 +17,10 @@ module Dry
       end
       alias failure? left?
 
+      def to_either
+        self
+      end
+
       class Right < Either
         alias value right
 
