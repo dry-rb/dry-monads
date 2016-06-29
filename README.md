@@ -11,6 +11,7 @@
 [![Code Climate](https://img.shields.io/codeclimate/github/dry-rb/dry-monads.svg)][code_climate]
 [![Test Coverage](https://img.shields.io/codeclimate/coverage/github/dry-rb/dry-monads.svg)][code_climate]
 [![API Documentation Coverage](http://inch-ci.org/github/dry-rb/dry-monads.svg)][inch]
+![No monkey-patches](https://img.shields.io/badge/monkey--patches-0-brightgreen.svg)
 
 Monads for Ruby.
 
