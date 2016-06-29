@@ -21,6 +21,10 @@ module Dry
         is_a?(Some)
       end
 
+      def to_maybe
+        self
+      end
+
       class Some < Maybe
         attr_reader :value
 

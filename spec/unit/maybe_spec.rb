@@ -57,6 +57,12 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(subject.or { 'baz' }).to be(subject)
       end
     end
+
+    describe '#to_maybe' do
+      let(:subject) { maybe::Some.new('foo').to_maybe }
+
+      it { is_expected.to eq maybe::Some.new('foo') }
+    end
   end
 
   describe maybe::None do
@@ -110,6 +116,12 @@ RSpec.describe(Dry::Monads::Maybe) do
       it 'accepts block as an alternative' do
         expect(subject.or { 'baz' }).to eql('baz')
       end
+    end
+
+    describe '#to_maybe' do
+      let(:subject) { maybe::None.new.to_maybe }
+
+      it { is_expected.to eq maybe::None.new }
     end
   end
 end
