@@ -108,9 +108,7 @@ RSpec.describe(Dry::Monads::Either) do
       result = right.fmap do |r|
         { value: r[:value] + 1 }
       end.bind do |r|
-        if r[:value] > 0
-          Right(value: r[:value] + 1)
-        end
+        Right(value: r[:value] + 1) if r[:value] > 0
       end.or do
         Left('error')
       end
