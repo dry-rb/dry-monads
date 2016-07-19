@@ -166,7 +166,6 @@ module Dry
           Some.new(value)
         end
 
-        # @param value [Object] the value to be stored in the monad
         # @return [Maybe::None]
         def None
           None.instance

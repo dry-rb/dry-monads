@@ -47,4 +47,4 @@ prompt that will allow you to experiment.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at [https://github.com/dry-rb/dry-monads]().
+Bug reports and pull requests are welcome on GitHub at <https://github.com/dry-rb/dry-monads>.

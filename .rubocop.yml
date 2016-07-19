@@ -24,6 +24,17 @@ Style/MultilineBlockChain:
 Style/GuardClause:
   Enabled: false
 
+Style/SymbolProc:
+  Exclude:
+    # This rule is broken in specs on purpose to make examples clearer
+    - 'spec/**/*'
+
+Style/ModuleFunction:
+  Enabled: false
+
+Style/RescueModifier:
+  Enabled: false
+
 Metrics/LineLength:
   Max: 110
 
