@@ -29,6 +29,10 @@ Style/SymbolProc:
     # This rule is broken in specs on purpose to make examples clearer
     - 'spec/**/*'
 
+Style/SignalException:
+  Exclude:
+    - 'spec/**/*'
+
 Style/ModuleFunction:
   Enabled: false
 

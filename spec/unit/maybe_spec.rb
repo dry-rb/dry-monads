@@ -42,7 +42,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it 'passes extra arguments to a proc' do
-        proc = -> (value, c) do
+        proc = lambda do |value, c|
           expect(value).to eql('foo')
           expect(c).to eql(:foo)
           true
@@ -81,7 +81,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it 'passes extra arguments to a proc' do
-        proc = -> (value, c1, c2) do
+        proc = lambda do |value, c1, c2|
           expect(value).to eql('foo')
           expect(c1).to eql(:foo)
           expect(c2).to eql(:bar)
