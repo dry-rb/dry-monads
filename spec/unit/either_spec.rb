@@ -34,6 +34,28 @@ RSpec.describe(Dry::Monads::Either) do
       it 'accepts a block too' do
         expect(subject.bind { |s| s.upcase }).to eql('FOO')
       end
+
+      it 'passes extra arguments to a block' do
+        result = subject.bind(:foo) do |value, c|
+          expect(value).to eql('foo')
+          expect(c).to eql(:foo)
+          true
+        end
+
+        expect(result).to be true
+      end
+
+      it 'passes extra arguments to a proc' do
+        proc = -> (value, c) do
+          expect(value).to eql('foo')
+          expect(c).to eql(:foo)
+          true
+        end
+
+        result = subject.bind(proc, :foo)
+
+        expect(result).to be true
+      end
     end
 
     describe '#fmap' do
@@ -44,6 +66,30 @@ RSpec.describe(Dry::Monads::Either) do
       it 'accepts a block too' do
         expect(subject.fmap { |s| s.upcase }).to eq(upcased_subject)
       end
+
+      it 'passes extra arguments to a block' do
+        result = subject.fmap(:foo, :bar) do |value, c1, c2|
+          expect(value).to eql('foo')
+          expect(c1).to eql(:foo)
+          expect(c2).to eql(:bar)
+          true
+        end
+
+        expect(result).to eql(either::Right.new(true))
+      end
+
+      it 'passes extra arguments to a proc' do
+        proc = -> (value, c1, c2) do
+          expect(value).to eql('foo')
+          expect(c1).to eql(:foo)
+          expect(c2).to eql(:bar)
+          true
+        end
+
+        result = subject.fmap(proc, :foo, :bar)
+
+        expect(result).to eql(either::Right.new(true))
+      end
     end
 
     describe '#or' do
@@ -52,7 +98,11 @@ RSpec.describe(Dry::Monads::Either) do
       end
 
       it 'accepts block as an alternative' do
-        expect(subject.or { 'baz' }).to be(subject)
+        expect(subject.or { fail }).to be(subject)
+      end
+
+      it 'ignores all values' do
+        expect(subject.or(:foo, :bar, :baz) { fail }).to be(subject)
       end
     end
 
@@ -100,6 +150,10 @@ RSpec.describe(Dry::Monads::Either) do
       it 'accepts a block and returns itself' do
         expect(subject.bind { |s| s.upcase }).to be subject
       end
+
+      it 'ignores extra arguments' do
+        expect(subject.bind(1, 2, 3) { |v| 1 / 0 }).to be subject
+      end
     end
 
     describe '#fmap' do
@@ -110,15 +164,30 @@ RSpec.describe(Dry::Monads::Either) do
       it 'accepts a block and returns itseld' do
         expect(subject.fmap { |s| s.upcase }).to be subject
       end
+
+      it 'ignores arguments' do
+        expect(subject.fmap(1, 2, 3) { fail }).to be subject
+      end
     end
 
     describe '#or' do
-      it 'accepts value as an alternative' do
+      it 'accepts a value as an alternative' do
         expect(subject.or('baz')).to eql('baz')
       end
 
-      it 'accepts block as an alternative' do
+      it 'accepts a block as an alternative' do
         expect(subject.or { 'baz' }).to eql('baz')
+      end
+
+      it 'passes extra arguments to a block' do
+        result = subject.or(:foo, :bar) do |value, c1, c2|
+          expect(value).to eql('bar')
+          expect(c1).to eql(:foo)
+          expect(c2).to eql(:bar)
+          'baz'
+        end
+
+        expect(result).to eql('baz')
       end
     end
 

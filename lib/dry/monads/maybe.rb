@@ -4,6 +4,8 @@ module Dry
     #
     # @api public
     class Maybe
+      include Dry::Equalizer(:value)
+
       # Lifts the given value into Maybe::None or Maybe::Some monad.
       #
       # @param value [Object] the value to be stored in the monad
@@ -14,12 +16,6 @@ module Dry
         else
           Some.new(value)
         end
-      end
-
-      # @param other [Either]
-      # @return [Boolean]
-      def ==(other)
-        other.is_a?(Maybe) && value == other.value
       end
 
       # Returns true for an instance of a {Maybe::None} monad.
@@ -58,13 +54,17 @@ module Dry
         # @example
         #   Dry::Monads.Some(4).bind(&:succ) # => 5
         #
-        # @param proc [Proc, nil]
+        # @param [Array<Object>] args arguments that will be passed to a block
+        #                             if one was given, otherwise the first
+        #                             value assumed to be a Proc (callable)
+        #                             object and the rest of args will be passed
+        #                             to this object along with the internal value
         # @return [Object] result of calling proc or block on the internal value
-        def bind(proc = nil)
-          if proc
-            proc.call(value)
+        def bind(*args)
+          if block_given?
+            yield(value, *args)
           else
-            yield(value)
+            args[0].call(value, *args.drop(1))
           end
         end
 
@@ -75,17 +75,18 @@ module Dry
         # @example
         #   Dry::Monads.Some(4).fmap(&:succ).fmap(->(n) { n**2 }) # => Some(25)
         #
-        # @param proc [Proc, nil]
-        # @return [Maybe::Some]
-        def fmap(proc = nil, &block)
-          self.class.lift(bind(&(proc || block)))
+        # @param [Array<Object>] args arguments will be transparently passed through to #bind
+        # @return [Maybe::Some, Maybe::None] Lifted result, i.e. nil will be mapped to None,
+        #                                    other values will be wrapped with Some
+        def fmap(*args, &block)
+          self.class.lift(bind(*args, &block))
         end
 
-        # Ignores the input parameter and returns self. It exists to keep the interface
+        # Ignores arguments and returns self. It exists to keep the interface
         # identical to that of {Maybe::None}.
         #
         # @return [Maybe::Some]
-        def or(_val = nil)
+        def or(*)
           self
         end
 
@@ -108,19 +109,19 @@ module Dry
           nil
         end
 
-        # Ignores the input parameter and returns self. It exists to keep the interface
+        # Ignores arguments and returns self. It exists to keep the interface
         # identical to that of {Maybe::Some}.
         #
         # @return [Maybe::None]
-        def bind(_proc = nil)
+        def bind(*)
           self
         end
 
-        # Ignores the input parameter and returns self. It exists to keep the interface
+        # Ignores arguments and returns self. It exists to keep the interface
         # identical to that of {Maybe::Some}.
         #
         # @return [Maybe::None]
-        def fmap(_proc = nil)
+        def fmap(*)
           self
         end
 
@@ -133,11 +134,11 @@ module Dry
         #
         # @param val [Object, nil]
         # @return [Object]
-        def or(val = nil)
+        def or(*args)
           if block_given?
-            yield(value)
+            yield(*args)
           else
-            val
+            args[0]
           end
         end
 

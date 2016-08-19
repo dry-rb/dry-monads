@@ -1,3 +1,4 @@
+require 'dry/equalizer'
 require 'dry/monads/either'
 require 'dry/monads/maybe'
 require 'dry/monads/try'

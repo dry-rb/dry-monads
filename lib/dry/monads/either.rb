@@ -4,13 +4,8 @@ module Dry
     #
     # @api public
     class Either
+      include Dry::Equalizer(:right, :left)
       attr_reader :right, :left
-
-      # @param other [Either]
-      # @return [Boolean]
-      def ==(other)
-        other.is_a?(Either) && right == other.right && left == other.left
-      end
 
       # Returns true for an instance of a {Either::Right} monad.
       def right?
@@ -50,13 +45,17 @@ module Dry
         # @example
         #   Dry::Monads.Right(4).bind(&:succ) # => 5
         #
-        # @param proc [Proc, nil]
+        # @param [Array<Object>] args arguments that will be passed to a block
+        #                             if one was given, otherwise the first
+        #                             value assumed to be a Proc (callable)
+        #                             object and the rest of args will be passed
+        #                             to this object along with the internal value
         # @return [Object] result of calling proc or block on the internal value
-        def bind(proc = nil)
-          if proc
-            proc.call(value)
+        def bind(*args)
+          if block_given?
+            yield(value, *args)
           else
-            yield(value)
+            args[0].call(value, *args.drop(1))
           end
         end
 
@@ -67,17 +66,17 @@ module Dry
         # @example
         #   Dry::Monads.Right(4).fmap(&:succ).fmap(->(n) { n**2 }) # => Right(25)
         #
-        # @param proc [Proc, nil]
+        # @param [Array<Object>] args arguments will be transparently passed through to #bind
         # @return [Either::Right]
-        def fmap(proc = nil, &block)
-          Right.new(bind(&(proc || block)))
+        def fmap(*args, &block)
+          Right.new(bind(*args, &block))
         end
 
-        # Ignores the input parameter and returns self. It exists to keep the interface
+        # Ignores arguments and returns self. It exists to keep the interface
         # identical to that of {Either::Left}.
         #
         # @return [Either::Right]
-        def or(_val = nil)
+        def or(*)
           self
         end
 
@@ -108,7 +107,7 @@ module Dry
         # identical to that of {Either::Right}.
         #
         # @return [Either::Left]
-        def bind(_proc = nil)
+        def bind(*)
           self
         end
 
@@ -116,7 +115,7 @@ module Dry
         # identical to that of {Either::Right}.
         #
         # @return [Either::Left]
-        def fmap(_proc = nil)
+        def fmap(*)
           self
         end
 
@@ -126,13 +125,15 @@ module Dry
         # @example
         #   Dry::Monads.Left(ArgumentError.new('error message')).or(&:message) # => "error message"
         #
-        # @param val [Object, nil]
+        # @param [Array<Object>] args arguments that will be passed to a block
+        #                             if one was given, otherwise the first
+        #                             value will be returned
         # @return [Object]
-        def or(val = nil)
+        def or(*args)
           if block_given?
-            yield(value)
+            yield(value, *args)
           else
-            val
+            args[0]
           end
         end
 
