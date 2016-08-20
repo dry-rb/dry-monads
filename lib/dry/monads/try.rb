@@ -93,12 +93,12 @@ module Dry
 
         # @return [Maybe]
         def to_maybe
-          Dry::Monads::Maybe(@value)
+          Dry::Monads::Maybe(value)
         end
 
         # @return [Either::Right]
         def to_either
-          Dry::Monads::Right(@value)
+          Dry::Monads::Right(value)
         end
 
         # @return [String]
@@ -140,7 +140,7 @@ module Dry
 
         # @return [Either::Left]
         def to_either
-          Dry::Monads::Left(@exception)
+          Dry::Monads::Left(exception)
         end
 
         # @return [String]
