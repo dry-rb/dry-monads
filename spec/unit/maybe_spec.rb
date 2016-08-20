@@ -148,7 +148,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it 'ignores arguments' do
-        expect(subject.fmap(1, 2, 3) { fail }).to be subject
+        expect(subject.bind(1, 2, 3) { fail }).to be subject
       end
     end
 

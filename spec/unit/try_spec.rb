@@ -47,6 +47,28 @@ RSpec.describe(Dry::Monads::Try) do
       it 'does not rescue unchecked exceptions' do
         expect { subject.bind { |_value| raise no_method_error } }.to raise_error(no_method_error)
       end
+
+      it 'passes extra arguments to a block' do
+        result = subject.bind(:foo) do |value, c|
+          expect(value).to eql('foo')
+          expect(c).to eql(:foo)
+          true
+        end
+
+        expect(result).to be true
+      end
+
+      it 'passes extra arguments to a proc' do
+        proc = lambda do |value, c|
+          expect(value).to eql('foo')
+          expect(c).to eql(:foo)
+          true
+        end
+
+        result = subject.bind(proc, :foo)
+
+        expect(result).to be true
+      end
     end
 
     describe '#fmap' do
@@ -64,6 +86,28 @@ RSpec.describe(Dry::Monads::Try) do
 
       it 'accepts a block and returns Failure' do
         expect(subject.fmap { |_s| raise division_error }).to eq(upcase_failure)
+      end
+
+      it 'passes extra arguments to a block' do
+        result = subject.fmap(:foo, :bar) do |value, c1, c2|
+          expect(c1).to eql(:foo)
+          expect(c2).to eql(:bar)
+          value.upcase
+        end
+
+        expect(result).to eql(upcase_success)
+      end
+
+      it 'passes extra arguments to a proc' do
+        proc = lambda do |value, c1, c2|
+          expect(c1).to eql(:foo)
+          expect(c2).to eql(:bar)
+          value.upcase
+        end
+
+        result = subject.fmap(proc, :foo, :bar)
+
+        expect(result).to eql(upcase_success)
       end
     end
 
@@ -114,6 +158,10 @@ RSpec.describe(Dry::Monads::Try) do
       it 'accepts a block and returns itself' do
         expect(subject.bind { |s| s.upcase }).to be subject
       end
+
+      it 'ignores arguments' do
+        expect(subject.bind(1, 2, 3) { fail }).to be subject
+      end
     end
 
     describe '#fmap' do
@@ -123,6 +171,10 @@ RSpec.describe(Dry::Monads::Try) do
 
       it 'accepts a block and returns itself' do
         expect(subject.fmap(divide_by_zero)).to be subject
+      end
+
+      it 'ignores arguments' do
+        expect(subject.fmap(1, 2, 3) { fail }).to be subject
       end
     end
 

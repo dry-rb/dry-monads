@@ -5,6 +5,7 @@ module Dry
     #
     # @api public
     class Try
+      include Dry::Equalizer(:exception, :value)
       attr_reader :exception, :value
 
       # Calls the passed in proc object and if successful stores the result in a
@@ -34,6 +35,7 @@ module Dry
       #
       # @api public
       class Success < Try
+        include Dry::Equalizer(:exception, :value, :catchable)
         attr_reader :catchable
 
         # @param exceptions [Array<Exception>] list of exceptions to be rescued
@@ -53,13 +55,17 @@ module Dry
         #   success.bind(->(n) { n / 2 }) # => 5
         #   success.bind { |n| n / 0 } # => Try::Failure(ZeroDivisionError: divided by 0)
         #
-        # @param proc [Proc, nil]
+        # @param [Array<Object>] args arguments that will be passed to a block
+        #                             if one was given, otherwise the first
+        #                             value assumed to be a Proc (callable)
+        #                             object and the rest of args will be passed
+        #                             to this object along with the internal value
         # @return [Object, Try::Failure]
-        def bind(proc = nil)
-          if proc
-            proc.call(value)
+        def bind(*args)
+          if block_given?
+            yield(value, *args)
           else
-            yield(@value)
+            args[0].call(value, *args.drop(1))
           end
         rescue *catchable => e
           Failure.new(e)
@@ -74,15 +80,15 @@ module Dry
         #   success.fmap(&:succ).fmap(&:succ).value # => 12
         #   success.fmap(&:succ).fmap { |n| n / 0 }.fmap(&:succ).value # => nil
         #
-        # @param proc [Proc, nil]
+        # @param [Array<Object>] args extra arguments for the block, arguments are being processes
+        #                             just as in #bind
         # @return [Try::Success, Try::Failure]
-        def fmap(proc = nil, &block)
-          Try.lift(catchable, -> { (block || proc).call(@value) })
-        end
-
-        # @param other [Try]
-        def ==(other)
-          other.is_a?(Success) && @value == other.value && @catchable == other.catchable
+        def fmap(*args, &block)
+          if block
+            Try.lift(catchable, -> { block.call(value, *args) })
+          else
+            Try.lift(catchable, -> { args[0].call(value, *args.drop(1)) })
+          end
         end
 
         # @return [Maybe]
@@ -111,19 +117,19 @@ module Dry
           @exception = exception
         end
 
-        # Ignores the input parameter and returns self. It exists to keep the interface
+        # Ignores arguments and returns self. It exists to keep the interface
         # identical to that of {Try::Success}.
         #
         # @return [Try::Failure]
-        def bind(_f = nil)
+        def bind(*)
           self
         end
 
-        # Ignores the input parameter and returns self. It exists to keep the interface
+        # Ignores arguments and returns self. It exists to keep the interface
         # identical to that of {Try::Success}.
         #
         # @return [Try::Failure]
-        def fmap(_f = nil)
+        def fmap(*)
           self
         end
 
@@ -135,11 +141,6 @@ module Dry
         # @return [Either::Left]
         def to_either
           Dry::Monads::Left(@exception)
-        end
-
-        # @param other [Try]
-        def ==(other)
-          other.is_a?(Failure) && @exception == other.exception
         end
 
         # @return [String]
