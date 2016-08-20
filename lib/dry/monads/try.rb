@@ -84,7 +84,7 @@ module Dry
         # @return [Try::Success, Try::Failure]
         def fmap(*args, &block)
           if block
-            Try.lift(catchable, -> { block.call(value, *args) })
+            Try.lift(catchable, -> { yield(value, *args) })
           else
             Try.lift(catchable, -> { args[0].call(value, *args.drop(1)) })
           end
