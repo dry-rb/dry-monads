@@ -5,7 +5,6 @@ module Dry
     #
     # @api public
     class Try
-      include Dry::Equalizer(:exception, :value)
       attr_reader :exception, :value
 
       # Calls the passed in proc object and if successful stores the result in a
@@ -35,7 +34,7 @@ module Dry
       #
       # @api public
       class Success < Try
-        include Dry::Equalizer(:exception, :value, :catchable)
+        include Dry::Equalizer(:value, :catchable)
         attr_reader :catchable
 
         # @param exceptions [Array<Exception>] list of exceptions to be rescued
@@ -112,6 +111,8 @@ module Dry
       #
       # @api public
       class Failure < Try
+        include Dry::Equalizer(:exception)
+
         # @param exception [Exception]
         def initialize(exception)
           @exception = exception
