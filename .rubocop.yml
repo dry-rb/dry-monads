@@ -3,6 +3,7 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   Exclude:
     - 'spec/integration/either_spec.rb'
+    - 'vendor/**/*'
 
 Style/Documentation:
   Enabled: false
