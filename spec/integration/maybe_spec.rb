@@ -10,7 +10,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     describe '#None' do
       subject { none }
 
-      it { is_expected.to eq(maybe::None.new) }
+      it { is_expected.to eql(maybe::None.new) }
 
       it 'returns the same object every time' do
         expect(none).to be None()
@@ -47,11 +47,11 @@ RSpec.describe(Dry::Monads::Maybe) do
   context 'mapping' do
     context 'some' do
       example 'using block' do
-        expect(some.fmap { |x| x * 2 }).to eq(Some(6))
+        expect(some.fmap { |x| x * 2 }).to eql(Some(6))
       end
 
       example 'using proc' do
-        expect(some.fmap -> (x) { x * 2 }).to eq(Some(6))
+        expect(some.fmap -> (x) { x * 2 }).to eql(Some(6))
       end
     end
 
@@ -72,11 +72,11 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     context 'going happy' do
       example 'using lambda with lifting' do
-        expect(some.fmap(inc).fmap(inc).fmap(inc).or(0)).to eq(Some(6))
+        expect(some.fmap(inc).fmap(inc).fmap(inc).or(0)).to eql(Some(6))
       end
 
       example 'using lambda without lifting' do
-        expect(some.bind(&maybe_inc).bind { |x| maybe_inc[x] }.or(0)).to eq(Some(5))
+        expect(some.bind(&maybe_inc).bind { |x| maybe_inc[x] }.or(0)).to eql(Some(5))
       end
 
       example 'using block' do
@@ -84,21 +84,21 @@ RSpec.describe(Dry::Monads::Maybe) do
           Some(inc[x])
         end.or(0)
 
-        expect(result).to eq(Some(4))
+        expect(result).to eql(Some(4))
       end
     end
 
     context 'going unhappy path' do
       example 'using values' do
-        expect(none.fmap(inc).or(5)).to eq(5)
+        expect(none.fmap(inc).or(5)).to eql(5)
       end
 
       example 'using values in a long chain' do
-        expect(none.fmap(inc).or(Some(7).or(0))).to eq(Some(7))
+        expect(none.fmap(inc).or(Some(7).or(0))).to eql(Some(7))
       end
 
       example 'using block' do
-        expect(some.bind(-> (_) { none }).fmap(inc).or { |_| 5 }).to eq(5)
+        expect(some.bind(-> (_) { none }).fmap(inc).or { |_| 5 }).to eql(5)
       end
     end
   end

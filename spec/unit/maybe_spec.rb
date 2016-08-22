@@ -11,8 +11,8 @@ RSpec.describe(Dry::Monads::Maybe) do
     it { is_expected.to be_some }
     it { is_expected.not_to be_none }
 
-    it { is_expected.to eq(described_class.new('foo')) }
-    it { is_expected.not_to eq(maybe::None.new) }
+    it { is_expected.to eql(described_class.new('foo')) }
+    it { is_expected.not_to eql(maybe::None.new) }
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Some("foo")')
@@ -62,11 +62,11 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     describe '#fmap' do
       it 'accepts a proc and does not lift the result to maybe' do
-        expect(subject.fmap(upcase)).to eq(upcased_subject)
+        expect(subject.fmap(upcase)).to eql(upcased_subject)
       end
 
       it 'accepts a block too' do
-        expect(subject.fmap { |s| s.upcase }).to eq(upcased_subject)
+        expect(subject.fmap { |s| s.upcase }).to eql(upcased_subject)
       end
 
       it 'passes extra arguments to a block' do
@@ -121,8 +121,8 @@ RSpec.describe(Dry::Monads::Maybe) do
     it { is_expected.not_to be_some }
     it { is_expected.to be_none }
 
-    it { is_expected.to eq(described_class.new) }
-    it { is_expected.not_to eq(maybe::Some.new('foo')) }
+    it { is_expected.to eql(described_class.new) }
+    it { is_expected.not_to eql(maybe::Some.new('foo')) }
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('None')

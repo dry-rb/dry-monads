@@ -82,20 +82,20 @@ RSpec.describe(Dry::Monads::Either) do
       example 'with unhappy path' do
         result = right.bind(inc).or(-1).bind(failed_inc).or(-2)
 
-        expect(result).to eq(-2)
+        expect(result).to eql(-2)
       end
 
       context 'reduce list of operations' do
         example 'with happy path' do
           result = [inc, inc, inc].reduce(right, :bind)
 
-          expect(result).to eq(Right(3))
+          expect(result).to eql(Right(3))
         end
 
         example 'with unhappy path' do
           result = [inc, inc, failed_inc, inc].reduce(right, :bind)
 
-          expect(result).to eq(Left(0))
+          expect(result).to eql(Left(0))
         end
       end
     end
@@ -125,7 +125,7 @@ RSpec.describe(Dry::Monads::Either) do
         Right(value: r[:value] + 2)
       end
 
-      expect(result).to eq(Left(value: -2))
+      expect(result).to eql(Left(value: -2))
     end
 
     example 'using required keyword arguments' do

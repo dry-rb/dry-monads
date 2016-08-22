@@ -20,8 +20,8 @@ RSpec.describe(Dry::Monads::Try) do
     it { is_expected.to be_success }
     it { is_expected.not_to be_failure }
 
-    it { is_expected.to eq(described_class.new([ZeroDivisionError], 'foo')) }
-    it { is_expected.not_to eq(try::Failure.new(division_error)) }
+    it { is_expected.to eql(described_class.new([ZeroDivisionError], 'foo')) }
+    it { is_expected.not_to eql(try::Failure.new(division_error)) }
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Try::Success("foo")')
@@ -73,19 +73,19 @@ RSpec.describe(Dry::Monads::Try) do
 
     describe '#fmap' do
       it 'accepts a proc and lifts the result to Success' do
-        expect(subject.fmap(upcase)).to eq(upcase_success)
+        expect(subject.fmap(upcase)).to eql(upcase_success)
       end
 
       it 'accepts a proc and lifts the result to Failure' do
-        expect(subject.fmap(divide_by_zero)).to eq(upcase_failure)
+        expect(subject.fmap(divide_by_zero)).to eql(upcase_failure)
       end
 
       it 'accepts a block and returns Success' do
-        expect(subject.fmap { |s| s.upcase }).to eq(upcase_success)
+        expect(subject.fmap { |s| s.upcase }).to eql(upcase_success)
       end
 
       it 'accepts a block and returns Failure' do
-        expect(subject.fmap { |_s| raise division_error }).to eq(upcase_failure)
+        expect(subject.fmap { |_s| raise division_error }).to eql(upcase_failure)
       end
 
       it 'passes extra arguments to a block' do
@@ -113,17 +113,17 @@ RSpec.describe(Dry::Monads::Try) do
 
     describe '#to_maybe' do
       it 'transforms self to Some if value is not nil' do
-        expect(subject.to_maybe).to eq(maybe::Some.new('foo'))
+        expect(subject.to_maybe).to eql(maybe::Some.new('foo'))
       end
 
       it 'returns None if value is nil' do
-        expect(described_class.new([ZeroDivisionError], nil).to_maybe).to eq(maybe::None.new)
+        expect(described_class.new([ZeroDivisionError], nil).to_maybe).to eql(maybe::None.new)
       end
     end
 
     describe '#to_either' do
       it 'transforms self to Right' do
-        expect(subject.to_either).to eq(either::Right.new('foo'))
+        expect(subject.to_either).to eql(either::Right.new('foo'))
       end
     end
   end
@@ -138,13 +138,13 @@ RSpec.describe(Dry::Monads::Try) do
     it { is_expected.not_to be_success }
     it { is_expected.to be_failure }
 
-    it { is_expected.to eq(described_class.new(division_error)) }
-    it { is_expected.not_to eq(try::Success.new([ZeroDivisionError], 'foo')) }
+    it { is_expected.to eql(described_class.new(division_error)) }
+    it { is_expected.not_to eql(try::Success.new([ZeroDivisionError], 'foo')) }
 
     # This assertion does not always pass on JRuby, but it's some deep JRuby's internals,
     # so let's just ignore it
     unless defined? JRUBY_VERSION
-      it { is_expected.not_to eq(described_class.new(other_error)) }
+      it { is_expected.not_to eql(described_class.new(other_error)) }
     end
 
     it 'dumps to string' do
@@ -185,13 +185,13 @@ RSpec.describe(Dry::Monads::Try) do
 
     describe '#to_maybe' do
       it 'transforms self to None' do
-        expect(subject.to_maybe).to eq(maybe::None.new)
+        expect(subject.to_maybe).to eql(maybe::None.new)
       end
     end
 
     describe '#to_either' do
       it 'transforms self to Left' do
-        expect(subject.to_either).to eq(either::Left.new(division_error))
+        expect(subject.to_either).to eql(either::Left.new(division_error))
       end
     end
   end

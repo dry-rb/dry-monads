@@ -15,8 +15,8 @@ RSpec.describe(Dry::Monads::Either) do
     it { is_expected.not_to be_left }
     it { is_expected.not_to be_failure }
 
-    it { is_expected.to eq(described_class.new('foo')) }
-    it { is_expected.not_to eq(either::Left.new('foo')) }
+    it { is_expected.to eql(described_class.new('foo')) }
+    it { is_expected.not_to eql(either::Left.new('foo')) }
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Right("foo")')
@@ -60,11 +60,11 @@ RSpec.describe(Dry::Monads::Either) do
 
     describe '#fmap' do
       it 'accepts a proc and lifts the result to either' do
-        expect(subject.fmap(upcase)).to eq(upcased_subject)
+        expect(subject.fmap(upcase)).to eql(upcased_subject)
       end
 
       it 'accepts a block too' do
-        expect(subject.fmap { |s| s.upcase }).to eq(upcased_subject)
+        expect(subject.fmap { |s| s.upcase }).to eql(upcased_subject)
       end
 
       it 'passes extra arguments to a block' do
@@ -110,7 +110,7 @@ RSpec.describe(Dry::Monads::Either) do
       let(:subject) { either::Right.new('foo').to_either }
 
       it 'returns self' do
-        is_expected.to eq(either::Right.new('foo'))
+        is_expected.to eql(either::Right.new('foo'))
       end
     end
 
@@ -118,7 +118,7 @@ RSpec.describe(Dry::Monads::Either) do
       let(:subject) { either::Right.new('foo').to_maybe }
 
       it { is_expected.to be_an_instance_of maybe::Some }
-      it { is_expected.to eq(maybe::Some.new('foo')) }
+      it { is_expected.to eql(maybe::Some.new('foo')) }
     end
   end
 
@@ -131,8 +131,8 @@ RSpec.describe(Dry::Monads::Either) do
     it { is_expected.to be_left }
     it { is_expected.to be_failure }
 
-    it { is_expected.to eq(described_class.new('bar')) }
-    it { is_expected.not_to eq(either::Right.new('bar')) }
+    it { is_expected.to eql(described_class.new('bar')) }
+    it { is_expected.not_to eql(either::Right.new('bar')) }
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Left("bar")')
@@ -195,7 +195,7 @@ RSpec.describe(Dry::Monads::Either) do
       let(:subject) { either::Left.new('bar').to_either }
 
       it 'returns self' do
-        is_expected.to eq(either::Left.new('bar'))
+        is_expected.to eql(either::Left.new('bar'))
       end
     end
 
@@ -203,7 +203,7 @@ RSpec.describe(Dry::Monads::Either) do
       let(:subject) { either::Left.new('bar').to_maybe }
 
       it { is_expected.to be_an_instance_of maybe::None }
-      it { is_expected.to eq(maybe::None.new) }
+      it { is_expected.to eql(maybe::None.new) }
     end
   end
 end

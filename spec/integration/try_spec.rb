@@ -7,8 +7,8 @@ RSpec.describe(Dry::Monads::Try) do
     example do
       aggregate_failures do
         expect(try).to be_kind_of(Dry::Monads::Try::Success)
-        expect(try.success?).to eq(true)
-        expect(try.failure?).to eq(false)
+        expect(try.success?).to eql(true)
+        expect(try.failure?).to eql(false)
       end
     end
   end
@@ -19,8 +19,8 @@ RSpec.describe(Dry::Monads::Try) do
     example do
       aggregate_failures do
         expect(try).to be_kind_of(Dry::Monads::Try::Failure)
-        expect(try.success?).to eq(false)
-        expect(try.failure?).to eq(true)
+        expect(try.success?).to eql(false)
+        expect(try.failure?).to eql(true)
       end
     end
   end
@@ -29,7 +29,7 @@ RSpec.describe(Dry::Monads::Try) do
     let(:try) { Try { 10 / 2 } }
 
     example do
-      expect(try.value).to eq(5)
+      expect(try.value).to eql(5)
     end
   end
 
@@ -45,7 +45,7 @@ RSpec.describe(Dry::Monads::Try) do
     let(:try) { Try { 20 / 10 }.bind -> (number) { Try { 10 / number } } }
 
     example do
-      expect(try.value).to eq(5)
+      expect(try.value).to eql(5)
     end
   end
 
@@ -61,7 +61,7 @@ RSpec.describe(Dry::Monads::Try) do
     let(:try) { Try { 10 / 5 }.fmap { |x| x * 2 } }
 
     example do
-      expect(try.value).to eq(4)
+      expect(try.value).to eql(4)
     end
   end
 
@@ -77,7 +77,7 @@ RSpec.describe(Dry::Monads::Try) do
     let(:try) { Try { 10 / 5 }.to_maybe }
 
     example do
-      expect(try).to eq(Dry::Monads::Some(2))
+      expect(try).to eql(Dry::Monads::Some(2))
     end
   end
 
@@ -85,7 +85,7 @@ RSpec.describe(Dry::Monads::Try) do
     let(:try) { Try { 10 / 0 }.to_maybe }
 
     example do
-      expect(try).to eq(Dry::Monads::None())
+      expect(try).to eql(Dry::Monads::None())
     end
   end
 
@@ -93,7 +93,7 @@ RSpec.describe(Dry::Monads::Try) do
     let(:try) { Try { 10 / 5 }.to_either }
 
     example do
-      expect(try).to eq(Dry::Monads::Right(2))
+      expect(try).to eql(Dry::Monads::Right(2))
     end
   end
 
