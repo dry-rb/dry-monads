@@ -1,5 +1,9 @@
 inherit_from: .rubocop_todo.yml
 
+AllCops:
+  Exclude:
+    - 'spec/integration/either_spec.rb'
+
 Style/Documentation:
   Enabled: false
 
