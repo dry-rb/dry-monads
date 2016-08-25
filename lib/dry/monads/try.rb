@@ -1,3 +1,5 @@
+require 'dry/equalizer'
+
 module Dry
   module Monads
     # Represents a value which can be either success or a failure (an exception).

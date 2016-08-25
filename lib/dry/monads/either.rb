@@ -1,3 +1,5 @@
+require 'dry/equalizer'
+
 module Dry
   module Monads
     # Represents a value which is either correct or an error.

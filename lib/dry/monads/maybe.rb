@@ -1,3 +1,5 @@
+require 'dry/equalizer'
+
 module Dry
   module Monads
     # Represents a value which can exist or not, i.e. it could be nil.
