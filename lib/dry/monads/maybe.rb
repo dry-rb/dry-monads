@@ -37,6 +37,17 @@ module Dry
         self
       end
 
+      def self.json_create(serialized)
+        lift(serialized.fetch('value'))
+      end
+
+      def to_json(*args)
+        {
+          JSON.create_id => self.class.name,
+          value: value
+        }.to_json(*args)
+      end
+
       # Represents a value that is present, i.e. not nil.
       #
       # @api public

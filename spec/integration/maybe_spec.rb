@@ -102,4 +102,22 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
   end
+
+  context 'JSON serialization' do
+
+    let(:example_structure) do
+      {
+        'id' => 1,
+        # This works only if you require 'json/add/time'
+        # 'timestamp' => Time.now,
+        'some' => some,
+        'none' => none
+      }
+    end
+
+    example 'should reconstruct the structure' do
+      json_dumped_instance = JSON.dump(example_structure)
+      expect(JSON.load(json_dumped_instance)).to eql(example_structure)
+    end
+  end
 end
