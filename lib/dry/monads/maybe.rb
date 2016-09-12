@@ -92,6 +92,13 @@ module Dry
           self
         end
 
+        # Returns value. It exists to keep the interface identical to that of {Maybe::None}.
+        #
+        # @return [Object]
+        def value_or(*)
+          value
+        end
+
         # @return [String]
         def to_s
           "Some(#{value.inspect})"
@@ -142,6 +149,13 @@ module Dry
           else
             args[0]
           end
+        end
+
+        # Returns the passed value
+        #
+        # @returns [Object]
+        def value_or(val)
+          val
         end
 
         # @return [String]

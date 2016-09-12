@@ -108,6 +108,12 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
+    describe '#value_or' do
+      it 'returns existing value' do
+        expect(subject.value_or('baz')).to eql(subject.value)
+      end
+    end
+
     describe '#to_maybe' do
       let(:subject) { maybe::Some.new('foo').to_maybe }
 
@@ -183,6 +189,12 @@ RSpec.describe(Dry::Monads::Maybe) do
         end
 
         expect(result).to eql('baz')
+      end
+    end
+
+    describe '#value_or' do
+      it 'returns passed value' do
+        expect(subject.value_or('baz')).to eql('baz')
       end
     end
 
