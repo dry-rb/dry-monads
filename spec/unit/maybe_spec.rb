@@ -196,6 +196,10 @@ RSpec.describe(Dry::Monads::Maybe) do
       it 'returns passed value' do
         expect(subject.value_or('baz')).to eql('baz')
       end
+
+      it 'executes a block' do
+        expect(subject.value_or { 'bar' }).to eql('bar')
+      end
     end
 
     describe '#to_maybe' do
