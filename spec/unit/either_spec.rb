@@ -120,6 +120,17 @@ RSpec.describe(Dry::Monads::Either) do
       it { is_expected.to be_an_instance_of maybe::Some }
       it { is_expected.to eql(maybe::Some.new('foo')) }
     end
+
+    describe '#tee' do
+      it 'passes through itself when the block returns a Right' do
+        expect(subject.tee(->(*) { either::Right.new('ignored') })).to eql(subject)
+      end
+
+      it 'returns the block result when it is a left' do
+        expect(subject.tee(->(*) { either::Left.new('failure') }))
+          .to be_an_instance_of either::Left
+      end
+    end
   end
 
   describe either::Left do
@@ -204,6 +215,20 @@ RSpec.describe(Dry::Monads::Either) do
 
       it { is_expected.to be_an_instance_of maybe::None }
       it { is_expected.to eql(maybe::None.new) }
+    end
+
+    describe '#tee' do
+      it 'accepts a proc and returns itself' do
+        expect(subject.tee(upcase)).to be subject
+      end
+
+      it 'accepts a block and returns itseld' do
+        expect(subject.tee { |s| s.upcase }).to be subject
+      end
+
+      it 'ignores arguments' do
+        expect(subject.tee(1, 2, 3) { fail }).to be subject
+      end
     end
   end
 end

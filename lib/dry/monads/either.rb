@@ -74,6 +74,19 @@ module Dry
           Right.new(bind(*args, &block))
         end
 
+        # Does the same thing as #bind except it returns the original monad
+        # when the result is a Right.
+        #
+        # @example
+        #   Dry::Monads.Right(4).tee { Right('ok') } # => Right(4)
+        #   Dry::Monads.Right(4).tee { Left('fail') } # => Left('fail')
+        #
+        # @param [Array<Object>] args arguments will be transparently passed through to #bind
+        # @return [Either]
+        def tee(*args, &block)
+          bind(*args, &block).bind { self }
+        end
+
         # Ignores arguments and returns self. It exists to keep the interface
         # identical to that of {Either::Left}.
         #
@@ -118,6 +131,14 @@ module Dry
         #
         # @return [Either::Left]
         def fmap(*)
+          self
+        end
+
+        # Ignores the input parameter and returns self. It exists to keep the interface
+        # identical to that of {Either::Right}.
+        #
+        # @return [Either::Left]
+        def tee(*)
           self
         end
 
