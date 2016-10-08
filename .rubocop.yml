@@ -58,3 +58,7 @@ Lint/Debugger:
 Lint/HandleExceptions:
   Exclude:
     - 'spec/spec_helper.rb'
+
+Security/JSONLoad:
+  Exclude:
+    - 'spec/**/*'
