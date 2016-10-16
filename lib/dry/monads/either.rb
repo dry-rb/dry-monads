@@ -103,7 +103,7 @@ module Dry
 
         # @return [Maybe::Some]
         def to_maybe
-          Maybe::Some.new(value)
+          Dry::Monads::Maybe(value)
         end
       end
 
