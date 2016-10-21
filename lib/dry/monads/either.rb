@@ -53,11 +53,14 @@ module Dry
         #                             object and the rest of args will be passed
         #                             to this object along with the internal value
         # @return [Object] result of calling proc or block on the internal value
-        def bind(*args)
-          if block_given?
-            yield(value, *args)
+        def bind(*args, **kwargs, &block)
+          if block
+            block_args = prepare_proc_args(block, args, kwargs)
+            block.call(*block_args)
           else
-            args[0].call(value, *args.drop(1))
+            proc = args.shift
+            proc_args = prepare_proc_args(proc, args, kwargs)
+            proc.call(*proc_args)
           end
         end
 
@@ -104,6 +107,25 @@ module Dry
         # @return [Maybe::Some]
         def to_maybe
           Maybe::Some.new(value)
+        end
+
+        private
+
+        # Prepares proc arguments depending on normal or keyword input parameters
+        #
+        # @return [Array]
+        def prepare_proc_args(proc, args, kwargs)
+          proc_object = proc.is_a?(Proc) ? proc : proc.method(:call)
+          proc_parameter_types = proc_object.parameters.flatten
+          proc_args = args
+
+          if proc_parameter_types[0] =~ /key/
+            proc_args << kwargs.merge(value)
+          else
+            proc_args.unshift(value)
+            proc_args.push(kwargs) unless kwargs.empty?
+          end
+          proc_args
         end
       end
 

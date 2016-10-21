@@ -45,17 +45,46 @@ RSpec.describe(Dry::Monads::Either) do
         expect(result).to be true
       end
 
-      it 'passes extra arguments to a proc' do
-        proc = lambda do |value, c|
-          expect(value).to eql('foo')
-          expect(c).to eql(:foo)
-          true
+      describe 'passing extra arguments to a proc' do
+        it 'passes only normal extra arguments' do
+          proc = lambda do |value, c1, c2|
+            expect(value).to eql('foo')
+            expect(c1).to eql(:foo)
+            expect(c2).to eql(:bar)
+            true
+          end
+
+          subject.bind(proc, :foo, :bar)
         end
 
-        result = subject.bind(proc, :foo)
+        it 'passes only keyword extra arguments' do
+          initial_monad = either::Right.new(value: 'foo')
 
-        expect(result).to be true
+          proc = lambda do |value:, c1:, c2:|
+            expect(value).to eql('foo')
+            expect(c1).to eql(:foo)
+            expect(c2).to eql(:bar)
+            true
+          end
+
+          initial_monad.bind(proc, c1: :foo, c2: :bar)
+        end
+
+        it 'passes both normal and keyword extra arguments' do
+          
+          proc = lambda do |value1, value2, c1:, c2:|
+            expect(value1).to eql('foo')
+            expect(value2).to eql('bar')
+            expect(c1).to eql(:foo)
+            expect(c2).to eql(:bar)
+            true
+          end
+
+          subject.bind(proc, 'bar', c1: :foo, c2: :bar)
+        end
       end
+
+      
     end
 
     describe '#fmap' do
