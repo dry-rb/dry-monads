@@ -115,7 +115,13 @@ module Dry
         #
         # @return [Array]
         def prepare_proc_args(proc, args, kwargs)
-          proc_object = proc.is_a?(Proc) ? proc : proc.method(:call)
+          proc_object =
+            if proc.is_a?(Proc) || proc.is_a?(Method)
+              proc
+            else
+              proc.method(:call)
+            end
+
           proc_parameter_types = proc_object.parameters.flatten
           proc_args = args
 
@@ -127,6 +133,7 @@ module Dry
           end
           proc_args
         end
+
       end
 
       # Represents a value that is in an incorrect state, i.e. something went wrong.
