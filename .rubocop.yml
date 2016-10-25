@@ -62,3 +62,6 @@ Lint/HandleExceptions:
 Security/JSONLoad:
   Exclude:
     - 'spec/**/*'
+
+AllCops:
+  TargetRubyVersion: 2.1
