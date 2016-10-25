@@ -71,7 +71,6 @@ RSpec.describe(Dry::Monads::Either) do
         end
 
         it 'passes both normal and keyword extra arguments' do
-          
           proc = lambda do |value1, value2, c1:, c2:|
             expect(value1).to eql('foo')
             expect(value2).to eql('bar')
@@ -83,8 +82,6 @@ RSpec.describe(Dry::Monads::Either) do
           subject.bind(proc, 'bar', c1: :foo, c2: :bar)
         end
       end
-
-      
     end
 
     describe '#fmap' do

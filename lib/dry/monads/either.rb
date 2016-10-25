@@ -54,9 +54,9 @@ module Dry
         #                             to this object along with the internal value
         # @return [Object] result of calling proc or block on the internal value
         def bind(*args, **kwargs, &block)
-          if block
+          if block_given?
             block_args = prepare_proc_args(block, args, kwargs)
-            block.call(*block_args)
+            yield(*block_args)
           else
             proc = args.shift
             proc_args = prepare_proc_args(proc, args, kwargs)
@@ -115,17 +115,9 @@ module Dry
         #
         # @return [Array]
         def prepare_proc_args(proc, args, kwargs)
-          proc_object =
-            if proc.is_a?(Proc) || proc.is_a?(Method)
-              proc
-            else
-              proc.method(:call)
-            end
-
-          proc_parameter_types = proc_object.parameters.flatten
           proc_args = args
 
-          if proc_parameter_types[0] =~ /key/
+          if proc_parameter_types(proc)[0] =~ /key/
             proc_args << kwargs.merge(value)
           else
             proc_args.unshift(value)
@@ -133,7 +125,16 @@ module Dry
           end
           proc_args
         end
+      end
 
+      def proc_parameter_types(proc)
+        proc_object =
+          if proc.is_a?(Proc) || proc.is_a?(Method)
+            proc
+          else
+            proc.method(:call)
+          end
+        proc_object.parameters.flatten
       end
 
       # Represents a value that is in an incorrect state, i.e. something went wrong.
