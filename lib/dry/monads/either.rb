@@ -103,7 +103,11 @@ module Dry
 
         # @return [Maybe::Some]
         def to_maybe
-          Maybe::Some.new(value)
+          if value.nil?
+            Kernel.warn('Unexpected coercion: Right(nil) will be coerced into None')
+          end
+
+          Dry::Monads::Maybe(value)
         end
       end
 
