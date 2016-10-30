@@ -115,10 +115,24 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     describe '#to_maybe' do
-      let(:subject) { either::Right.new('foo').to_maybe }
+      context 'when value is nil' do
+        let(:subject) { either::Right.new(nil).to_maybe }
 
-      it { is_expected.to be_an_instance_of maybe::Some }
-      it { is_expected.to eql(maybe::Some.new('foo')) }
+        it { is_expected.to be_an_instance_of maybe::None }
+
+        it 'warns about unexpected transformation' do
+          expect { either::Right.new(nil).to_maybe }.to output(
+            "Unexpected transformation: Right(nil) will transform to None\n"
+          ).to_stderr
+        end
+      end
+
+      context 'when value is not nil' do
+        let(:subject) { either::Right.new('foo').to_maybe }
+
+        it { is_expected.to be_an_instance_of maybe::Some }
+        it { is_expected.to eql(maybe::Some.new('foo')) }
+      end
     end
 
     describe '#tee' do
