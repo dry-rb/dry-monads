@@ -119,6 +119,12 @@ RSpec.describe(Dry::Monads::Either) do
 
       it { is_expected.to be_an_instance_of maybe::Some }
       it { is_expected.to eql(maybe::Some.new('foo')) }
+
+      context 'value is nil' do
+        let(:subject) { either::Right.new(nil).to_maybe }
+        it { is_expected.to be_an_instance_of maybe::None }
+        it { is_expected.to eql(maybe::None.new) }
+      end
     end
 
     describe '#tee' do
