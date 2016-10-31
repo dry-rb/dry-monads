@@ -103,6 +103,7 @@ module Dry
 
         # @return [Maybe::Some]
         def to_maybe
+          Kernel.warn 'Right(nil) transformed to None' if value.nil?
           Dry::Monads::Maybe(value)
         end
       end
