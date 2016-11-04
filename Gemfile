@@ -9,5 +9,6 @@ end
 
 group :tools do
   gem 'rubocop'
+  gem 'byebug', platform: :mri
   gem 'pry'
 end

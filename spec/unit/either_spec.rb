@@ -107,7 +107,7 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     describe '#to_either' do
-      let(:subject) { either::Right.new('foo').to_either }
+      subject { either::Right.new('foo').to_either }
 
       it 'returns self' do
         is_expected.to eql(either::Right.new('foo'))
@@ -115,13 +115,14 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     describe '#to_maybe' do
-      let(:subject) { either::Right.new('foo').to_maybe }
+      subject { either::Right.new('foo').to_maybe }
 
       it { is_expected.to be_an_instance_of maybe::Some }
       it { is_expected.to eql(maybe::Some.new('foo')) }
 
       context 'value is nil' do
-        let(:subject) { either::Right.new(nil).to_maybe }
+        subject { either::Right.new(nil).to_maybe }
+
         it { is_expected.to be_an_instance_of maybe::None }
         it { is_expected.to eql(maybe::None.new) }
       end
@@ -135,6 +136,50 @@ RSpec.describe(Dry::Monads::Either) do
       it 'returns the block result when it is a left' do
         expect(subject.tee(->(*) { either::Left.new('failure') }))
           .to be_an_instance_of either::Left
+      end
+    end
+
+    context 'keyword values' do
+      subject { either::Right.new(foo: 'foo') }
+
+      describe '#bind' do
+        it 'passed extra keywords to block along with value' do
+          result = subject.bind(bar: 'bar') do |foo:, bar:|
+            expect(foo).to eql('foo')
+            expect(bar).to eql('bar')
+            true
+          end
+
+          expect(result).to be true
+        end
+      end
+    end
+
+    context 'mixed values' do
+      subject { either::Right.new(foo: 'foo', 'bar' => 'bar') }
+
+      describe '#bind' do
+        it 'passed extra keywords to block along with value' do
+          result = subject.bind(:baz, quux: 'quux') do |value, baz, foo:, quux:|
+            expect(value).to eql('bar' => 'bar')
+            expect(baz).to eql(:baz)
+            expect(foo).to eql('foo')
+            expect(quux).to eql('quux')
+            true
+          end
+
+          expect(result).to be true
+        end
+
+        example 'keywords from value takes precedence' do
+          result = subject.bind(foo: 'bar', bar: 'bar') do |foo:, bar:|
+            expect(foo).to eql('foo')
+            expect(bar).to eql('bar')
+            true
+          end
+
+          expect(result).to be true
+        end
       end
     end
   end

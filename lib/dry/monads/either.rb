@@ -53,12 +53,14 @@ module Dry
         #                             object and the rest of args will be passed
         #                             to this object along with the internal value
         # @return [Object] result of calling proc or block on the internal value
-        def bind(*args)
+        def bind(*args, **kwargs)
+          vargs, vkwargs = destructure(value)
+          kw = kwargs.empty? && vkwargs.empty? ? [] : [**kwargs, **vkwargs]
+
           if block_given?
-            yield(value, *args)
+            yield(*vargs, *args, *kw)
           else
-            obj, *remaining = *args
-            obj.call(value, *remaining)
+            args[0].call(*vargs, *args.drop(1), *kw)
           end
         end
 
@@ -106,6 +108,12 @@ module Dry
         def to_maybe
           Kernel.warn 'Right(nil) transformed to None' if value.nil?
           Dry::Monads::Maybe(value)
+        end
+
+        private
+
+        def destructure(*args, **kwargs)
+          [args, kwargs]
         end
       end
 
