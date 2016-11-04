@@ -55,7 +55,7 @@ module Dry
         # @return [Object] result of calling proc or block on the internal value
         def bind(*args, **kwargs)
           vargs, vkwargs = destructure(value)
-          kw = kwargs.empty? && vkwargs.empty? ? [] : [**kwargs, **vkwargs]
+          kw = kwargs.empty? && vkwargs.empty? ? [] : [kwargs.merge(vkwargs)]
 
           if block_given?
             yield(*vargs, *args, *kw)
