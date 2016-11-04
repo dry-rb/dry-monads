@@ -30,7 +30,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     example 'using named method with lambda' do
-      expect(some.bind -> (x) { x * 2 }).to eql(6)
+      expect(some.bind ->(x) { x * 2 }).to eql(6)
     end
   end
 
@@ -40,7 +40,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     example 'using named method with proc' do
-      expect(none.bind -> (x) { x * 2 }).to eql(None())
+      expect(none.bind ->(x) { x * 2 }).to eql(None())
     end
   end
 
@@ -51,7 +51,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       example 'using proc' do
-        expect(some.fmap -> (x) { x * 2 }).to eql(Some(6))
+        expect(some.fmap ->(x) { x * 2 }).to eql(Some(6))
       end
     end
 
@@ -61,14 +61,14 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       example 'using proc' do
-        expect(none.fmap -> (x) { x * 2 }).to eql(None())
+        expect(none.fmap ->(x) { x * 2 }).to eql(None())
       end
     end
   end
 
   describe 'chaining' do
     let(:inc) { :succ.to_proc }
-    let(:maybe_inc) { -> (x) { Maybe(x.succ) } }
+    let(:maybe_inc) { ->(x) { Maybe(x.succ) } }
 
     context 'going happy' do
       example 'using lambda with lifting' do
@@ -98,7 +98,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       example 'using block' do
-        expect(some.bind(-> (_) { none }).fmap(inc).or { |_| 5 }).to eql(5)
+        expect(some.bind(->(_) { none }).fmap(inc).or { |_| 5 }).to eql(5)
       end
     end
   end

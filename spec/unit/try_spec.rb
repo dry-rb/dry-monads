@@ -9,7 +9,7 @@ RSpec.describe(Dry::Monads::Try) do
   no_method_error = no_method rescue $ERROR_INFO
 
   let(:upcase) { :upcase.to_proc }
-  let(:divide_by_zero) { -> (_value) { raise division_error } }
+  let(:divide_by_zero) { ->(_value) { raise division_error } }
 
   describe(try::Success) do
     subject { described_class.new([ZeroDivisionError], 'foo') }
