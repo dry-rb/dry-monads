@@ -112,6 +112,10 @@ RSpec.describe(Dry::Monads::Maybe) do
       it 'returns existing value' do
         expect(subject.value_or('baz')).to eql(subject.value)
       end
+
+      it 'ignores a block' do
+        expect(subject.value_or { 'baz' }).to eql(subject.value)
+      end
     end
 
     describe '#to_maybe' do

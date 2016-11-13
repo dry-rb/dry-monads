@@ -95,7 +95,7 @@ module Dry
         # Returns value. It exists to keep the interface identical to that of {Maybe::None}.
         #
         # @return [Object]
-        def value_or(_val)
+        def value_or(_val = nil)
           value
         end
 
