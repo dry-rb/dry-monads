@@ -7,11 +7,12 @@ script:
   - bundle exec rake spec
   - bundle exec rubocop
 after_success:
-  - '[ "$TRAVIS_RUBY_VERSION" = "2.3.1" ] && [ "$TRAVIS_BRANCH" = "master" ] && bundle exec codeclimate-test-reporter'
+  # Send coverage report from the job #1 == current MRI release
+  - '[ "${TRAVIS_JOB_NUMBER#*.}" = "1" ] && [ "$TRAVIS_BRANCH" = "master" ] && bundle exec codeclimate-test-reporter'
 rvm:
-  - 2.1.10
-  - 2.2.6
   - 2.3.2
+  - 2.2.6
+  - 2.1.10
   - jruby-9.1.5.0
   - ruby-head
   - rbx-3
