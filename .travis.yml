@@ -25,6 +25,7 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
+    # Keep it until bundler issue resolved https://github.com/bundler/bundler/issues/5142
     - rvm: rbx-3
   include:
     - rvm: jruby-head
