@@ -1,6 +1,6 @@
 language: ruby
 dist: trusty
-sudo: required
+sudo: false
 cache: bundler
 bundler_args: --without benchmarks
 script:
