@@ -126,6 +126,16 @@ RSpec.describe(Dry::Monads::Try) do
         expect(subject.to_either).to eql(either::Right.new('foo'))
       end
     end
+
+    describe '#value_or' do
+      it 'returns existing value' do
+        expect(subject.value_or('baz')).to eql subject.value
+      end
+
+      it 'ignores a block' do
+        expect(subject.value_or { 'baz' }).to eql subject.value
+      end
+    end
   end
 
   describe(try::Failure) do
@@ -192,6 +202,16 @@ RSpec.describe(Dry::Monads::Try) do
     describe '#to_either' do
       it 'transforms self to Left' do
         expect(subject.to_either).to eql(either::Left.new(division_error))
+      end
+    end
+
+    describe '#value_or' do
+      it 'returns passed value' do
+        expect(subject.value_or(1)).to eql 1
+      end
+
+      it 'executes a block' do
+        expect(subject.value_or { 2 + 1 }).to eql 3
       end
     end
   end

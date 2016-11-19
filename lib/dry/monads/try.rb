@@ -1,5 +1,7 @@
 require 'dry/equalizer'
 
+require_relative 'value_or'
+
 module Dry
   module Monads
     # Represents a value which can be either success or a failure (an exception).
@@ -37,6 +39,9 @@ module Dry
       # @api public
       class Success < Try
         include Dry::Equalizer(:value, :catchable)
+
+        include ValueOrPositive
+
         attr_reader :catchable
 
         # @param exceptions [Array<Exception>] list of exceptions to be rescued
@@ -114,6 +119,8 @@ module Dry
       # @api public
       class Failure < Try
         include Dry::Equalizer(:exception)
+
+        include ValueOrNegative
 
         # @param exception [Exception]
         def initialize(exception)
