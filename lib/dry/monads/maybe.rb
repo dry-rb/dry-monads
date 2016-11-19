@@ -1,5 +1,7 @@
 require 'dry/equalizer'
 
+require_relative 'value_or'
+
 module Dry
   module Monads
     # Represents a value which can exist or not, i.e. it could be nil.
@@ -41,6 +43,8 @@ module Dry
       #
       # @api public
       class Some < Maybe
+        include ValueOrPositive
+
         attr_reader :value
 
         def initialize(value)
@@ -92,13 +96,6 @@ module Dry
           self
         end
 
-        # Returns value. It exists to keep the interface identical to that of {Maybe::None}.
-        #
-        # @return [Object]
-        def value_or(_val = nil)
-          value
-        end
-
         # @return [String]
         def to_s
           "Some(#{value.inspect})"
@@ -110,6 +107,8 @@ module Dry
       #
       # @api public
       class None < Maybe
+        include ValueOrNegative
+
         @instance = new
         singleton_class.send(:attr_reader, :instance)
 
@@ -148,17 +147,6 @@ module Dry
             yield(*args)
           else
             args[0]
-          end
-        end
-
-        # Returns the passed value
-        #
-        # @returns [Object]
-        def value_or(val = nil)
-          if block_given?
-            yield
-          else
-            val
           end
         end
 
