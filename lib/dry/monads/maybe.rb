@@ -88,12 +88,12 @@ module Dry
           self.class.lift(bind(*args, &block))
         end
 
-        # Ignores arguments and returns self. It exists to keep the interface
+        # Ignores arguments and returns value. It exists to keep the interface
         # identical to that of {Maybe::None}.
         #
-        # @return [Maybe::Some]
+        # @return [Object]
         def or(*)
-          self
+          value
         end
 
         # @return [String]

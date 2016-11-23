@@ -96,15 +96,15 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     describe '#or' do
       it 'accepts a value as an alternative' do
-        expect(subject.or('baz')).to be(subject)
+        expect(subject.or('baz')).to be(subject.value)
       end
 
       it 'accepts a block as an alternative' do
-        expect(subject.or { fail }).to be(subject)
+        expect(subject.or { fail }).to be(subject.value)
       end
 
       it 'ignores all values' do
-        expect(subject.or(:foo, :bar, :baz) { fail }).to be(subject)
+        expect(subject.or(:foo, :bar, :baz) { fail }).to be(subject.value)
       end
     end
 
