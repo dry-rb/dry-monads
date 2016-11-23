@@ -129,11 +129,11 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     example 'using required keyword arguments' do
-      result = Right(foo: 0, bar: 0, baz: 0).fmap do |foo: , **rest|
-        { foo: 1, **rest }
-      end.fmap do |bar: , **rest|
+      result = Right(foo: 0, bar: 0, baz: 0).fmap do |foo:, **rest|
+        { foo: foo + 1, **rest }
+      end.fmap do |bar:, **rest|
         { bar: bar + 1, **rest }
-      end.fmap do |foo: , bar: , **rest|
+      end.fmap do |foo:, bar:, **rest|
         { **rest, baz: foo + bar }
       end
 

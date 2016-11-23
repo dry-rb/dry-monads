@@ -53,11 +53,14 @@ module Dry
         #                             object and the rest of args will be passed
         #                             to this object along with the internal value
         # @return [Object] result of calling proc or block on the internal value
-        def bind(*args)
+        def bind(*args, **kwargs, &block)
           if block_given?
-            yield(value, *args)
+            block_args = prepare_proc_args(block, args, kwargs)
+            yield(*block_args)
           else
-            args[0].call(value, *args.drop(1))
+            proc = args.shift
+            proc_args = prepare_proc_args(proc, args, kwargs)
+            proc.call(*proc_args)
           end
         end
 
@@ -106,6 +109,33 @@ module Dry
           Kernel.warn 'Right(nil) transformed to None' if value.nil?
           Dry::Monads::Maybe(value)
         end
+
+        private
+
+        # Prepares proc arguments depending on normal or keyword input parameters
+        #
+        # @return [Array]
+        def prepare_proc_args(proc, args, kwargs)
+          proc_args = args
+
+          if proc_parameter_types(proc)[0] =~ /key/
+            proc_args << kwargs.merge(value)
+          else
+            proc_args.unshift(value)
+            proc_args.push(kwargs) unless kwargs.empty?
+          end
+          proc_args
+        end
+      end
+
+      def proc_parameter_types(proc)
+        proc_object =
+          if proc.is_a?(Proc) || proc.is_a?(Method)
+            proc
+          else
+            proc.method(:call)
+          end
+        proc_object.parameters.flatten
       end
 
       # Represents a value that is in an incorrect state, i.e. something went wrong.
