@@ -137,6 +137,17 @@ RSpec.describe(Dry::Monads::Either) do
           .to be_an_instance_of either::Left
       end
     end
+
+    describe '#tee' do
+      it 'passes through itself when the block returns a Right' do
+        expect(subject.tee(->(*) { either::Right.new('ignored') })).to eql(subject)
+      end
+
+      it 'returns the block result when it is a left' do
+        expect(subject.tee(->(*) { either::Left.new('failure') }))
+          .to be_an_instance_of either::Left
+      end
+    end
   end
 
   describe either::Left do
