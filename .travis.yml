@@ -10,7 +10,7 @@ after_success:
   # Send coverage report from the job #1 == current MRI release
   - '[ "${TRAVIS_JOB_NUMBER#*.}" = "1" ] && [ "$TRAVIS_BRANCH" = "master" ] && bundle exec codeclimate-test-reporter'
 rvm:
-  - 2.3.2
+  - 2.3.3
   - 2.2.6
   - 2.1.10
   - jruby-9.1.5.0
