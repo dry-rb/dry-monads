@@ -57,7 +57,8 @@ module Dry
           if block_given?
             yield(value, *args)
           else
-            args[0].call(value, *args.drop(1))
+            obj, *remaining = *args
+            obj.call(value, *remaining)
           end
         end
 
