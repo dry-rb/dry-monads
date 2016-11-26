@@ -178,12 +178,14 @@ module Dry
       module Mixin
         Try = Try
 
+        DEFAULT_EXCEPTIONS = [StandardError].freeze
+
         # A convenience wrapper for {Try.lift}.
         # If no exceptions are provided it falls back to StandardError.
         # In general, relying on this behaviour is not recommended as it can lead to unnoticed
         # bugs and it is always better to explicitly specify a list of exceptions if possible.
         def Try(*exceptions, &f)
-          catchable = exceptions.empty? ? [StandardError] : exceptions.flatten
+          catchable = exceptions.empty? ? DEFAULT_EXCEPTIONS : exceptions.flatten
           Try.lift(catchable, f)
         end
       end
