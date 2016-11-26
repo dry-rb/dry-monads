@@ -9,18 +9,6 @@ module Dry
       include Dry::Equalizer(:right, :left)
       attr_reader :right, :left
 
-      # Returns true for an instance of a {Either::Right} monad.
-      def right?
-        is_a? Right
-      end
-      alias success? right?
-
-      # Returns true for an instance of a {Either::Left} monad.
-      def left?
-        is_a? Left
-      end
-      alias failure? left?
-
       # Returns self, added to keep the interface compatible with other monads.
       #
       # @return [Either::Right, Either::Left]
@@ -38,6 +26,18 @@ module Dry
         def initialize(right)
           @right = right
         end
+
+        # Returns false
+        def left?
+          false
+        end
+        alias failure? left?
+
+        # Returns true
+        def right?
+          true
+        end
+        alias success? right?
 
         # Calls the passed in Proc object with value stored in self
         # and returns the result.
@@ -119,6 +119,18 @@ module Dry
         def initialize(left)
           @left = left
         end
+
+        # Returns true
+        def left?
+          true
+        end
+        alias failure? left?
+
+        # Returns false
+        def right?
+          false
+        end
+        alias success? right?
 
         # Ignores the input parameter and returns self. It exists to keep the interface
         # identical to that of {Either::Right}.
