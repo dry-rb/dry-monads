@@ -1,6 +1,6 @@
 require 'dry/equalizer'
 
-require_relative 'value_or'
+require 'dry/monads/right_biased'
 
 module Dry
   module Monads
@@ -9,7 +9,7 @@ module Dry
     #
     # @api public
     class Try
-      attr_reader :exception, :value
+      attr_reader :exception
 
       # Calls the passed in proc object and if successful stores the result in a
       # {Try::Success} monad, but if one of the specified exceptions was raised it stores
@@ -39,8 +39,7 @@ module Dry
       # @api public
       class Success < Try
         include Dry::Equalizer(:value, :catchable)
-
-        include ValueOrPositive
+        include RightBiased::Right
 
         attr_reader :catchable
 
@@ -50,6 +49,9 @@ module Dry
           @catchable = exceptions
           @value = value
         end
+
+        alias bind_call bind
+        private :bind_call
 
         # Calls the passed in Proc object with value stored in self
         # and returns the result.
@@ -67,12 +69,8 @@ module Dry
         #                             object and the rest of args will be passed
         #                             to this object along with the internal value
         # @return [Object, Try::Failure]
-        def bind(*args)
-          if block_given?
-            yield(value, *args)
-          else
-            args[0].call(value, *args.drop(1))
-          end
+        def bind(*)
+          super
         rescue *catchable => e
           Failure.new(e)
         end
@@ -90,11 +88,9 @@ module Dry
         #                             just as in #bind
         # @return [Try::Success, Try::Failure]
         def fmap(*args, &block)
-          if block
-            Try.lift(catchable, -> { yield(value, *args) })
-          else
-            Try.lift(catchable, -> { args[0].call(value, *args.drop(1)) })
-          end
+          Success.new(catchable, bind_call(*args, &block))
+        rescue *catchable => e
+          Failure.new(e)
         end
 
         # @return [Maybe]
@@ -119,28 +115,11 @@ module Dry
       # @api public
       class Failure < Try
         include Dry::Equalizer(:exception)
-
-        include ValueOrNegative
+        include RightBiased::Left
 
         # @param exception [Exception]
         def initialize(exception)
           @exception = exception
-        end
-
-        # Ignores arguments and returns self. It exists to keep the interface
-        # identical to that of {Try::Success}.
-        #
-        # @return [Try::Failure]
-        def bind(*)
-          self
-        end
-
-        # Ignores arguments and returns self. It exists to keep the interface
-        # identical to that of {Try::Success}.
-        #
-        # @return [Try::Failure]
-        def fmap(*)
-          self
         end
 
         # @return [Maybe::None]

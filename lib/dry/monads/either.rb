@@ -1,5 +1,7 @@
 require 'dry/equalizer'
 
+require 'dry/monads/right_biased'
+
 module Dry
   module Monads
     # Represents a value which is either correct or an error.
@@ -20,6 +22,8 @@ module Dry
       #
       # @api public
       class Right < Either
+        include RightBiased::Right
+
         alias value right
 
         # @param right [Object] a value in a correct state
@@ -38,31 +42,6 @@ module Dry
           true
         end
         alias success? right?
-
-        # Calls the passed in Proc object with value stored in self
-        # and returns the result.
-        #
-        # If proc is nil, it expects a block to be given and will yield to it.
-        #
-        # @example
-        #   Dry::Monads.Right(4).bind(&:succ) # => 5
-        #
-        # @param [Array<Object>] args arguments that will be passed to a block
-        #                             if one was given, otherwise the first
-        #                             value assumed to be a Proc (callable)
-        #                             object and the rest of args will be passed
-        #                             to this object along with the internal value
-        # @return [Object] result of calling proc or block on the internal value
-        def bind(*args, **kwargs)
-          vargs, vkwargs = destructure(value)
-          kw = kwargs.empty? && vkwargs.empty? ? [] : [kwargs.merge(vkwargs)]
-
-          if block_given?
-            yield(*vargs, *args, *kw)
-          else
-            args[0].call(*vargs, *args.drop(1), *kw)
-          end
-        end
 
         # Does the same thing as #bind except it also wraps the value
         # in an instance of Either::Right monad. This allows for easier
@@ -90,14 +69,6 @@ module Dry
           bind(*args, &block).bind { self }
         end
 
-        # Ignores arguments and returns self. It exists to keep the interface
-        # identical to that of {Either::Left}.
-        #
-        # @return [Either::Right]
-        def or(*)
-          self
-        end
-
         # @return [String]
         def to_s
           "Right(#{value.inspect})"
@@ -109,18 +80,14 @@ module Dry
           Kernel.warn 'Right(nil) transformed to None' if value.nil?
           Dry::Monads::Maybe(value)
         end
-
-        private
-
-        def destructure(*args, **kwargs)
-          [args, kwargs]
-        end
       end
 
       # Represents a value that is in an incorrect state, i.e. something went wrong.
       #
       # @api public
       class Left < Either
+        include RightBiased::Left
+
         alias value left
 
         # @param left [Object] a value in an error state
@@ -139,22 +106,6 @@ module Dry
           false
         end
         alias success? right?
-
-        # Ignores the input parameter and returns self. It exists to keep the interface
-        # identical to that of {Either::Right}.
-        #
-        # @return [Either::Left]
-        def bind(*)
-          self
-        end
-
-        # Ignores the input parameter and returns self. It exists to keep the interface
-        # identical to that of {Either::Right}.
-        #
-        # @return [Either::Left]
-        def fmap(*)
-          self
-        end
 
         # Ignores the input parameter and returns self. It exists to keep the interface
         # identical to that of {Either::Right}.

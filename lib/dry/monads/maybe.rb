@@ -1,6 +1,6 @@
 require 'dry/equalizer'
 
-require_relative 'value_or'
+require 'dry/monads/right_biased'
 
 module Dry
   module Monads
@@ -43,36 +43,13 @@ module Dry
       #
       # @api public
       class Some < Maybe
-        include ValueOrPositive
+        include RightBiased::Right
 
         attr_reader :value
 
         def initialize(value)
           raise ArgumentError, 'nil cannot be some' if value.nil?
           @value = value
-        end
-
-        # Calls the passed in Proc object with value stored in self
-        # and returns the result.
-        #
-        # If proc is nil, it expects a block to be given and will yield to it.
-        #
-        # @example
-        #   Dry::Monads.Some(4).bind(&:succ) # => 5
-        #
-        # @param [Array<Object>] args arguments that will be passed to a block
-        #                             if one was given, otherwise the first
-        #                             value assumed to be a Proc (callable)
-        #                             object and the rest of args will be passed
-        #                             to this object along with the internal value
-        # @return [Object] result of calling proc or block on the internal value
-        def bind(*args)
-          if block_given?
-            yield(value, *args)
-          else
-            obj, *remaining = *args
-            obj.call(value, *remaining)
-          end
         end
 
         # Does the same thing as #bind except it also wraps the value
@@ -89,14 +66,6 @@ module Dry
           self.class.lift(bind(*args, &block))
         end
 
-        # Ignores arguments and returns self. It exists to keep the interface
-        # identical to that of {Maybe::None}.
-        #
-        # @return [Maybe::Some]
-        def or(*)
-          self
-        end
-
         # @return [String]
         def to_s
           "Some(#{value.inspect})"
@@ -108,7 +77,7 @@ module Dry
       #
       # @api public
       class None < Maybe
-        include ValueOrNegative
+        include RightBiased::Left
 
         @instance = new
         singleton_class.send(:attr_reader, :instance)
@@ -116,22 +85,6 @@ module Dry
         # @return [nil]
         def value
           nil
-        end
-
-        # Ignores arguments and returns self. It exists to keep the interface
-        # identical to that of {Maybe::Some}.
-        #
-        # @return [Maybe::None]
-        def bind(*)
-          self
-        end
-
-        # Ignores arguments and returns self. It exists to keep the interface
-        # identical to that of {Maybe::Some}.
-        #
-        # @return [Maybe::None]
-        def fmap(*)
-          self
         end
 
         # If a block is given passes internal value to it and returns the result,
