@@ -1,6 +1,7 @@
 require 'dry/monads/either'
 require 'dry/monads/maybe'
 require 'dry/monads/try'
+require 'dry/monads/list'
 
 module Dry
   # @api public
@@ -37,6 +38,12 @@ module Dry
     # @return [Either::Left]
     def Left(value)
       Either::Left.new(value)
+    end
+
+    # @param values [Array<Object>] list of values
+    # @return [List]
+    def [](*values)
+      List.new(values)
     end
   end
 end
