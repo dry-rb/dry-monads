@@ -56,19 +56,6 @@ module Dry
           Right.new(bind(*args, &block))
         end
 
-        # Does the same thing as #bind except it returns the original monad
-        # when the result is a Right.
-        #
-        # @example
-        #   Dry::Monads.Right(4).tee { Right('ok') } # => Right(4)
-        #   Dry::Monads.Right(4).tee { Left('fail') } # => Left('fail')
-        #
-        # @param [Array<Object>] args arguments will be transparently passed through to #bind
-        # @return [Either]
-        def tee(*args, &block)
-          bind(*args, &block).bind { self }
-        end
-
         # @return [String]
         def to_s
           "Right(#{value.inspect})"
@@ -106,14 +93,6 @@ module Dry
           false
         end
         alias success? right?
-
-        # Ignores the input parameter and returns self. It exists to keep the interface
-        # identical to that of {Either::Right}.
-        #
-        # @return [Either::Left]
-        def tee(*)
-          self
-        end
 
         # If a block is given passes internal value to it and returns the result,
         # otherwise simply returns the parameter val.

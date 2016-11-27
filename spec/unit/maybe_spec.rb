@@ -123,6 +123,16 @@ RSpec.describe(Dry::Monads::Maybe) do
 
       it { is_expected.to eq maybe::Some.new('foo') }
     end
+
+    describe '#tee' do
+      it 'passes through itself when the block returns a Right' do
+        expect(subject.tee(->(*) { maybe::Some.new('ignored') })).to be(subject)
+      end
+
+      it 'returns the block result when it is None' do
+        expect(subject.tee(->(*) { maybe::None.new })).to be_none
+      end
+    end
   end
 
   describe maybe::None do
@@ -210,6 +220,20 @@ RSpec.describe(Dry::Monads::Maybe) do
       let(:subject) { maybe::None.new.to_maybe }
 
       it { is_expected.to eq maybe::None.new }
+    end
+
+    describe '#tee' do
+      it 'accepts a proc and returns itself' do
+        expect(subject.tee(upcase)).to be subject
+      end
+
+      it 'accepts a block and returns itseld' do
+        expect(subject.tee { |s| s.upcase }).to be subject
+      end
+
+      it 'ignores arguments' do
+        expect(subject.tee(1, 2, 3) { fail }).to be subject
+      end
     end
   end
 end
