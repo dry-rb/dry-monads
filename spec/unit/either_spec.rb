@@ -160,7 +160,7 @@ RSpec.describe(Dry::Monads::Either) do
 
       describe '#bind' do
         it 'passed extra keywords to block along with value' do
-          pending 'FIXME: fails on JRuby for some reason' if defined? JRUBY_VERSION
+          pending 'Depends on https://github.com/jruby/jruby/issues/4319' if defined? JRUBY_VERSION
           result = subject.bind(:baz, quux: 'quux') do |value, baz, foo:, quux:|
             expect(value).to eql('bar' => 'bar')
             expect(baz).to eql(:baz)
@@ -173,7 +173,6 @@ RSpec.describe(Dry::Monads::Either) do
         end
 
         example 'keywords from value takes precedence' do
-          pending 'FIXME: fails on JRuby for some reason' if defined? JRUBY_VERSION
           result = subject.bind(foo: 'bar', bar: 'bar') do |foo:, bar:|
             expect(foo).to eql('foo')
             expect(bar).to eql('bar')
