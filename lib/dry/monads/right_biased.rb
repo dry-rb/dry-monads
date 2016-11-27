@@ -25,7 +25,8 @@ module Dry
           if block_given?
             yield(*vargs, *args, *kw)
           else
-            args[0].call(*vargs, *args.drop(1), *kw)
+            obj, *rest = args
+            obj.call(*vargs, *rest, *kw)
           end
         end
 
