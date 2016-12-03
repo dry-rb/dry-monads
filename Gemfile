@@ -8,7 +8,7 @@ group :test do
 end
 
 group :tools do
-  gem 'rubocop'
   gem 'byebug', platform: :mri
+  gem 'rubocop'
   gem 'pry'
 end
