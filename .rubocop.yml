@@ -2,8 +2,8 @@ inherit_from: .rubocop_todo.yml
 
 AllCops:
   Exclude:
-    - 'spec/integration/either_spec.rb'
     - 'vendor/**/*'
+    - 'spec/**/*'
 
 Style/Documentation:
   Enabled: false
@@ -29,15 +29,6 @@ Style/MultilineBlockChain:
 Style/GuardClause:
   Enabled: false
 
-Style/SymbolProc:
-  Exclude:
-    # This rule is broken in specs on purpose to make examples clearer
-    - 'spec/**/*'
-
-Style/SignalException:
-  Exclude:
-    - 'spec/**/*'
-
 Style/ModuleFunction:
   Enabled: false
 
@@ -58,7 +49,3 @@ Lint/Debugger:
 Lint/HandleExceptions:
   Exclude:
     - 'spec/spec_helper.rb'
-
-Security/JSONLoad:
-  Exclude:
-    - 'spec/**/*'
