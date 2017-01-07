@@ -5,7 +5,6 @@ cache: bundler
 bundler_args: --without benchmarks
 script:
   - bundle exec rake spec
-  - bundle exec rubocop
 after_success:
   # Send coverage report from the job #1 == current MRI release
   - '[ "${TRAVIS_JOB_NUMBER#*.}" = "1" ] && [ "$TRAVIS_BRANCH" = "master" ] && bundle exec codeclimate-test-reporter'
