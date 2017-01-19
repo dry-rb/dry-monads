@@ -58,6 +58,17 @@ RSpec.describe(Dry::Monads::Either) do
       end
     end
 
+    describe '#either' do
+      subject do
+        either::Right.new('Foo').either(
+          lambda { |v| v.downcase },
+          lambda { |v| v.upcase }
+        )
+      end
+
+      it { is_expected.to eq('FOO') }
+    end
+
     describe '#fmap' do
       it 'accepts a proc and lifts the result to either' do
         expect(subject.fmap(upcase)).to eql(upcased_subject)
@@ -218,6 +229,17 @@ RSpec.describe(Dry::Monads::Either) do
       it 'ignores extra arguments' do
         expect(subject.bind(1, 2, 3) { fail }).to be subject
       end
+    end
+
+    describe '#either' do
+      subject do
+        either::Left.new('Foo').either(
+          lambda { |v| v.downcase },
+          lambda { |v| v.upcase }
+        )
+      end
+
+      it { is_expected.to eq('foo') }
     end
 
     describe '#fmap' do

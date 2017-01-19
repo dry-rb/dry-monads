@@ -31,6 +31,13 @@ module Dry
           @right = right
         end
 
+        # Apply the second function to value.
+        #
+        # @api public
+        def either(_, f)
+          f.call(value)
+        end
+
         # Returns false
         def left?
           false
@@ -80,6 +87,13 @@ module Dry
         # @param left [Object] a value in an error state
         def initialize(left)
           @left = left
+        end
+
+        # Apply the first function to value.
+        #
+        # @api public
+        def either(f, _)
+          f.call(value)
         end
 
         # Returns true
