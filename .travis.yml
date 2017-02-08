@@ -13,23 +13,20 @@ rvm:
   - 2.3.3
   - 2.2.6
   - 2.1.10
-  - jruby-9.1.5.0
+  - jruby-9.1.7.0
   - ruby-head
-  - rbx-3
 env:
   global:
     - JRUBY_OPTS='--dev -J-Xmx1024M'
-before_install:
-  - gem update bundler
 matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    # Keep it until bundler issue resolved https://github.com/bundler/bundler/issues/5142
-    - rvm: rbx-3
   include:
     - rvm: jruby-head
-      before_install: gem install bundler --no-ri --no-rdoc
+      before_install: gem update bundler
+    - rvm: rbx-3
+      before_install: gem update bundler
 
 notifications:
   email:
