@@ -172,7 +172,6 @@ RSpec.describe(Dry::Monads::Either) do
 
       describe '#bind' do
         it 'passed extra keywords to block along with value' do
-          pending 'Depends on https://github.com/jruby/jruby/issues/4319. Expected to be fixed in 9.1.7.0' if defined? JRUBY_VERSION
           result = subject.bind(:baz, quux: 'quux') do |value, baz, foo:, quux:|
             expect(value).to eql('bar' => 'bar')
             expect(baz).to eql(:baz)
