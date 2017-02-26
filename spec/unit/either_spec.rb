@@ -305,4 +305,76 @@ RSpec.describe(Dry::Monads::Either) do
       end
     end
   end
+
+  describe '.traverse' do
+    context 'regular enumerable' do
+      it 'returns a Right-wrapped array of inner values if all values are Right' do
+        subject = [
+          either::Right.new(3),
+          either::Right.new(2),
+          either::Right.new(1),
+        ]
+        expect(
+          either.traverse(subject) {|v| v + 1 }
+        ).to eq(
+          either::Right.new([4,3,2])
+        )
+      end
+
+      it 'returns the first Left in array if any are present' do
+        subject = [
+          either::Right.new(3),
+          either::Left.new("two"),
+          either::Left.new("one"),
+        ]
+        expect(
+          either.traverse(subject) {|v| v + 1 }
+        ).to eq(
+          either::Left.new("two")
+        )
+      end
+    end
+
+    context 'lazy + effectful enumerable' do
+      it 'returns a Right-wrapped array of inner values if all values are Right' do
+        subject = Class.new do
+          include Enumerable
+          attr_accessor :exhausted
+          def each
+            raise "Exhausted!" if self.exhausted
+            either = Dry::Monads::Either
+            yield either::Right.new(3)
+            yield either::Right.new(2)
+            yield either::Right.new(1)
+            self.exhausted = true
+          end
+        end
+        expect(
+          either.traverse(subject.new) {|v| v + 1 }
+        ).to eq(
+          either::Right.new(subject.new.map {|v| v.value + 1})
+        )
+      end
+
+      it 'returns the first Left in array if any are present' do
+        subject = Class.new do
+          include Enumerable
+          attr_accessor :exhausted
+          def each
+            raise "Exhausted!" if self.exhausted
+            either = Dry::Monads::Either
+            yield either::Right.new(3)
+            yield either::Left.new("two")
+            yield either::Left.new("one")
+            self.exhausted = true
+          end
+        end
+        expect(
+          either.traverse(subject.new) {|v| v + 1 }
+        ).to eq(
+          either::Left.new("two")
+        )
+      end
+    end
+  end
 end
