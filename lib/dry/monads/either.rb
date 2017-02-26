@@ -11,6 +11,37 @@ module Dry
       include Dry::Equalizer(:right, :left)
       attr_reader :right, :left
 
+      # Turns an enumerable of Either values into a single Either-wrapped
+      # numerable, each element transformed by a block, eg.
+      #
+      # @example
+      #   traverse([Right(1), Right(2), Right(3)]) { |x| x * 2 }
+      #   => Right([2,4,6])
+      #
+      # @example
+      #   traverse([Right(1), Left("1st"), Left("2nd")]) { |x| x * 2 }
+      #   => Left("No")
+      #
+      # @param enumerable [Enumerable<Either>] the array of Either values
+      # @return [Either::Right, Either::Left]
+      # @api public
+      def self.traverse(enumerable, &block)
+        result = enumerable.map { |item|
+          raise TypeError unless item.is_a? Either
+          if item.left?
+            break item
+          else
+            value = item.value
+            block ? block.call(value) : value
+          end
+        }
+        if result.is_a?(Either) && result.left?
+          result
+        else
+          Right.new(result)
+        end
+      end
+
       # Returns self, added to keep the interface compatible with other monads.
       #
       # @return [Either::Right, Either::Left]
