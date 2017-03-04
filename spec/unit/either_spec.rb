@@ -1,13 +1,16 @@
 RSpec.describe(Dry::Monads::Either) do
   either = described_class
   maybe = Dry::Monads::Maybe
+  some = maybe::Some.method(:new)
+  left = either::Left.method(:new)
+  right = either::Right.method(:new)
 
   let(:upcase) { :upcase.to_proc }
 
   describe either::Right do
-    subject { either::Right.new('foo') }
+    subject { right['foo'] }
 
-    let(:upcased_subject) { either::Right.new('FOO') }
+    let(:upcased_subject) { right['FOO'] }
 
     it { is_expected.to be_right }
     it { is_expected.to be_success }
@@ -16,7 +19,7 @@ RSpec.describe(Dry::Monads::Either) do
     it { is_expected.not_to be_failure }
 
     it { is_expected.to eql(described_class.new('foo')) }
-    it { is_expected.not_to eql(either::Left.new('foo')) }
+    it { is_expected.not_to eql(left['foo']) }
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Right("foo")')
@@ -117,6 +120,20 @@ RSpec.describe(Dry::Monads::Either) do
       end
     end
 
+    describe '#or_fmap' do
+      it 'accepts value as an alternative' do
+        expect(subject.or_fmap('baz')).to be(subject)
+      end
+
+      it 'accepts block as an alternative' do
+        expect(subject.or_fmap { fail }).to be(subject)
+      end
+
+      it 'ignores all values' do
+        expect(subject.or_fmap(:foo, :bar, :baz) { fail }).to be(subject)
+      end
+    end
+
     describe '#to_either' do
       subject { either::Right.new('foo').to_either }
 
@@ -129,7 +146,7 @@ RSpec.describe(Dry::Monads::Either) do
       subject { either::Right.new('foo').to_maybe }
 
       it { is_expected.to be_an_instance_of maybe::Some }
-      it { is_expected.to eql(maybe::Some.new('foo')) }
+      it { is_expected.to eql(some['foo']) }
 
       context 'value is nil' do
         around { |ex| suppress_warnings { ex.run } }
@@ -273,6 +290,27 @@ RSpec.describe(Dry::Monads::Either) do
         end
 
         expect(result).to eql('baz')
+      end
+    end
+
+    describe '#or_fmap' do
+      it 'maps an alternative' do
+        expect(subject.or_fmap('baz')).to eql(right['baz'])
+      end
+
+      it 'accepts a block' do
+        expect(subject.or_fmap { 'baz' }).to eql(right['baz'])
+      end
+
+      it 'passes extra arguments to a block' do
+        result = subject.or_fmap(:foo, :bar) do |value, c1, c2|
+          expect(value).to eql('bar')
+          expect(c1).to eql(:foo)
+          expect(c2).to eql(:bar)
+          'baz'
+        end
+
+        expect(result).to eql(right['baz'])
       end
     end
 

@@ -94,7 +94,8 @@ module Dry
         #   Dry::Monads.None.or('no value') # => "no value"
         #   Dry::Monads.None.or { Time.now } # => current time
         #
-        # @param val [Object, nil]
+        # @param [Array<Object>] args if no block given the first argument will be returned
+        #                             otherwise arguments will be transparently passed to the block
         # @return [Object]
         def or(*args)
           if block_given?
@@ -102,6 +103,20 @@ module Dry
           else
             args[0]
           end
+        end
+
+        # A lifted version of `#or`. Applies `Maybe.lift` to the passed value or
+        # to the block result.
+        #
+        # @example
+        #   Dry::Monads.None.or_fmap('no value') # => Some("no value")
+        #   Dry::Monads.None.or_fmap { Time.now } # => Some(current time)
+        #
+        # @param [Array<Object>] args arguments will be passed to the underlying `#or` call
+        # @return [Maybe::Some, Maybe::None] Lifted `#or` result, i.e. nil will be mapped to None,
+        #                                    other values will be wrapped with Some
+        def or_fmap(*args, &block)
+          Maybe.lift(self.or(*args, &block))
         end
 
         # @return [String]

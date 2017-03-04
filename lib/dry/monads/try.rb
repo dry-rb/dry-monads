@@ -41,6 +41,11 @@ module Dry
         include Dry::Equalizer(:value, :catchable)
         include RightBiased::Right
 
+        # Using #or is not a good practice, you should process exceptions
+        # explicitly hence we don't offer an easy way to ignore them.
+        # Use Try#to_maybe if you're sure you need `#or` for `Try`.
+        undef :or
+
         attr_reader :catchable
 
         # @param exceptions [Array<Exception>] list of exceptions to be rescued
@@ -116,6 +121,7 @@ module Dry
       class Failure < Try
         include Dry::Equalizer(:exception)
         include RightBiased::Left
+        undef :or
 
         # @param exception [Exception]
         def initialize(exception)

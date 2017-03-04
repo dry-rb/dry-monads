@@ -59,6 +59,14 @@ module Dry
           self
         end
 
+        # A lifted version of `#or`. For {RightBiased::Right} acts in the same way as `#or`,
+        # that is returns itselt.
+        #
+        # @return [RightBiased::Right]
+        def or_fmap(*)
+          self
+        end
+
         # Returns value. It exists to keep the interface identical to that of RightBiased::Left
         #
         # @return [Object]
@@ -110,6 +118,17 @@ module Dry
         #
         # @return [Object]
         def or(*)
+          raise NotImplementedError
+        end
+
+        # A lifted version of `#or`. This is basically `#or` + `#fmap`.
+        #
+        # @example
+        #   Dry::Monads.None.or('no value') # => Some("no value")
+        #   Dry::Monads.None.or { Time.now } # => Some(current time)
+        #
+        # @return [RightBiased::Left, RightBiased::Right]
+        def or_fmap(*)
           raise NotImplementedError
         end
 

@@ -157,6 +157,18 @@ module Dry
           end
         end
 
+        # A lifted version of `#or`. Wraps the passed value or the block result with Either::Right.
+        #
+        # @example
+        #   Dry::Monads.Left.new('no value').or_fmap('value') # => Right("value")
+        #   Dry::Monads.Left.new('no value').or_fmap { 'value' } # => Right("value")
+        #
+        # @param [Array<Object>] args arguments will be passed to the underlying `#or` call
+        # @return [Either::Right] Wrapped value
+        def or_fmap(*args, &block)
+          Right.new(self.or(*args, &block))
+        end
+
         # @return [String]
         def to_s
           "Left(#{value.inspect})"

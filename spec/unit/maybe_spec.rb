@@ -1,5 +1,7 @@
 RSpec.describe(Dry::Monads::Maybe) do
   maybe = described_class
+  some = maybe::Some.method(:new)
+  none = maybe::None.new
 
   let(:upcase) { :upcase.to_proc }
 
@@ -12,7 +14,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     it { is_expected.not_to be_none }
 
     it { is_expected.to eql(described_class.new('foo')) }
-    it { is_expected.not_to eql(maybe::None.new) }
+    it { is_expected.not_to eql(none) }
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Some("foo")')
@@ -77,7 +79,7 @@ RSpec.describe(Dry::Monads::Maybe) do
           true
         end
 
-        expect(result).to eql(maybe::Some.new(true))
+        expect(result).to eql(some[true])
       end
 
       it 'passes extra arguments to a proc' do
@@ -90,13 +92,13 @@ RSpec.describe(Dry::Monads::Maybe) do
 
         result = subject.fmap(proc, :foo, :bar)
 
-        expect(result).to eql(maybe::Some.new(true))
+        expect(result).to eql(some[true])
       end
     end
 
     describe '#or' do
       it 'accepts a value as an alternative' do
-        expect(subject.or('baz')).to be(subject)
+        expect(subject.or(some['baz'])).to be(subject)
       end
 
       it 'accepts a block as an alternative' do
@@ -105,6 +107,20 @@ RSpec.describe(Dry::Monads::Maybe) do
 
       it 'ignores all values' do
         expect(subject.or(:foo, :bar, :baz) { fail }).to be(subject)
+      end
+    end
+
+    describe '#or_fmap' do
+      it 'accepts a value as an alternative' do
+        expect(subject.or_fmap('baz')).to be(subject)
+      end
+
+      it 'accepts a block as an alternative' do
+        expect(subject.or_fmap { fail }).to be(subject)
+      end
+
+      it 'ignores all values' do
+        expect(subject.or_fmap(:foo, :bar, :baz) { fail }).to be(subject)
       end
     end
 
@@ -119,18 +135,18 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     describe '#to_maybe' do
-      let(:subject) { maybe::Some.new('foo').to_maybe }
+      let(:subject) { some['foo'].to_maybe }
 
-      it { is_expected.to eq maybe::Some.new('foo') }
+      it { is_expected.to eql some['foo'] }
     end
 
     describe '#tee' do
       it 'passes through itself when the block returns a Right' do
-        expect(subject.tee(->(*) { maybe::Some.new('ignored') })).to be(subject)
+        expect(subject.tee(->(*) { some['ignored'] })).to be(subject)
       end
 
       it 'returns the block result when it is None' do
-        expect(subject.tee(->(*) { maybe::None.new })).to be_none
+        expect(subject.tee(->(*) { none })).to be_none
       end
     end
   end
@@ -142,7 +158,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     it { is_expected.to be_none }
 
     it { is_expected.to eql(described_class.new) }
-    it { is_expected.not_to eql(maybe::Some.new('foo')) }
+    it { is_expected.not_to eql(some['foo']) }
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('None')
@@ -187,11 +203,11 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     describe '#or' do
-      it 'accepts value as an alternative' do
+      it 'accepts a value as an alternative' do
         expect(subject.or('baz')).to eql('baz')
       end
 
-      it 'accepts block as an alternative' do
+      it 'accepts a block as an alternative' do
         expect(subject.or { 'baz' }).to eql('baz')
       end
 
@@ -206,6 +222,30 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
+    describe '#or_fmap' do
+      it 'maps an alternative' do
+        expect(subject.or_fmap('baz')).to eql(some['baz'])
+      end
+
+      it 'accepts a block' do
+        expect(subject.or_fmap { 'baz' }).to eql(some['baz'])
+      end
+
+      it 'passes extra arguments to a block' do
+        result = subject.or_fmap(:foo, :bar) do |c1, c2|
+          expect(c1).to eql(:foo)
+          expect(c2).to eql(:bar)
+          'baz'
+        end
+
+        expect(result).to eql(some['baz'])
+      end
+
+      it 'tranforms nil to None' do
+        expect(subject.or_fmap(nil)).to eql(none)
+      end
+    end
+
     describe '#value_or' do
       it 'returns passed value' do
         expect(subject.value_or('baz')).to eql('baz')
@@ -217,9 +257,9 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     describe '#to_maybe' do
-      let(:subject) { maybe::None.new.to_maybe }
+      let(:subject) { none.to_maybe }
 
-      it { is_expected.to eq maybe::None.new }
+      it { is_expected.to eql maybe::None.new }
     end
 
     describe '#tee' do
