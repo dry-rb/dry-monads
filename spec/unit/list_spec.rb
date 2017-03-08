@@ -57,6 +57,10 @@ RSpec.describe(Dry::Monads::List) do
     it 'concatenates two lists' do
       expect(subject).to eql(list[1, 2] + list[3])
     end
+
+    it 'coerces an argument' do
+      expect(subject + [4, 5]).to eql(list[1, 2, 3, 4, 5])
+    end
   end
 
   describe '#to_a' do

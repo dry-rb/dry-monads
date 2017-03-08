@@ -93,7 +93,7 @@ module Dry
       # @param [List] other Other list
       # @return [List]
       def +(other)
-        List.new(value + other.value)
+        List.new(to_ary + other.to_ary)
       end
 
       # Returns a string representation of the list.
