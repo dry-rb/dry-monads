@@ -50,6 +50,11 @@ module Dry
         List.new(value + other.value)
       end
 
+      def inspect
+        "List#{ value.inspect }"
+      end
+      alias_method :to_s, :inspect
+
       module Mixin
         List = List
         L = List
