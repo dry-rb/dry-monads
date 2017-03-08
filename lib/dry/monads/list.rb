@@ -55,6 +55,9 @@ module Dry
       end
       alias_method :to_s, :inspect
 
+      alias_method :to_ary, :value
+      alias_method :to_a, :to_ary
+
       module Mixin
         List = List
         L = List
