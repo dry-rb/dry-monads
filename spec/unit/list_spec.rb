@@ -3,6 +3,28 @@ RSpec.describe(Dry::Monads::List) do
 
   subject { list[1, 2, 3] }
 
+  describe '.coerce' do
+    let(:array_like) do
+      Object.new.tap do |o|
+        def o.to_ary
+          %w(a b c)
+        end
+      end
+    end
+
+    it 'coerces nil to an empty list' do
+      expect(list.coerce(nil)).to eql(list.new([]))
+    end
+
+    it 'coerces an array' do
+      expect(list.coerce([1, 2])).to eql(list.new([1, 2]))
+    end
+
+    it 'coerces any array-like object' do
+      expect(list.coerce(array_like)).to eql(list.new(%w(a b c)))
+    end
+  end
+
   describe '#inspect' do
     it 'dumps list to a string' do
       expect(subject.inspect).to eql('List[1, 2, 3]')

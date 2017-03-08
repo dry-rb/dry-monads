@@ -8,13 +8,10 @@ module Dry
       end
 
       def self.coerce(value)
-        case value
-        when nil
+        if value.nil?
           List.new([])
-        when List
-          value
-        when Array
-          List.new(value)
+        elsif value.respond_to?(:to_ary)
+          List.new(value.to_ary)
         else
           raise ArgumentError, "Can't coerce #{value.inspect} to List"
         end
