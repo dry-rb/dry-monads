@@ -96,4 +96,14 @@ RSpec.describe(Dry::Monads::List) do
       expect(subject.fmap(-> x { x * 2 })).to eql(list[2, 4, 6])
     end
   end
+
+  describe '#map' do
+    it 'maps a block over a list' do
+      expect(subject.map { |x| x * 2 }).to eql(list[2, 4, 6])
+    end
+
+    it 'requires a block' do
+      expect { subject.map }.to raise_error(ArgumentError)
+    end
+  end
 end

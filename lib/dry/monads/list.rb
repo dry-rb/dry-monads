@@ -73,6 +73,18 @@ module Dry
         end
       end
 
+      # Maps a block over the list. Acts as `Array#map`.
+      # Requires a block.
+      #
+      # @return [List]
+      def map(&block)
+        if block
+          fmap(block)
+        else
+          raise ArgumentError, "Missing block"
+        end
+      end
+
       # Concatenates two lists.
       #
       # @example
