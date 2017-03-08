@@ -1,4 +1,5 @@
 require 'dry/equalizer'
+require 'dry/monads/maybe'
 
 module Dry
   module Monads
@@ -110,6 +111,20 @@ module Dry
       # Coerces to an array
       alias_method :to_ary, :value
       alias_method :to_a, :to_ary
+
+      # Returns first element wrapped with a `Maybe`.
+      #
+      # @return [Maybe<Object>]
+      def first
+        Maybe.lift(value.first)
+      end
+
+      # Returns last element wrapped with a `Maybe`.
+      #
+      # @return [Maybe<Object>]
+      def last
+        Maybe.lift(value.last)
+      end
 
       # Empty list
       EMPTY = List.new([].freeze).freeze

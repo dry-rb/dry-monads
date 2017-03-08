@@ -1,7 +1,9 @@
 RSpec.describe(Dry::Monads::List) do
   list = described_class
+  maybe = Dry::Monads::Maybe
 
   subject { list[1, 2, 3] }
+  let(:empty_list) { list[] }
 
   describe '.coerce' do
     let(:array_like) do
@@ -108,6 +110,26 @@ RSpec.describe(Dry::Monads::List) do
 
     it 'requires a block' do
       expect { subject.map }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe '#first' do
+    it 'returns Some for non-empty list' do
+      expect(subject.first).to eql(maybe::Some.new(1))
+    end
+
+    it 'returns None for an empty list' do
+      expect(empty_list.first).to eql(maybe::None.new)
+    end
+  end
+
+  describe '#last' do
+    it 'returns Some for non-empty list' do
+      expect(subject.last).to eql(maybe::Some.new(3))
+    end
+
+    it 'returns None for an empty list' do
+      expect(empty_list.last).to eql(maybe::None.new)
     end
   end
 end
