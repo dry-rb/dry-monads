@@ -174,4 +174,44 @@ RSpec.describe(Dry::Monads::List) do
       expect(subject.foldr(0) { |x, y| x - y }).to eql(2)
     end
   end
+
+  describe '#empty?' do
+    it 'returns false for a non-empty list' do
+      expect(subject).not_to be_empty
+    end
+
+    it 'returns true for an empty list' do
+      expect(empty_list).to be_empty # what a surprise
+    end
+  end
+
+  describe '#sort' do
+    it 'sorts a list' do
+      expect(list[3, 2, 1].sort).to eql(subject)
+    end
+  end
+
+  describe '#filter' do
+    it 'filters with a block' do
+      expect(subject.filter(&:odd?)).to eql(list[1, 3])
+    end
+  end
+
+  describe '#select' do
+    it 'is an alias for filter' do
+      expect(subject.select(&:odd?)).to eql(list[1, 3])
+    end
+  end
+
+  describe '#size' do
+    it 'returns list size' do
+      expect(subject.size).to eql(3)
+    end
+  end
+
+  describe '#reverse' do
+    it 'reverses the list' do
+      expect(subject.reverse).to eql(list[3, 2, 1])
+    end
+  end
 end

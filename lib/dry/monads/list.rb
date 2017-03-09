@@ -145,6 +145,48 @@ module Dry
       end
       alias_method :foldr, :fold_right
 
+      # Whether the list is empty.
+      #
+      # @return [TrueClass, FalseClass]
+      def empty?
+        value.empty?
+      end
+
+      # Sorts the list.
+      #
+      # @return [List]
+      def sort
+        coerce(value.sort)
+      end
+
+      # Filters elements with a block
+      #
+      # @return [List]
+      def filter
+        coerce(value.select { |e| yield(e) })
+      end
+      alias_method :select, :filter
+
+      # List size.
+      #
+      # @return [Integer]
+      def size
+        value.size
+      end
+
+      # Reverses the list.
+      #
+      # @return [List]
+      def reverse
+        coerce(value.reverse)
+      end
+
+      private
+
+      def coerce(other)
+        self.class.coerce(other)
+      end
+
       # Empty list
       EMPTY = List.new([].freeze).freeze
 
