@@ -126,6 +126,25 @@ module Dry
         Maybe.lift(value.last)
       end
 
+      # Folds the list from the left.
+      #
+      # @param [Object] initial Initial value
+      # @return [Object]
+      def fold_left(initial)
+        value.reduce(initial) { |acc, v| yield(acc, v) }
+      end
+      alias_method :foldl, :fold_left
+      alias_method :reduce, :fold_left
+
+      # Folds the list from the right.
+      #
+      # @param [Object] initial Initial value
+      # @return [Object]
+      def fold_right(initial)
+        value.reverse.reduce(initial) { |a, b| yield(b, a) }
+      end
+      alias_method :foldr, :fold_right
+
       # Empty list
       EMPTY = List.new([].freeze).freeze
 

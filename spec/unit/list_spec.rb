@@ -132,4 +132,46 @@ RSpec.describe(Dry::Monads::List) do
       expect(empty_list.last).to eql(maybe::None.new)
     end
   end
+
+  describe '#fold_left' do
+    it 'returns initial value for the empty list' do
+      expect(empty_list.fold_left(100) { fail }).to eql(100)
+    end
+
+    it 'folds from the left' do
+      expect(subject.fold_left(0) { |x, y| x - y }).to eql(-6)
+    end
+  end
+
+  describe '#foldl' do
+    it 'is an ailas for fold_left' do
+      expect(subject.foldl(0) { |x, y| x - y }).to eql(-6)
+    end
+  end
+
+  describe '#reduce' do
+    it 'is an ailas for fold_left' do
+      expect(subject.reduce(0) { |x, y| x - y }).to eql(-6)
+    end
+
+    it 'acts as Array#reduce' do
+      expect(subject.reduce(0) { |x, y| x - y }).to eql([1, 2, 3].reduce(0) { |x, y| x - y })
+    end
+  end
+
+  describe '#fold_right' do
+    it 'returns initial value for the empty list' do
+      expect(empty_list.fold_right(100) { fail }).to eql(100)
+    end
+
+    it 'folds from the right' do
+      expect(subject.fold_right(0) { |x, y| x - y }).to eql(2)
+    end
+  end
+
+  describe '#foldr' do
+    it 'is an ailas for fold_right' do
+      expect(subject.foldr(0) { |x, y| x - y }).to eql(2)
+    end
+  end
 end
