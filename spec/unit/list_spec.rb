@@ -1,6 +1,8 @@
 RSpec.describe(Dry::Monads::List) do
   list = described_class
   maybe = Dry::Monads::Maybe
+  some = maybe::Some.method(:new)
+  none = maybe::None.new
 
   subject { list[1, 2, 3] }
   let(:empty_list) { list[] }
@@ -114,22 +116,22 @@ RSpec.describe(Dry::Monads::List) do
   end
 
   describe '#first' do
-    it 'returns Some for non-empty list' do
-      expect(subject.first).to eql(maybe::Some.new(1))
+    it 'returns first value for non-empty list' do
+      expect(subject.first).to eql(1)
     end
 
-    it 'returns None for an empty list' do
-      expect(empty_list.first).to eql(maybe::None.new)
+    it 'returns nil for an empty list' do
+      expect(empty_list.first).to be_nil
     end
   end
 
   describe '#last' do
-    it 'returns Some for non-empty list' do
-      expect(subject.last).to eql(maybe::Some.new(3))
+    it 'returns value for non-empty list' do
+      expect(subject.last).to eql(3)
     end
 
-    it 'returns None for an empty list' do
-      expect(empty_list.last).to eql(maybe::None.new)
+    it 'returns nil for an empty list' do
+      expect(empty_list.last).to be_nil
     end
   end
 
@@ -212,6 +214,30 @@ RSpec.describe(Dry::Monads::List) do
   describe '#reverse' do
     it 'reverses the list' do
       expect(subject.reverse).to eql(list[3, 2, 1])
+    end
+  end
+
+  describe '#head' do
+    it 'returns the first element' do
+      expect(subject.head).to eql(some[1])
+    end
+
+    it 'returns None for an empty list' do
+      expect(empty_list.head).to eql(none)
+    end
+  end
+
+  describe '#tail' do
+    it 'drop the first element' do
+      expect(subject.tail).to eql(list[2, 3])
+    end
+
+    it 'returns an empty list for a list with one item' do
+      expect(list[1].tail).to eql(empty_list)
+    end
+
+    it 'returns an empty list for an empty_list' do
+      expect(empty_list.tail).to eql(empty_list)
     end
   end
 end

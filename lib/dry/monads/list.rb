@@ -6,7 +6,7 @@ module Dry
     class List
       # Builds a list.
       #
-      # @param [Array<Object>] values List elements
+      # @param values [Array<Object>] List elements
       # @return [List]
       def self.[](*values)
         new(values)
@@ -45,7 +45,7 @@ module Dry
       #   Dry::Monads::List[1, 2].bind { |x| [x + 1] } # => List[2, 3]
       #   Dry::Monads::List[1, 2].bind(-> x { [x, x + 1] }) # => List[1, 2, 2, 3]
       #
-      # @param [Array<Object>] args arguments will be passed to the block or proc
+      # @param args [Array<Object>] arguments will be passed to the block or proc
       # @return [List]
       def bind(*args)
         if block_given?
@@ -63,7 +63,7 @@ module Dry
       # @example
       #   Dry::Monads::List[1, 2].fmap { |x| x + 1 } # => List[2, 3]
       #
-      # @param [Array<Object>] args arguments will be passed to the block or proc
+      # @param args [Array<Object>] arguments will be passed to the block or proc
       # @return [List]
       def fmap(*args)
         if block_given?
@@ -91,7 +91,7 @@ module Dry
       # @example
       #   Dry::Monads::List[1, 2] + Dry::Monads::List[3, 4] # => List[1, 2, 3, 4]
       #
-      # @param [List] other Other list
+      # @param other [List] Other list
       # @return [List]
       def +(other)
         List.new(to_ary + other.to_ary)
@@ -112,23 +112,23 @@ module Dry
       alias_method :to_ary, :value
       alias_method :to_a, :to_ary
 
-      # Returns first element wrapped with a `Maybe`.
+      # Returns the first element.
       #
-      # @return [Maybe<Object>]
+      # @return [Object]
       def first
-        Maybe.lift(value.first)
+        value.first
       end
 
-      # Returns last element wrapped with a `Maybe`.
+      # Returns the last element.
       #
-      # @return [Maybe<Object>]
+      # @return [Object]
       def last
-        Maybe.lift(value.last)
+        value.last
       end
 
       # Folds the list from the left.
       #
-      # @param [Object] initial Initial value
+      # @param initial [Object] Initial value
       # @return [Object]
       def fold_left(initial)
         value.reduce(initial) { |acc, v| yield(acc, v) }
@@ -138,7 +138,7 @@ module Dry
 
       # Folds the list from the right.
       #
-      # @param [Object] initial Initial value
+      # @param initial [Object] Initial value
       # @return [Object]
       def fold_right(initial)
         value.reverse.reduce(initial) { |a, b| yield(b, a) }
@@ -179,6 +179,20 @@ module Dry
       # @return [List]
       def reverse
         coerce(value.reverse)
+      end
+
+      # Returns the first element wrapped with a `Maybe`.
+      #
+      # @return [Maybe<Object>]
+      def head
+        Maybe.coerce(value.first)
+      end
+
+      # Returns list's tail.
+      #
+      # @return [List]
+      def tail
+        coerce(value.drop(1))
       end
 
       private

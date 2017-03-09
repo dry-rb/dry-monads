@@ -88,7 +88,7 @@ module Dry
         # @example
         #   Dry::Monads.Right(4).fmap(&:succ).fmap(->(n) { n**2 }) # => Right(25)
         #
-        # @param [Array<Object>] args arguments will be transparently passed through to #bind
+        # @param args [Array<Object>] arguments will be transparently passed through to #bind
         # @return [Either::Right]
         def fmap(*args, &block)
           Right.new(bind(*args, &block))
@@ -145,7 +145,7 @@ module Dry
         # @example
         #   Dry::Monads.Left(ArgumentError.new('error message')).or(&:message) # => "error message"
         #
-        # @param [Array<Object>] args arguments that will be passed to a block
+        # @param args [Array<Object>] arguments that will be passed to a block
         #                             if one was given, otherwise the first
         #                             value will be returned
         # @return [Object]
@@ -163,7 +163,7 @@ module Dry
         #   Dry::Monads.Left.new('no value').or_fmap('value') # => Right("value")
         #   Dry::Monads.Left.new('no value').or_fmap { 'value' } # => Right("value")
         #
-        # @param [Array<Object>] args arguments will be passed to the underlying `#or` call
+        # @param args [Array<Object>] arguments will be passed to the underlying `#or` call
         # @return [Either::Right] Wrapped value
         def or_fmap(*args, &block)
           Right.new(self.or(*args, &block))

@@ -68,7 +68,7 @@ module Dry
         #   success.bind(->(n) { n / 2 }) # => 5
         #   success.bind { |n| n / 0 } # => Try::Failure(ZeroDivisionError: divided by 0)
         #
-        # @param [Array<Object>] args arguments that will be passed to a block
+        # @param args [Array<Object>] arguments that will be passed to a block
         #                             if one was given, otherwise the first
         #                             value assumed to be a Proc (callable)
         #                             object and the rest of args will be passed
@@ -89,7 +89,7 @@ module Dry
         #   success.fmap(&:succ).fmap(&:succ).value # => 12
         #   success.fmap(&:succ).fmap { |n| n / 0 }.fmap(&:succ).value # => nil
         #
-        # @param [Array<Object>] args extra arguments for the block, arguments are being processes
+        # @param args [Array<Object>] extra arguments for the block, arguments are being processes
         #                             just as in #bind
         # @return [Try::Success, Try::Failure]
         def fmap(*args, &block)
