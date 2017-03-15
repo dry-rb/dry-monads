@@ -1,6 +1,7 @@
 require 'dry/equalizer'
 
 require 'dry/monads/right_biased'
+require 'dry/monads/transformer'
 
 module Dry
   module Monads
@@ -9,6 +10,8 @@ module Dry
     # @api public
     class Either
       include Dry::Equalizer(:right, :left)
+      include Transformer
+
       attr_reader :right, :left
 
       # Turns an enumerable of Either values into a single Either-wrapped

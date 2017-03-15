@@ -1,6 +1,7 @@
 require 'dry/equalizer'
 
 require 'dry/monads/right_biased'
+require 'dry/monads/transformer'
 
 module Dry
   module Monads
@@ -9,6 +10,7 @@ module Dry
     # @api public
     class Maybe
       include Dry::Equalizer(:value)
+      include Transformer
 
       class << self
         # Lifts the given value into Maybe::None or Maybe::Some monad.

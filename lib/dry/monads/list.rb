@@ -1,5 +1,6 @@
 require 'dry/equalizer'
 require 'dry/monads/maybe'
+require 'dry/monads/transformer'
 
 module Dry
   module Monads
@@ -27,6 +28,7 @@ module Dry
       end
 
       include Dry::Equalizer(:value)
+      include Transformer
 
       # Internal array value
       attr_reader :value
