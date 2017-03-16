@@ -12,3 +12,5 @@ M = Dry::Monads
 require 'pry'
 
 binding.pry
+
+p
