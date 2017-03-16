@@ -39,11 +39,5 @@ module Dry
     def Left(value)
       Either::Left.new(value)
     end
-
-    # @param values [Array<Object>] list of values
-    # @return [List]
-    def [](*values)
-      List.new(values)
-    end
   end
 end
