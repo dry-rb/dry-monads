@@ -102,4 +102,17 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
   end
+
+  describe 'marshal serialization' do
+    let(:dumped_some) { Marshal.dump(some) }
+    let(:dumped_none) { Marshal.dump(none) }
+
+    example 'serializing ”some”' do
+      expect(Marshal.load(dumped_some)).to eql(some)
+    end
+
+    example 'serializing ”none”' do
+      expect(Marshal.load(dumped_none)).to eql(none)
+    end
+  end
 end
