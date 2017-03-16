@@ -13,7 +13,7 @@ module Dry
       include Transformer
 
       class << self
-        # Lifts the given value into Maybe::None or Maybe::Some monad.
+        # Wraps the given value with into a Maybe object.
         #
         # @param value [Object] the value to be stored in the monad
         # @return [Maybe::Some, Maybe::None]
@@ -28,8 +28,8 @@ module Dry
 
         # Wraps the given value with `Some`.
         #
-        # @param value [Object] the value to be stored in the monad
-        # @return [Maybe::Some, Maybe::None]
+        # @param value [Object] the value to be stored inside Some
+        # @return [Maybe::Some]
         def pure(value)
           Some.new(value)
         end
@@ -50,6 +50,14 @@ module Dry
       # @return [Maybe::Some, Maybe::None]
       def to_maybe
         self
+      end
+
+      # Returns the Maybe monad.
+      # This is how we're doing polymorphism in Ruby 😕
+      #
+      # @return [Monad]
+      def monad
+        Maybe
       end
 
       # Represents a value that is present, i.e. not nil.

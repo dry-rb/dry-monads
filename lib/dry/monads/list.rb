@@ -5,37 +5,49 @@ require 'dry/monads/transformer'
 module Dry
   module Monads
     class List
-      # Builds a list.
-      #
-      # @param values [Array<Object>] List elements
-      # @return [List]
-      def self.[](*values)
-        new(values)
-      end
+      class << self
+        # Builds a list.
+        #
+        # @param values [Array<Object>] List elements
+        # @return [List]
+        def [](*values)
+          new(values)
+        end
 
-      # Coerces a value to a list. `nil` will be coerced to an empty list.
-      #
-      # @param [Object] value Value
-      # @return [List]
-      def self.coerce(value)
-        if value.nil?
-          List.new([])
-        elsif value.respond_to?(:to_ary)
-          List.new(value.to_ary)
-        else
-          raise ArgumentError, "Can't coerce #{value.inspect} to List"
+        # Coerces a value to a list. `nil` will be coerced to an empty list.
+        #
+        # @param value [Object] Value
+        # @param type [Monad] Embedded monad type (used in case of list of monadic values)
+        # @return [List]
+        def coerce(value, type = nil)
+          if value.nil?
+            List.new([], type)
+          elsif value.respond_to?(:to_ary)
+            List.new(value.to_ary, type)
+          else
+            raise ArgumentError, "Can't coerce #{value.inspect} to List"
+          end
+        end
+
+        # Wraps a value with a list.
+        #
+        # @param value [Object] any object
+        # @return [List]
+        def pure(value, type = nil)
+          new([value], type)
         end
       end
 
-      include Dry::Equalizer(:value)
+      include Dry::Equalizer(:value, :type)
       include Transformer
 
       # Internal array value
-      attr_reader :value
+      attr_reader :value, :type
 
       # @api private
-      def initialize(value)
+      def initialize(value, type = nil)
         @value = value
+        @type = type
       end
 
       # Lifts a block/proc and runs it against each member of the list.
@@ -51,10 +63,10 @@ module Dry
       # @return [List]
       def bind(*args)
         if block_given?
-          List.coerce(value.map { |v| yield(v, *args) }.reduce(:+))
+          List.coerce(value.map { |v| yield(v, *args) }.reduce([], &:+))
         else
           obj, *rest = args
-          List.coerce(value.map { |v| obj.(v, *rest) }.reduce(:+))
+          List.coerce(value.map { |v| obj.(v, *rest) }.reduce([], &:+))
         end
       end
 
@@ -195,6 +207,60 @@ module Dry
       # @return [List]
       def tail
         coerce(value.drop(1))
+      end
+
+      # Turns the list into a types one.
+      # Type is required for some operations like .traverse.
+      #
+      # @param type [Monad] Monad instance
+      # @return [List] Typed list
+      def typed(type = nil)
+        if type.nil?
+          if size.zero?
+            raise ArgumentError, "Cannot infer monad for an empty list"
+          else
+            self.class.new(value, value[0].monad)
+          end
+        else
+          self.class.new(value, type)
+        end
+      end
+
+      # Whether the list is types
+      #
+      # @return [Boolean]
+      def typed?
+        !type.nil?
+      end
+
+      # Traverses the list with a block (or without it).
+      # This methods "flips" List structure with the given monad (obtained from the type).
+      # Note that traversing requires the list to be types.
+      # Also if a block given, its returning type must be equal list's type.
+      #
+      # @example
+      #   List<Either>[Right(1), Right(2)].traverse # => Right([1, 2])
+      #   List<Maybe>[Some(1), None, Some(3)].traverse # => None
+      #
+      # @return [Monad] Result is a monadic value
+      def traverse
+        unless typed?
+          raise StandardError, "Cannot traverse an untyped list"
+        end
+
+        foldl(type.pure(EMPTY)) { |acc, el|
+          acc.bind { |unwrapped|
+            mapped = block_given? ? yield(el) : el
+            mapped.fmap { |i| unwrapped + List[i] }
+          }
+        }
+      end
+
+      # Returns the List monad.
+      #
+      # @return [Monad]
+      def monad
+        List
       end
 
       private

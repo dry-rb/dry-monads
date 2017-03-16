@@ -1,8 +1,13 @@
 RSpec.describe(Dry::Monads::List) do
   list = described_class
+
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
   none = maybe::None.new
+
+  either = Dry::Monads::Either
+  left = either::Left.method(:new)
+  right = either::Right.method(:new)
 
   subject { list[1, 2, 3] }
   let(:empty_list) { list[] }
@@ -238,6 +243,75 @@ RSpec.describe(Dry::Monads::List) do
 
     it 'returns an empty list for an empty_list' do
       expect(empty_list.tail).to eql(empty_list)
+    end
+  end
+
+  describe '#traverse' do
+    context 'list of eithers' do
+      subject { list[1, 2, 3].typed(either) }
+
+      it 'flips Rights' do
+        expect(subject.traverse { |x| right.(x + 1) }).to eql(right.(list[2, 3, 4]))
+      end
+
+      it 'halts on Left' do
+        expect(subject.traverse { |i| i == 2 ? left.(i) : right.(i) }).
+          to eql(left.(2))
+      end
+
+      it 'halts on first Left' do
+        expect(subject.traverse { |i| i > 1 ? left.(i) : right.(i) }).
+          to eql(left.(2))
+      end
+
+      it 'works without a block' do
+        expect(list[right.(1), left.(2), left.(3)].typed.traverse).to eql(left.(2))
+      end
+    end
+
+    context 'list of maybes' do
+      subject { list[1, 2, 3].typed(maybe) }
+
+      it 'flips Somes' do
+        expect(subject.traverse { |x| some.(x + 1) }).to eql(some.(list[2, 3, 4]))
+      end
+
+      it 'halts on None' do
+        expect(subject.traverse { |i| i == 2 ? none : some.(i) }).
+          to eql(none)
+      end
+
+      it 'halts on first None' do
+        expect(subject.traverse { |i| i == 1 ? none : fail }).
+          to eql(none)
+      end
+    end
+
+    context 'list of lists' do
+      subject { list[1, 2].typed(list) }
+
+      it 'flips a list' do
+        expect(subject.traverse { |x| list[x] }).
+          to eql(list[list[1, 2]])
+
+        expect(subject.traverse { |x| list[x, x + 1] }).
+          to eql(list[list[1, 2], list[1, 3], list[2, 2], list[2, 3]])
+      end
+    end
+  end
+
+  describe '#typed' do
+    it 'turns the list into a typed one' do
+      expect(subject.typed(either)).to be_typed
+      expect(subject.typed(either).type).to be either
+    end
+
+    it 'infers type for not empty list' do
+      expect(list[right.(1)].typed.type).to be either
+      expect(list[left.(1)].typed.type).to be either
+      expect(list[some.(1)].typed.type).to be maybe
+      expect(list[none].typed.type).to be maybe
+      expect(list[list[]].typed.type).to be list
     end
   end
 end
