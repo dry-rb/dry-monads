@@ -1,3 +1,16 @@
+# v0.3.0 2017-03-16
+
+## Added
+* Added `Either#either` that accepts two callbacks, runs the first if it is `Right` and the second otherwise (nkondratyev)
+* Added `#fmap2` and `#fmap3` for mapping over nested structures like `List Either` and `Either Some` (flash-gordon)
+* Added `Try#value_or` (dsounded)
+* Added the `List` monad which acts as an immutable `Array` and plays nice with other monads. A common example is a list of `Either`s (flash-gordon)
+* `#bind` made to work with keyword arguments as extra parameters to the block (flash-gordon)
+* Added `List#traverse` that "flips" the list with an embedded monad (flash-gordon + damncabbage)
+* Added `#tee` for all right-biased monads (flash-gordon)
+
+[Compare v0.3.0...v0.2.1](https://github.com/dry-rb/dry-monads/compare/v0.2.1...v0.3.0)
+
 # v0.2.1 2016-11-13
 
 ## Added
@@ -9,7 +22,7 @@
 * `Right(nil).to_maybe` now returns `None` with a warning instead of failing (orisaka)
 * `Some#value_or` doesn't require an argument because `None#value_or` doesn't require it either if a block was passed (flash-gordon)
 
-[Compare v0.2.1...v0.2.0](https://github.com/dry-rb/dry-monads/compare/v0.2.1...v0.2.0)
+[Compare v0.2.1...v0.2.0](https://github.com/dry-rb/dry-monads/compare/v0.2.0...v0.2.1)
 
 # v0.2.0 2016-09-18
 
