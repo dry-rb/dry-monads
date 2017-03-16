@@ -71,10 +71,18 @@ RSpec.describe(Dry::Monads::Transformer) do
                              left.(some.('failure')),
                              left.(none)] }
 
-      example 'using fmap3 for lifting the block' do
-        expect(value.fmap3 { |v| v.upcase }).
-          to eql(list[right.(some.('SUCCESS')), right.(none),
-                      left.(some.('failure')), left.(none)])
+      context 'using fmap3' do
+        example 'lifting a block' do
+          expect(value.fmap3 { |v| v.upcase }).
+            to eql(list[right.(some.('SUCCESS')), right.(none),
+                        left.(some.('failure')), left.(none)])
+        end
+
+        example 'lifting a proc' do
+          expect(value.fmap3(-> v { v.upcase })).
+            to eql(list[right.(some.('SUCCESS')), right.(none),
+                        left.(some.('failure')), left.(none)])
+        end
       end
     end
   end
