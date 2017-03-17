@@ -1,3 +1,11 @@
+# v0.3.1 2017-03-18
+
+## Fixed
+
+* Fixed unexpected coercing to `Hash` on `.bind` call (flash-gordon)
+
+[Compare v0.3.1...v0.3.0](https://github.com/dry-rb/dry-monads/compare/v0.3.0...v0.3.1)
+
 # v0.3.0 2017-03-16
 
 ## Added
