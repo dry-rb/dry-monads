@@ -170,16 +170,22 @@ RSpec.describe(Dry::Monads::Either) do
 
     context 'keyword values' do
       subject { either::Right.new(foo: 'foo') }
+      let(:struct) { Class.new(Hash)[bar: 'foo'] }
 
       describe '#bind' do
         it 'passed extra keywords to block along with value' do
-          result = subject.bind(bar: 'bar') do |foo:, bar:|
+          result = subject.bind(bar: 'bar') do |foo:, bar: |
             expect(foo).to eql('foo')
             expect(bar).to eql('bar')
             true
           end
 
           expect(result).to be true
+        end
+
+        it "doesn't use destructuring if it's not needed" do
+          expect(right.(struct).bind { |x| x }.class).to be(struct.class)
+          expect(right.(struct).bind(nil, bar: 1) { |x| x }.class).to be(struct.class)
         end
       end
     end
@@ -189,10 +195,9 @@ RSpec.describe(Dry::Monads::Either) do
 
       describe '#bind' do
         it 'passed extra keywords to block along with value' do
-          result = subject.bind(:baz, quux: 'quux') do |value, baz, foo:, quux:|
-            expect(value).to eql('bar' => 'bar')
+          result = subject.bind(:baz, quux: 'quux') do |value, baz, quux:|
+            expect(value).to eql(subject.value)
             expect(baz).to eql(:baz)
-            expect(foo).to eql('foo')
             expect(quux).to eql('quux')
             true
           end

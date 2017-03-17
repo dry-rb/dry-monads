@@ -1,7 +1,11 @@
+require 'dry/core/constants'
+
 module Dry
   module Monads
     module RightBiased
       module Right
+        include Dry::Core::Constants
+
         attr_reader :value
 
         # Calls the passed in Proc object with value stored in self
@@ -19,8 +23,13 @@ module Dry
         #                             to this object along with the internal value
         # @return [Object] result of calling proc or block on the internal value
         def bind(*args, **kwargs)
-          vargs, vkwargs = destructure(value)
-          kw = kwargs.empty? && vkwargs.empty? ? [] : [kwargs.merge(vkwargs)]
+          if args.empty? && !kwargs.empty?
+            vargs, vkwargs = destructure(value)
+            kw = [kwargs.merge(vkwargs)]
+          else
+            vargs = [value]
+            kw = kwargs.empty? ? EMPTY_ARRAY : [kwargs]
+          end
 
           if block_given?
             yield(*vargs, *args, *kw)
