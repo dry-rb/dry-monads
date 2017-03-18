@@ -32,6 +32,12 @@ RSpec.describe(Dry::Monads::List) do
     it 'coerces any array-like object' do
       expect(list.coerce(array_like)).to eql(list.new(%w(a b c)))
     end
+
+    it 'raises a type error on uncoercible object' do
+      expect {
+        list.coerce(Object.new)
+      }.to raise_error(TypeError, /Can't coerce/)
+    end
   end
 
   describe '#inspect' do
@@ -298,6 +304,10 @@ RSpec.describe(Dry::Monads::List) do
           to eql(list[list[1, 2], list[1, 3], list[2, 2], list[2, 3]])
       end
     end
+
+    it 'raises an error for untyped list' do
+      expect { subject.traverse }.to raise_error(StandardError, /Cannot traverse/)
+    end
   end
 
   describe '#typed' do
@@ -312,6 +322,10 @@ RSpec.describe(Dry::Monads::List) do
       expect(list[some.(1)].typed.type).to be maybe
       expect(list[none].typed.type).to be maybe
       expect(list[list[]].typed.type).to be list
+    end
+
+    it 'cannot guess a type of the empty list' do
+      expect { list[].typed }.to raise_error(ArgumentError, /Cannot infer/)
     end
   end
 end

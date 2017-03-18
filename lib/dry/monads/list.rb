@@ -25,7 +25,7 @@ module Dry
           elsif value.respond_to?(:to_ary)
             List.new(value.to_ary, type)
           else
-            raise ArgumentError, "Can't coerce #{value.inspect} to List"
+            raise TypeError, "Can't coerce #{value.inspect} to List"
           end
         end
 

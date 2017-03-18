@@ -12,4 +12,12 @@ RSpec.describe(Dry::Monads::List) do
       expect(list[1, 2, 3].bind { |v| [v + 1, v + 2] }).to eql(list[2, 3, 3, 4, 4, 5])
     end
   end
+
+  describe(described_class::Mixin) do
+    subject { Class.new { include Dry::Monads::List::Mixin } }
+
+    it 'adds List constructor' do
+      expect(subject.new.List([1])).to eql(list[1])
+    end
+  end
 end
