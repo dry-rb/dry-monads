@@ -2,6 +2,7 @@ RSpec.describe(Dry::Monads) do
   let(:m) { described_class }
   either = Dry::Monads::Either
   maybe = Dry::Monads::Maybe
+  list = Dry::Monads::List
 
   describe 'maybe monad' do
     describe '.Maybe' do
@@ -46,6 +47,26 @@ RSpec.describe(Dry::Monads) do
       subject { m.Left('something has gone wrong') }
 
       it { is_expected.to eq either::Left.new('something has gone wrong') }
+    end
+  end
+
+  describe 'list monad' do
+    subject(:instance) do
+      module Test
+        class Foo
+          include Dry::Monads
+
+          def get_list
+            List[1, 2, 3]
+          end
+        end
+      end
+
+      Test::Foo.new
+    end
+
+    it 'builds a list with List[]' do
+      expect(instance.get_list).to eql(list[1, 2, 3])
     end
   end
 end

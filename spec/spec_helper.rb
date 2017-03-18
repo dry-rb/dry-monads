@@ -24,8 +24,19 @@ module Kernel
   end
 end
 
+# Namespace holding all objects created during specs
+module Test
+  def self.remove_constants
+    constants.each(&method(:remove_const))
+  end
+end
+
 RSpec.configure do |config|
   config.disable_monkey_patching!
 
   config.warnings = true
+
+  config.after do
+    Test.remove_constants
+  end
 end
