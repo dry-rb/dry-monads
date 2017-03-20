@@ -118,7 +118,8 @@ module Dry
       #
       # @return [String]
       def inspect
-        "List#{ value.inspect }"
+        type_ann = typed? ? "<#{ type.name.split('::').last }>" : ''
+        "List#{ type_ann }#{ value.inspect }"
       end
       alias_method :to_s, :inspect
 

@@ -54,6 +54,10 @@ RSpec.describe(Dry::Monads::List) do
     it 'acts as #inspect' do
       expect(subject.to_s).to eql(subject.inspect)
     end
+
+    it 'shows type' do
+      expect(list[right.(true)].typed.to_s).to eql('List<Either>[Right(true)]')
+    end
   end
 
   describe '#==' do
