@@ -6,18 +6,18 @@ bundler_args: --without benchmarks
 script:
   - bundle exec rake spec
 after_success:
-  # Send coverage report from the job #1 == current MRI release
-  - '[ "${TRAVIS_JOB_NUMBER#*.}" = "1" ] && [ "$TRAVIS_BRANCH" = "master" ] && bundle exec codeclimate-test-reporter'
+  - '[ -d coverage ] && bundle exec codeclimate-test-reporter'
 rvm:
-  - 2.4.1
-  - 2.3.3
-  - 2.2.6
   - 2.1.10
-  - jruby-9.1.7.0
+  - 2.2.6
+  - 2.3.3
+  - 2.4.1
+  - jruby-9.1.8.0
   - ruby-head
 env:
   global:
     - JRUBY_OPTS='--dev -J-Xmx1024M'
+    - COVERAGE=true
 matrix:
   allow_failures:
     - rvm: ruby-head
