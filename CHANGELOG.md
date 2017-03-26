@@ -4,7 +4,7 @@
 
 * Fixed unexpected coercing to `Hash` on `.bind` call (flash-gordon)
 
-[Compare v0.3.1...v0.3.0](https://github.com/dry-rb/dry-monads/compare/v0.3.0...v0.3.1)
+[Compare v0.3.0...v0.3.1](https://github.com/dry-rb/dry-monads/compare/v0.3.0...v0.3.1)
 
 # v0.3.0 2017-03-16
 
@@ -17,7 +17,7 @@
 * Added `List#traverse` that "flips" the list with an embedded monad (flash-gordon + damncabbage)
 * Added `#tee` for all right-biased monads (flash-gordon)
 
-[Compare v0.3.0...v0.2.1](https://github.com/dry-rb/dry-monads/compare/v0.2.1...v0.3.0)
+[Compare v0.2.1...v0.3.0](https://github.com/dry-rb/dry-monads/compare/v0.2.1...v0.3.0)
 
 # v0.2.1 2016-11-13
 
@@ -30,7 +30,7 @@
 * `Right(nil).to_maybe` now returns `None` with a warning instead of failing (orisaka)
 * `Some#value_or` doesn't require an argument because `None#value_or` doesn't require it either if a block was passed (flash-gordon)
 
-[Compare v0.2.1...v0.2.0](https://github.com/dry-rb/dry-monads/compare/v0.2.0...v0.2.1)
+[Compare v0.2.0...v0.2.1](https://github.com/dry-rb/dry-monads/compare/v0.2.0...v0.2.1)
 
 # v0.2.0 2016-09-18
 
