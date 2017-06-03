@@ -2,8 +2,9 @@
 
 ## Added
 
-* Added `Try#or` (flash-gordon)
-* Added `Maybe#success?` and `Maybe#failure?` (aliases for `#some?` and `#none?`) (flash-gordon)
+* `Try#or`, works as `Either#or` (flash-gordon)
+* `Maybe#success?` and `Maybe#failure?` (aliases for `#some?` and `#none?`) (flash-gordon)
+* `Either#flip` inverts an `Either` value  (flash-gordon)
 
 [Compare v0.3.1...master](https://github.com/dry-rb/dry-monads/compare/v0.3.1...master)
 
