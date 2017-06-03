@@ -1,3 +1,11 @@
+# v0.3.2 to-be-released
+
+## Added
+
+* Added `Try#or` (flash-gordon)
+
+[Compare v0.3.1...master](https://github.com/dry-rb/dry-monads/compare/v0.3.1...master)
+
 # v0.3.1 2017-03-18
 
 ## Fixed
