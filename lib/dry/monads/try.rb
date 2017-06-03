@@ -41,11 +41,6 @@ module Dry
         include Dry::Equalizer(:value, :catchable)
         include RightBiased::Right
 
-        # Using #or is not a good practice, you should process exceptions
-        # explicitly hence we don't offer an easy way to ignore them.
-        # Use Try#to_maybe if you're sure you need `#or` for `Try`.
-        undef :or
-
         attr_reader :catchable
 
         # @param exceptions [Array<Exception>] list of exceptions to be rescued
@@ -121,7 +116,6 @@ module Dry
       class Failure < Try
         include Dry::Equalizer(:exception)
         include RightBiased::Left
-        undef :or
 
         # @param exception [Exception]
         def initialize(exception)
@@ -143,6 +137,24 @@ module Dry
           "Try::Failure(#{exception.class}: #{exception.message})"
         end
         alias inspect to_s
+
+        # If a block is given passes internal value to it and returns the result,
+        # otherwise simply returns the first argument.
+        #
+        # @example
+        #   Try(ZeroDivisionError) { 1 / 0 }.or { "zero!" } # => "zero!"
+        #
+        # @param args [Array<Object>] arguments that will be passed to a block
+        #                             if one was given, otherwise the first
+        #                             value will be returned
+        # @return [Object]
+        def or(*args)
+          if block_given?
+            yield(value, *args)
+          else
+            args[0]
+          end
+        end
       end
 
       # A module that can be included for easier access to Try monads.

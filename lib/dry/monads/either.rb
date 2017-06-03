@@ -130,7 +130,7 @@ module Dry
         alias success? right?
 
         # If a block is given passes internal value to it and returns the result,
-        # otherwise simply returns the parameter val.
+        # otherwise simply returns the first argument.
         #
         # @example
         #   Dry::Monads.Left(ArgumentError.new('error message')).or(&:message) # => "error message"

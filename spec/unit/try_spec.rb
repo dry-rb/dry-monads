@@ -4,6 +4,7 @@ RSpec.describe(Dry::Monads::Try) do
   try = described_class
   either = Dry::Monads::Either
   maybe = Dry::Monads::Maybe
+  some = maybe::Some.method(:new)
 
   division_error = 1 / 0 rescue $ERROR_INFO
   no_method_error = no_method rescue $ERROR_INFO
@@ -136,6 +137,12 @@ RSpec.describe(Dry::Monads::Try) do
         expect(subject.value_or { 'baz' }).to eql subject.value
       end
     end
+
+    describe '#or' do
+      it 'returns itself' do
+        expect(subject.or { fail }).to be(subject)
+      end
+    end
   end
 
   describe(try::Failure) do
@@ -212,6 +219,12 @@ RSpec.describe(Dry::Monads::Try) do
 
       it 'executes a block' do
         expect(subject.value_or { 2 + 1 }).to eql 3
+      end
+    end
+
+    describe '#or' do
+      it 'returns yields a block' do
+        expect(subject.or { some[1] }).to eql(some[1])
       end
     end
   end
