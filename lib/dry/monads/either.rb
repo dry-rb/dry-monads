@@ -95,6 +95,13 @@ module Dry
           Kernel.warn 'Right(nil) transformed to None' if value.nil?
           Dry::Monads::Maybe(value)
         end
+
+        # Transform to a Left instance
+        #
+        # @returns [Either::Left]
+        def flip
+          Left.new(value)
+        end
       end
 
       # Represents a value that is in an incorrect state, i.e. something went wrong.
@@ -168,6 +175,13 @@ module Dry
         # @return [Maybe::None]
         def to_maybe
           Maybe::None.instance
+        end
+
+        # Transform to a Left instance
+        #
+        # @returns [Either::Left]
+        def flip
+          Right.new(value)
         end
       end
 

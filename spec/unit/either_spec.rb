@@ -195,7 +195,7 @@ RSpec.describe(Dry::Monads::Either) do
 
       describe '#bind' do
         it 'passed extra keywords to block along with value' do
-          result = subject.bind(:baz, quux: 'quux') do |value, baz, quux:|
+          result = subject.bind(:baz, quux: 'quux') do |value, baz, quux: |
             expect(value).to eql(subject.value)
             expect(baz).to eql(:baz)
             expect(quux).to eql('quux')
@@ -206,7 +206,7 @@ RSpec.describe(Dry::Monads::Either) do
         end
 
         example 'keywords from value takes precedence' do
-          result = subject.bind(foo: 'bar', bar: 'bar') do |foo:, bar:|
+          result = subject.bind(foo: 'bar', bar: 'bar') do |foo:, bar: |
             expect(foo).to eql('foo')
             expect(bar).to eql('bar')
             true
@@ -214,6 +214,12 @@ RSpec.describe(Dry::Monads::Either) do
 
           expect(result).to be true
         end
+      end
+    end
+
+    describe '#flip' do
+      it 'transforms Right to Left' do
+        expect(subject.flip).to eql(left['foo'])
       end
     end
   end
@@ -345,6 +351,12 @@ RSpec.describe(Dry::Monads::Either) do
 
       it 'ignores arguments' do
         expect(subject.tee(1, 2, 3) { fail }).to be subject
+      end
+    end
+
+    describe '#flip' do
+      it 'transforms Left to Right' do
+        expect(subject.flip).to eql(right['bar'])
       end
     end
   end
