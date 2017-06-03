@@ -39,11 +39,13 @@ module Dry
       def none?
         is_a?(None)
       end
+      alias_method :failure?, :none?
 
       # Returns true for an instance of a {Maybe::Some} monad.
       def some?
         is_a?(Some)
       end
+      alias_method :success?, :some?
 
       # Returns self, added to keep the interface compatible with that of Either monad types.
       #

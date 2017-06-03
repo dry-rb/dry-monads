@@ -149,6 +149,20 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(subject.tee(->(*) { none })).to be_none
       end
     end
+
+    describe '#some?/#success?' do
+      it 'returns true' do
+        expect(subject).to be_some
+        expect(subject).to be_success
+      end
+    end
+
+    describe '#none?/#failure?' do
+      it 'returns false' do
+        expect(subject).not_to be_none
+        expect(subject).not_to be_failure
+      end
+    end
   end
 
   describe maybe::None do
@@ -273,6 +287,20 @@ RSpec.describe(Dry::Monads::Maybe) do
 
       it 'ignores arguments' do
         expect(subject.tee(1, 2, 3) { fail }).to be subject
+      end
+    end
+
+    describe '#some?/#success?' do
+      it 'returns true' do
+        expect(subject).not_to be_some
+        expect(subject).not_to be_success
+      end
+    end
+
+    describe '#none?/#failure?' do
+      it 'returns false' do
+        expect(subject).to be_none
+        expect(subject).to be_failure
       end
     end
   end
