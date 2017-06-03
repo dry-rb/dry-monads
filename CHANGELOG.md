@@ -3,6 +3,7 @@
 ## Added
 
 * Added `Try#or` (flash-gordon)
+* Added `Maybe#success?` and `Maybe#failure?` (aliases for `#some?` and `#none?`) (flash-gordon)
 
 [Compare v0.3.1...master](https://github.com/dry-rb/dry-monads/compare/v0.3.1...master)
 
