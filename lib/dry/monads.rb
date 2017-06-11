@@ -2,6 +2,7 @@ require 'dry/monads/maybe'
 require 'dry/monads/try'
 require 'dry/monads/list'
 require 'dry/monads/result'
+require 'dry/monads/result/typed'
 
 module Dry
   # @api public
@@ -52,6 +53,10 @@ module Dry
     # @return [Result::Failure]
     def Failure(value)
       Result::Failure.new(value)
+    end
+
+    def Result(error, **options)
+      Result::Typed[error, **options]
     end
   end
 end
