@@ -183,6 +183,15 @@ module Dry
         def flip
           Right.new(value)
         end
+
+        # @see Dry::Monads::RightBiased::Left#value_or
+        def value_or(val = nil)
+          if block_given?
+            yield(value)
+          else
+            val
+          end
+        end
       end
 
       # A module that can be included for easier access to Either monads.

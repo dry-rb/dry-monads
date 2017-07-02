@@ -168,6 +168,16 @@ RSpec.describe(Dry::Monads::Either) do
       end
     end
 
+    describe '#value_or' do
+      it 'returns existing value' do
+        expect(subject.value_or('baz')).to eql(subject.value)
+      end
+
+      it 'ignores a block' do
+        expect(subject.value_or { 'baz' }).to eql(subject.value)
+      end
+    end
+
     context 'keyword values' do
       subject { either::Right.new(foo: 'foo') }
       let(:struct) { Class.new(Hash)[bar: 'foo'] }
@@ -357,6 +367,16 @@ RSpec.describe(Dry::Monads::Either) do
     describe '#flip' do
       it 'transforms Left to Right' do
         expect(subject.flip).to eql(right['bar'])
+      end
+    end
+
+    describe '#value_or' do
+      it 'returns passed value' do
+        expect(subject.value_or('baz')).to eql('baz')
+      end
+
+      it 'executes a block' do
+        expect(subject.value_or { |bar| 'foo' + bar }).to eql('foobar')
       end
     end
   end
