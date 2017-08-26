@@ -2,7 +2,7 @@ require 'dry/monads/maybe'
 require 'dry/monads/try'
 require 'dry/monads/list'
 require 'dry/monads/result'
-require 'dry/monads/result/typed'
+require 'dry/monads/result/fixed'
 
 module Dry
   # @api public
@@ -56,7 +56,7 @@ module Dry
     end
 
     def Result(error, **options)
-      Result::Typed[error, **options]
+      Result::Fixed[error, **options]
     end
   end
 end

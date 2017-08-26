@@ -1,6 +1,6 @@
 module Dry::Monads
   class Result
-    class Typed < Module
+    class Fixed < Module
       def self.[](error, **options)
         new(error, **options)
       end
