@@ -5,6 +5,9 @@ RSpec.describe(Dry::Monads::Try) do
   either = Dry::Monads::Either
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
+  success = try::Success.method(:new)
+  div_success = -> value { success[[ZeroDivisionError], value] }
+  failure = try::Failure.method(:new)
 
   division_error = 1 / 0 rescue $ERROR_INFO
   no_method_error = no_method rescue $ERROR_INFO
@@ -13,16 +16,16 @@ RSpec.describe(Dry::Monads::Try) do
   let(:divide_by_zero) { ->(_value) { raise division_error } }
 
   describe(try::Success) do
-    subject { described_class.new([ZeroDivisionError], 'foo') }
+    subject { div_success['foo'] }
 
-    let(:upcase_success) { described_class.new([ZeroDivisionError], 'FOO') }
+    let(:upcase_success) { div_success['FOO'] }
     let(:upcase_failure) { try::Failure.new(division_error) }
 
     it { is_expected.to be_success }
     it { is_expected.not_to be_failure }
 
     it { is_expected.to eql(described_class.new([ZeroDivisionError], 'foo')) }
-    it { is_expected.not_to eql(try::Failure.new(division_error)) }
+    it { is_expected.not_to eql(failure[division_error]) }
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Try::Success("foo")')
@@ -114,11 +117,11 @@ RSpec.describe(Dry::Monads::Try) do
 
     describe '#to_maybe' do
       it 'transforms self to Some if value is not nil' do
-        expect(subject.to_maybe).to eql(maybe::Some.new('foo'))
+        expect(subject.to_maybe).to eql(some['foo'])
       end
 
       it 'returns None if value is nil' do
-        expect(described_class.new([ZeroDivisionError], nil).to_maybe).to eql(maybe::None.new)
+        expect(div_success[nil].to_maybe).to eql(maybe::None.new)
       end
     end
 
@@ -141,6 +144,15 @@ RSpec.describe(Dry::Monads::Try) do
     describe '#or' do
       it 'returns itself' do
         expect(subject.or { fail }).to be(subject)
+      end
+    end
+
+    describe '#ap' do
+      subject { div_success[:upcase.to_proc] }
+
+      it 'applies a wrapped function' do
+        expect(subject.ap(div_success['foo'])).to eql(div_success['FOO'])
+        expect(subject.ap(upcase_failure)).to eql(upcase_failure)
       end
     end
   end
@@ -225,6 +237,13 @@ RSpec.describe(Dry::Monads::Try) do
     describe '#or' do
       it 'returns yields a block' do
         expect(subject.or { some[1] }).to eql(some[1])
+      end
+    end
+
+    describe '#ap' do
+      it 'does nothing' do
+        expect(subject.ap(success[[ZeroDivisionError], 'foo'])).to be(subject)
+        expect(subject.ap(failure[division_error])).to be(subject)
       end
     end
   end

@@ -163,6 +163,15 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(subject).not_to be_failure
       end
     end
+
+    describe '#ap' do
+      subject { some[:upcase.to_proc] }
+
+      it 'applies a wrapped function' do
+        expect(subject.ap(some['foo'])).to eql(some['FOO'])
+        expect(subject.ap(none)).to eql(none)
+      end
+    end
   end
 
   describe maybe::None do
@@ -301,6 +310,13 @@ RSpec.describe(Dry::Monads::Maybe) do
       it 'returns false' do
         expect(subject).to be_none
         expect(subject).to be_failure
+      end
+    end
+
+    describe '#ap' do
+      it 'does nothing' do
+        expect(subject.ap(some['foo'])).to be(subject)
+        expect(subject.ap(none)).to be(subject)
       end
     end
   end

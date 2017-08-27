@@ -232,6 +232,15 @@ RSpec.describe(Dry::Monads::Either) do
         expect(subject.flip).to eql(left['foo'])
       end
     end
+
+    describe '#ap' do
+      subject { right[:upcase.to_proc] }
+
+      it 'applies a wrapped function' do
+        expect(subject.ap(right['foo'])).to eql(right['FOO'])
+        expect(subject.ap(left['foo'])).to eql(left['foo'])
+      end
+    end
   end
 
   describe either::Left do
@@ -377,6 +386,13 @@ RSpec.describe(Dry::Monads::Either) do
 
       it 'executes a block' do
         expect(subject.value_or { |bar| 'foo' + bar }).to eql('foobar')
+      end
+    end
+
+    describe '#ap' do
+      it 'does nothing' do
+        expect(subject.ap(right['foo'])).to be(subject)
+        expect(subject.ap(left['foo'])).to be(subject)
       end
     end
   end

@@ -83,11 +83,27 @@ module Dry
           value
         end
 
+        def ap(val)
+          raise ArgumentError, "Cannot call #{ value.inspect }" unless value.respond_to?(:call)
+          val.fmap { |unwrapped| curry.(unwrapped) }
+        end
+
         private
 
         # @api private
         def destructure(*args, **kwargs)
           [args, kwargs]
+        end
+
+        def curry
+          call = value.method(:call)
+          seq_args = call.parameters.count { |type, _| type == :req }
+
+          if seq_args > 1
+            call.curry
+          else
+            value
+          end
         end
       end
 
@@ -150,6 +166,10 @@ module Dry
           else
             val
           end
+        end
+
+        def ap(*)
+          self
         end
       end
     end
