@@ -89,15 +89,17 @@ module Dry
         # @example happy path
         #   create_user = Dry::Monads::Right(CreateUser.new)
         #   name = Right("John")
-        #   create_user.ap(name) # equivalent to CreateUser.new.call("John")
+        #   create_user.apply(name) # equivalent to CreateUser.new.call("John")
         #
         # @example unhappy path
         #   name = Left(:name_missing)
-        #   create_user.ap(name) # => Left(:name_missing)
+        #   create_user.apply(name) # => Left(:name_missing)
         #
         # @return [RightBiased::Left,RightBiased::Right]
-        def ap(val)
-          raise TypeError, "Cannot call #{ value.inspect }" unless value.respond_to?(:call)
+        def apply(val)
+          unless value.respond_to?(:call)
+            raise TypeError, "Cannot apply #{ val.inspect } to #{ value.inspect }"
+          end
           val.fmap { |unwrapped| curry.(unwrapped) }
         end
 
@@ -190,7 +192,7 @@ module Dry
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def ap(*)
+        def apply(*)
           self
         end
       end

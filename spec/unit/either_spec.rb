@@ -237,8 +237,8 @@ RSpec.describe(Dry::Monads::Either) do
       subject { right[:upcase.to_proc] }
 
       it 'applies a wrapped function' do
-        expect(subject.ap(right['foo'])).to eql(right['FOO'])
-        expect(subject.ap(left['foo'])).to eql(left['foo'])
+        expect(subject.apply(right['foo'])).to eql(right['FOO'])
+        expect(subject.apply(left['foo'])).to eql(left['foo'])
       end
     end
   end
@@ -391,8 +391,8 @@ RSpec.describe(Dry::Monads::Either) do
 
     describe '#ap' do
       it 'does nothing' do
-        expect(subject.ap(right['foo'])).to be(subject)
-        expect(subject.ap(left['foo'])).to be(subject)
+        expect(subject.apply(right['foo'])).to be(subject)
+        expect(subject.apply(left['foo'])).to be(subject)
       end
     end
   end

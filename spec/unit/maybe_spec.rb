@@ -168,8 +168,8 @@ RSpec.describe(Dry::Monads::Maybe) do
       subject { some[:upcase.to_proc] }
 
       it 'applies a wrapped function' do
-        expect(subject.ap(some['foo'])).to eql(some['FOO'])
-        expect(subject.ap(none)).to eql(none)
+        expect(subject.apply(some['foo'])).to eql(some['FOO'])
+        expect(subject.apply(none)).to eql(none)
       end
     end
   end
@@ -315,8 +315,8 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     describe '#ap' do
       it 'does nothing' do
-        expect(subject.ap(some['foo'])).to be(subject)
-        expect(subject.ap(none)).to be(subject)
+        expect(subject.apply(some['foo'])).to be(subject)
+        expect(subject.apply(none)).to be(subject)
       end
     end
   end

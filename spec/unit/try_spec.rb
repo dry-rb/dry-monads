@@ -151,8 +151,8 @@ RSpec.describe(Dry::Monads::Try) do
       subject { div_success[:upcase.to_proc] }
 
       it 'applies a wrapped function' do
-        expect(subject.ap(div_success['foo'])).to eql(div_success['FOO'])
-        expect(subject.ap(upcase_failure)).to eql(upcase_failure)
+        expect(subject.apply(div_success['foo'])).to eql(div_success['FOO'])
+        expect(subject.apply(upcase_failure)).to eql(upcase_failure)
       end
     end
   end
@@ -242,8 +242,8 @@ RSpec.describe(Dry::Monads::Try) do
 
     describe '#ap' do
       it 'does nothing' do
-        expect(subject.ap(success[[ZeroDivisionError], 'foo'])).to be(subject)
-        expect(subject.ap(failure[division_error])).to be(subject)
+        expect(subject.apply(success[[ZeroDivisionError], 'foo'])).to be(subject)
+        expect(subject.apply(failure[division_error])).to be(subject)
       end
     end
   end
