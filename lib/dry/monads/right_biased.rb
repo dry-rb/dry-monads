@@ -83,8 +83,21 @@ module Dry
           value
         end
 
+        # Applies the stored value to the given argument if the argument has type of Right,
+        # otherwise returns the argument
+        #
+        # @example happy path
+        #   create_user = Dry::Monads::Right(CreateUser.new)
+        #   name = Right("John")
+        #   create_user.ap(name) # equivalent to CreateUser.new.call("John")
+        #
+        # @example unhappy path
+        #   name = Left(:name_missing)
+        #   create_user.ap(name) # => Left(:name_missing)
+        #
+        # @return [RightBiased::Left,RightBiased::Right]
         def ap(val)
-          raise ArgumentError, "Cannot call #{ value.inspect }" unless value.respond_to?(:call)
+          raise TypeError, "Cannot call #{ value.inspect }" unless value.respond_to?(:call)
           val.fmap { |unwrapped| curry.(unwrapped) }
         end
 
@@ -95,15 +108,20 @@ module Dry
           [args, kwargs]
         end
 
+        # @api private
         def curry
-          call = value.method(:call)
-          seq_args = call.parameters.count { |type, _| type == :req }
+          @curried ||=
+            begin
+              func = value.is_a?(Proc) ? value : value.method(:call)
+              seq_args = func.parameters.count { |type, _| type == :req }
+              seq_args += 1 if func.parameters.any? { |type, _| type == :keyreq }
 
-          if seq_args > 1
-            call.curry
-          else
-            value
-          end
+              if seq_args > 1
+                func.curry
+              else
+                func
+              end
+            end
         end
       end
 
@@ -168,6 +186,10 @@ module Dry
           end
         end
 
+        # Ignores the input parameter and returns self. It exists to keep the interface
+        # identical to that of {RightBiased::Right}.
+        #
+        # @return [RightBiased::Left]
         def ap(*)
           self
         end

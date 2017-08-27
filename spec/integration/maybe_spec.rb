@@ -102,4 +102,52 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
   end
+
+  context 'applicative' do
+    context 'seq arguments' do
+      let(:build_name) do
+        Class.new do
+          def call(first_name, last_name)
+            "#{ first_name } #{ last_name }"
+          end
+        end
+      end
+
+      it 'works' do
+        expect(Some(build_name.new).ap(Some('John')).ap(Some('Doe'))).to eql(Some('John Doe'))
+        expect(Some(build_name.new).ap(None()).ap(Some('Doe'))).to eql(None())
+        expect(Some(build_name.new).ap(Some('John')).ap(None())).to eql(None())
+      end
+    end
+
+    context 'keywords' do
+      let(:build_name) { -> (first_name:, last_name:) { "#{ first_name } #{ last_name }" } }
+
+      it 'works' do
+        expect(Some(build_name).ap(Some(first_name: 'John', last_name: 'Doe'))).to eql(Some('John Doe'))
+      end
+    end
+
+    context 'mixed' do
+      let(:build_name) { -> (first_name, last_name:) { "#{ first_name } #{ last_name }" } }
+
+      it 'works' do
+        expect(Some(build_name).ap(Some('John')).ap(Some(last_name: 'Doe'))).to eql(Some('John Doe'))
+      end
+    end
+
+    context 'optional arguments' do
+      let(:build_name) { -> (first_name, last_name = 'Doe') { "#{ first_name } #{ last_name }" } }
+
+      it 'works' do
+        expect(Some(build_name).ap(Some('John'))).to eql(Some('John Doe'))
+      end
+
+      it 'raises an error on calling .ap on applied value' do
+        expect {
+          Some(build_name).ap(Some('John')).ap(Some('Doe'))
+        }.to raise_error(TypeError)
+      end
+    end
+  end
 end
