@@ -125,8 +125,10 @@ RSpec.describe(Dry::Monads::List) do
       expect(subject.map { |x| x * 2 }).to eql(list[2, 4, 6])
     end
 
-    it 'requires a block' do
-      expect { subject.map }.to raise_error(ArgumentError)
+    it 'returns an enumerator if no block given' do
+      expect(subject.map).to be_a(Enumerator)
+      expect(subject.map.with_index { |el, idx|  [el, idx] }).
+        to eql([[1, 0], [2, 1], [3, 2]])
     end
   end
 

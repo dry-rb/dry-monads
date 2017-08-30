@@ -1,10 +1,11 @@
-# v0.3.2 to-be-released
+# v0.4.0 to-be-released
 
 ## Added
 
 * `Try#or`, works as `Either#or` (flash-gordon)
 * `Maybe#success?` and `Maybe#failure?` (aliases for `#some?` and `#none?`) (flash-gordon)
 * `Either#flip` inverts an `Either` value  (flash-gordon)
+* `List#map` called without a block returns an `Enumerator` object (flash-gordon)
 
 [Compare v0.3.1...master](https://github.com/dry-rb/dry-monads/compare/v0.3.1...master)
 
