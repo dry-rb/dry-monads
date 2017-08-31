@@ -38,7 +38,7 @@ module Dry
       #
       # @api public
       class Success < Try
-        include Dry::Equalizer(:value, :catchable)
+        include Dry::Equalizer(:value!, :catchable)
         include RightBiased::Right
 
         attr_reader :catchable
@@ -95,17 +95,17 @@ module Dry
 
         # @return [Maybe]
         def to_maybe
-          Dry::Monads::Maybe(value)
+          Dry::Monads::Maybe(@value)
         end
 
         # @return [Either::Right]
         def to_either
-          Dry::Monads::Right(value)
+          Dry::Monads::Right(@value)
         end
 
         # @return [String]
         def to_s
-          "Try::Success(#{value.inspect})"
+          "Try::Success(#{ @value.inspect })"
         end
         alias inspect to_s
       end
@@ -134,7 +134,7 @@ module Dry
 
         # @return [String]
         def to_s
-          "Try::Failure(#{exception.class}: #{exception.message})"
+          "Try::Failure(#{ exception.class }: #{ exception.message })"
         end
         alias inspect to_s
 
@@ -150,7 +150,7 @@ module Dry
         # @return [Object]
         def or(*args)
           if block_given?
-            yield(value, *args)
+            yield(exception, *args)
           else
             args[0]
           end

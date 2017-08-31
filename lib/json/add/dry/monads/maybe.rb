@@ -19,7 +19,7 @@ module Dry
       def as_json(*)
         {
           JSON.create_id => self.class.name,
-          value: value
+          value: none? ? nil : @value
         }
       end
 

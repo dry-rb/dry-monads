@@ -11,13 +11,13 @@ RSpec.describe(Dry::Monads::Either) do
           { message: 'happy' }
         end
 
-        expect(result.value).to eql(message: 'happy')
+        expect(result.value!).to eql(message: 'happy')
       end
 
       example 'with proc' do
         result = right.fmap(-> (_) { { message: 'happy' } })
 
-        expect(result.value).to eql(message: 'happy')
+        expect(result.value!).to eql(message: 'happy')
       end
     end
 
@@ -27,13 +27,13 @@ RSpec.describe(Dry::Monads::Either) do
           Right(message: 'happy')
         end
 
-        expect(result.value).to eql(message: 'happy')
+        expect(result.value!).to eql(message: 'happy')
       end
 
       example 'with proc' do
         result = right.bind(-> (_) { Right(message: 'happy') })
 
-        expect(result.value).to eql(message: 'happy')
+        expect(result.value!).to eql(message: 'happy')
       end
     end
   end
@@ -65,7 +65,7 @@ RSpec.describe(Dry::Monads::Either) do
       example 'with happy path' do
         result = right.fmap(inc).or(-1).fmap(inc).or(-2)
 
-        expect(result.value).to eql(2)
+        expect(result.value!).to eql(2)
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe(Dry::Monads::Either) do
       example 'with happy path' do
         result = right.bind(inc).or(-1).bind(inc).or(-2)
 
-        expect(result.value).to eql(2)
+        expect(result.value!).to eql(2)
       end
 
       example 'with unhappy path' do
@@ -113,7 +113,7 @@ RSpec.describe(Dry::Monads::Either) do
         Left('error')
       end
 
-      expect(result.value).to eql(value: 2)
+      expect(result.value!).to eql(value: 2)
     end
 
     example 'big unhappy chain' do

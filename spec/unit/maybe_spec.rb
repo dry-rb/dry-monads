@@ -57,8 +57,14 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     describe '#value' do
-      it 'returns wrapped value' do
+      it 'returns wrapped value', :suppress_deprecations do
         expect(subject.value).to eql('foo')
+      end
+    end
+
+    describe '#value!' do
+      it 'unwraps the value' do
+        expect(subject.value!).to eql('foo')
       end
     end
 
@@ -126,11 +132,11 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     describe '#value_or' do
       it 'returns existing value' do
-        expect(subject.value_or('baz')).to eql(subject.value)
+        expect(subject.value_or('baz')).to eql(subject.value!)
       end
 
       it 'ignores a block' do
-        expect(subject.value_or { 'baz' }).to eql(subject.value)
+        expect(subject.value_or { 'baz' }).to eql(subject.value!)
       end
     end
 
@@ -164,7 +170,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
-    describe '#ap' do
+    describe '#apply' do
       subject { some[:upcase.to_proc] }
 
       it 'applies a wrapped function' do
@@ -191,9 +197,15 @@ RSpec.describe(Dry::Monads::Maybe) do
       expect(subject.inspect).to eql('None')
     end
 
-    describe '#value' do
+    describe '#value', :suppress_deprecations do
       it 'returns wrapped value' do
         expect(subject.value).to be nil
+      end
+    end
+
+    describe '#value!' do
+      it 'raises an error' do
+        expect { subject.value! }.to raise_error(Dry::Monads::UnwrapError, "value! was called on None")
       end
     end
 
@@ -313,7 +325,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
-    describe '#ap' do
+    describe '#apply' do
       it 'does nothing' do
         expect(subject.apply(some['foo'])).to be(subject)
         expect(subject.apply(none)).to be(subject)

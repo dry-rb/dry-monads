@@ -1,12 +1,25 @@
 require 'dry/core/constants'
+require 'dry/core/deprecations'
+
+require 'dry/monads/errors'
 
 module Dry
   module Monads
     module RightBiased
+      # @api public
       module Right
         include Dry::Core::Constants
 
-        attr_reader :value
+        extend Dry::Core::Deprecations[:'dry-monads']
+
+        # Unwraps the underlying value
+        #
+        # @return [Object]
+        def value!
+          @value
+        end
+
+        deprecate :value, :value!
 
         # Calls the passed in Proc object with value stored in self
         # and returns the result.
@@ -24,10 +37,10 @@ module Dry
         # @return [Object] result of calling proc or block on the internal value
         def bind(*args, **kwargs)
           if args.empty? && !kwargs.empty?
-            vargs, vkwargs = destructure(value)
+            vargs, vkwargs = destructure(@value)
             kw = [kwargs.merge(vkwargs)]
           else
-            vargs = [value]
+            vargs = [@value]
             kw = kwargs.empty? ? EMPTY_ARRAY : [kwargs]
           end
 
@@ -35,7 +48,7 @@ module Dry
             yield(*vargs, *args, *kw)
           else
             obj, *rest = args
-            obj.call(*vargs, *rest, *kw)
+            obj.(*vargs, *rest, *kw)
           end
         end
 
@@ -80,7 +93,7 @@ module Dry
         #
         # @return [Object]
         def value_or(_val = nil)
-          value
+          @value
         end
 
         # Applies the stored value to the given argument if the argument has type of Right,
@@ -97,8 +110,8 @@ module Dry
         #
         # @return [RightBiased::Left,RightBiased::Right]
         def apply(val)
-          unless value.respond_to?(:call)
-            raise TypeError, "Cannot apply #{ val.inspect } to #{ value.inspect }"
+          unless @value.respond_to?(:call)
+            raise TypeError, "Cannot apply #{ val.inspect } to #{ @value.inspect }"
           end
           val.fmap { |unwrapped| curry.(unwrapped) }
         end
@@ -114,7 +127,7 @@ module Dry
         def curry
           @curried ||=
             begin
-              func = value.is_a?(Proc) ? value : value.method(:call)
+              func = @value.is_a?(Proc) ? @value : @value.method(:call)
               seq_args = func.parameters.count { |type, _| type == :req }
               seq_args += 1 if func.parameters.any? { |type, _| type == :keyreq }
 
@@ -127,8 +140,18 @@ module Dry
         end
       end
 
+      # @api public
       module Left
+        extend Dry::Core::Deprecations[:'dry-monads']
+
         attr_reader :value
+
+        deprecate :value, message: '.value is deprecated, use .value! instead'
+
+        # Raises an error on accessing internal value
+        def value!
+          raise UnwrapError.new(self)
+        end
 
         # Ignores the input parameter and returns self. It exists to keep the interface
         # identical to that of {RightBiased::Right}.

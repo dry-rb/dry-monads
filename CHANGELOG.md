@@ -7,6 +7,10 @@
 * `Either#flip` inverts an `Either` value  (flash-gordon)
 * `List#map` called without a block returns an `Enumerator` object (flash-gordon)
 
+## Deprecated
+
+* Direct accessing `value` on right-biased monads has been deprecated, use the `value!` method instead. `value!` will raise an exception if it is called on a Left/None/Failure instance (flash-gordon)
+
 [Compare v0.3.1...master](https://github.com/dry-rb/dry-monads/compare/v0.3.1...master)
 
 # v0.3.1 2017-03-18

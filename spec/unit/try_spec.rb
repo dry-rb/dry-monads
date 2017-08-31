@@ -133,11 +133,11 @@ RSpec.describe(Dry::Monads::Try) do
 
     describe '#value_or' do
       it 'returns existing value' do
-        expect(subject.value_or('baz')).to eql subject.value
+        expect(subject.value_or('baz')).to eql subject.value!
       end
 
       it 'ignores a block' do
-        expect(subject.value_or { 'baz' }).to eql subject.value
+        expect(subject.value_or { 'baz' }).to eql subject.value!
       end
     end
 
@@ -147,7 +147,7 @@ RSpec.describe(Dry::Monads::Try) do
       end
     end
 
-    describe '#ap' do
+    describe '#apply' do
       subject { div_success[:upcase.to_proc] }
 
       it 'applies a wrapped function' do
@@ -240,7 +240,7 @@ RSpec.describe(Dry::Monads::Try) do
       end
     end
 
-    describe '#ap' do
+    describe '#apply' do
       it 'does nothing' do
         expect(subject.apply(success[[ZeroDivisionError], 'foo'])).to be(subject)
         expect(subject.apply(failure[division_error])).to be(subject)

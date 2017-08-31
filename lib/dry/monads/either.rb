@@ -9,7 +9,6 @@ module Dry
     #
     # @api public
     class Either
-      include Dry::Equalizer(:right, :left)
       include Transformer
 
       attr_reader :right, :left
@@ -44,19 +43,20 @@ module Dry
       # @api public
       class Right < Either
         include RightBiased::Right
+        include Dry::Equalizer(:value!)
 
-        alias value right
+        alias right value!
 
         # @param right [Object] a value in a correct state
-        def initialize(right)
-          @right = right
+        def initialize(value)
+          @value = value
         end
 
         # Apply the second function to value.
         #
         # @api public
         def either(_, f)
-          f.call(value)
+          f.(@value)
         end
 
         # Returns false
@@ -86,21 +86,21 @@ module Dry
 
         # @return [String]
         def to_s
-          "Right(#{value.inspect})"
+          "Right(#{ @value.inspect })"
         end
         alias inspect to_s
 
         # @return [Maybe::Some]
         def to_maybe
-          Kernel.warn 'Right(nil) transformed to None' if value.nil?
-          Dry::Monads::Maybe(value)
+          Kernel.warn 'Right(nil) transformed to None' if @value.nil?
+          Dry::Monads::Maybe(@value)
         end
 
         # Transform to a Left instance
         #
         # @returns [Either::Left]
         def flip
-          Left.new(value)
+          Left.new(@value)
         end
       end
 
@@ -109,19 +109,23 @@ module Dry
       # @api public
       class Left < Either
         include RightBiased::Left
+        include Dry::Equalizer(:left)
 
-        alias value left
+        # @api private
+        def left
+          @value
+        end
 
         # @param left [Object] a value in an error state
-        def initialize(left)
-          @left = left
+        def initialize(value)
+          @value = value
         end
 
         # Apply the first function to value.
         #
         # @api public
         def either(f, _)
-          f.call(value)
+          f.(@value)
         end
 
         # Returns true
@@ -148,7 +152,7 @@ module Dry
         # @return [Object]
         def or(*args)
           if block_given?
-            yield(value, *args)
+            yield(@value, *args)
           else
             args[0]
           end
@@ -168,7 +172,7 @@ module Dry
 
         # @return [String]
         def to_s
-          "Left(#{value.inspect})"
+          "Left(#{ @value.inspect })"
         end
         alias inspect to_s
 
@@ -181,13 +185,13 @@ module Dry
         #
         # @returns [Either::Left]
         def flip
-          Right.new(value)
+          Right.new(@value)
         end
 
         # @see Dry::Monads::RightBiased::Left#value_or
         def value_or(val = nil)
           if block_given?
-            yield(value)
+            yield(@value)
           else
             val
           end

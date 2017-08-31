@@ -1,5 +1,10 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
+require 'pathname'
+
+SPEC_ROOT = Pathname(__FILE__).dirname
+
+
 if RUBY_ENGINE == 'ruby' && ENV['COVERAGE'] == 'true'
   require 'yaml'
   rubies = YAML.load(File.read(File.join(__dir__, '..', '.travis.yml')))['rvm']
@@ -44,5 +49,12 @@ RSpec.configure do |config|
 
   config.after do
     Test.remove_constants
+  end
+
+  config.around :each, :suppress_deprecations do |ex|
+    logger = Dry::Core::Deprecations.logger
+    Dry::Core::Deprecations.set_logger!(SPEC_ROOT.join('../log/deprecations.log'))
+    ex.run
+    Dry::Core::Deprecations.set_logger!(logger)
   end
 end

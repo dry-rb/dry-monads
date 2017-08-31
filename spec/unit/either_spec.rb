@@ -170,11 +170,11 @@ RSpec.describe(Dry::Monads::Either) do
 
     describe '#value_or' do
       it 'returns existing value' do
-        expect(subject.value_or('baz')).to eql(subject.value)
+        expect(subject.value_or('baz')).to eql(subject.value!)
       end
 
       it 'ignores a block' do
-        expect(subject.value_or { 'baz' }).to eql(subject.value)
+        expect(subject.value_or { 'baz' }).to eql(subject.value!)
       end
     end
 
@@ -206,7 +206,7 @@ RSpec.describe(Dry::Monads::Either) do
       describe '#bind' do
         it 'passed extra keywords to block along with value' do
           result = subject.bind(:baz, quux: 'quux') do |value, baz, quux: |
-            expect(value).to eql(subject.value)
+            expect(value).to eql(subject.value!)
             expect(baz).to eql(:baz)
             expect(quux).to eql('quux')
             true
@@ -233,12 +233,18 @@ RSpec.describe(Dry::Monads::Either) do
       end
     end
 
-    describe '#ap' do
+    describe '#apply' do
       subject { right[:upcase.to_proc] }
 
       it 'applies a wrapped function' do
         expect(subject.apply(right['foo'])).to eql(right['FOO'])
         expect(subject.apply(left['foo'])).to eql(left['foo'])
+      end
+    end
+
+    describe '#value!' do
+      it 'unwraps the value' do
+        expect(subject.value!).to eql('foo')
       end
     end
   end
@@ -389,10 +395,16 @@ RSpec.describe(Dry::Monads::Either) do
       end
     end
 
-    describe '#ap' do
+    describe '#apply' do
       it 'does nothing' do
         expect(subject.apply(right['foo'])).to be(subject)
         expect(subject.apply(left['foo'])).to be(subject)
+      end
+    end
+
+    describe '#value!' do
+      it 'raises an error' do
+        expect { subject.value! }.to raise_error(Dry::Monads::UnwrapError, 'value! was called on Left("bar")')
       end
     end
   end

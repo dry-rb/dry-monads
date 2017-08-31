@@ -29,7 +29,7 @@ RSpec.describe(Dry::Monads::Try) do
     let(:try) { Try { 10 / 2 } }
 
     example do
-      expect(try.value).to eql(5)
+      expect(try.value!).to eql(5)
     end
   end
 
@@ -45,7 +45,7 @@ RSpec.describe(Dry::Monads::Try) do
     let(:try) { Try { 20 / 10 }.bind ->(number) { Try { 10 / number } } }
 
     example do
-      expect(try.value).to eql(5)
+      expect(try.value!).to eql(5)
     end
   end
 
@@ -61,7 +61,7 @@ RSpec.describe(Dry::Monads::Try) do
     let(:try) { Try { 10 / 5 }.fmap { |x| x * 2 } }
 
     example do
-      expect(try.value).to eql(4)
+      expect(try.value!).to eql(4)
     end
   end
 
@@ -103,7 +103,7 @@ RSpec.describe(Dry::Monads::Try) do
     example do
       aggregate_failures do
         expect(try).to be_kind_of(Dry::Monads::Either::Left)
-        expect(try.value).to be_kind_of(ZeroDivisionError)
+        expect(try.left).to be_kind_of(ZeroDivisionError)
       end
     end
   end

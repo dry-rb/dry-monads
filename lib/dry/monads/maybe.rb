@@ -1,4 +1,5 @@
 require 'dry/equalizer'
+require 'dry/core/deprecations'
 
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
@@ -9,8 +10,9 @@ module Dry
     #
     # @api public
     class Maybe
-      include Dry::Equalizer(:value)
       include Transformer
+
+      extend Dry::Core::Deprecations[:'dry-monads']
 
       class << self
         # Wraps the given value with into a Maybe object.
@@ -67,8 +69,7 @@ module Dry
       # @api public
       class Some < Maybe
         include RightBiased::Right
-
-        attr_reader :value
+        include Dry::Equalizer(:value!)
 
         def initialize(value)
           raise ArgumentError, 'nil cannot be some' if value.nil?
@@ -91,7 +92,7 @@ module Dry
 
         # @return [String]
         def to_s
-          "Some(#{value.inspect})"
+          "Some(#{ @value.inspect })"
         end
         alias inspect to_s
       end
@@ -102,13 +103,8 @@ module Dry
       class None < Maybe
         include RightBiased::Left
 
-        @instance = new
+        @instance = new.freeze
         singleton_class.send(:attr_reader, :instance)
-
-        # @return [nil]
-        def value
-          nil
-        end
 
         # If a block is given passes internal value to it and returns the result,
         # otherwise simply returns the parameter val.
@@ -147,6 +143,17 @@ module Dry
           'None'
         end
         alias inspect to_s
+
+        # @api private
+        def eql?(other)
+          other.is_a?(None)
+        end
+        alias == eql?
+
+        # @api private
+        def hash
+          nil.hash
+        end
       end
 
       # A module that can be included for easier access to Maybe monads.
