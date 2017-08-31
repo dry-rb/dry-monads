@@ -152,7 +152,7 @@ module Dry
 
         # @api private
         def hash
-          nil.hash
+          None.instance.object_id
         end
       end
 
