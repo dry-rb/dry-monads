@@ -2,6 +2,7 @@ require 'dry/monads/either'
 require 'dry/monads/maybe'
 require 'dry/monads/try'
 require 'dry/monads/list'
+require 'dry/monads/result'
 
 module Dry
   # @api public
@@ -38,6 +39,18 @@ module Dry
     # @return [Either::Left]
     def Left(value)
       Either::Left.new(value)
+    end
+
+    # @param value [Object] the value to be stored in the monad
+    # @return [Result::Success]
+    def Success(value)
+      Result::Success.new(value)
+    end
+
+    # @param value [Object] the value to be stored in the monad
+    # @return [Result::Failure]
+    def Failure(value)
+      Result::Failure.new(value)
     end
   end
 end
