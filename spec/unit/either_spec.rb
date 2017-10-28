@@ -270,7 +270,7 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     describe '#bind' do
-      it 'accepts a proc and returns itseld' do
+      it 'accepts a proc and returns itself' do
         expect(subject.bind(upcase)).to be subject
       end
 
@@ -299,7 +299,7 @@ RSpec.describe(Dry::Monads::Either) do
         expect(subject.fmap(upcase)).to be subject
       end
 
-      it 'accepts a block and returns itseld' do
+      it 'accepts a block and returns itself' do
         expect(subject.fmap { |s| s.upcase }).to be subject
       end
 
@@ -370,7 +370,7 @@ RSpec.describe(Dry::Monads::Either) do
         expect(subject.tee(upcase)).to be subject
       end
 
-      it 'accepts a block and returns itseld' do
+      it 'accepts a block and returns itself' do
         expect(subject.tee { |s| s.upcase }).to be subject
       end
 
