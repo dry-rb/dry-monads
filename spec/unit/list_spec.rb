@@ -5,9 +5,9 @@ RSpec.describe(Dry::Monads::List) do
   some = maybe::Some.method(:new)
   none = maybe::None.new
 
-  either = Dry::Monads::Either
-  left = either::Left.method(:new)
-  right = either::Right.method(:new)
+  result = Dry::Monads::Result
+  success = result::Success.method(:new)
+  failure = result::Failure.method(:new)
 
   subject { list[1, 2, 3] }
   let(:empty_list) { list[] }
@@ -56,7 +56,7 @@ RSpec.describe(Dry::Monads::List) do
     end
 
     it 'shows type' do
-      expect(list[right.(true)].typed.to_s).to eql('List<Either>[Right(true)]')
+      expect(list[success.(true)].typed.to_s).to eql('List<Result>[Success(true)]')
     end
   end
 
@@ -259,25 +259,25 @@ RSpec.describe(Dry::Monads::List) do
   end
 
   describe '#traverse' do
-    context 'list of eithers' do
-      subject { list[1, 2, 3].typed(either) }
+    context 'list of results' do
+      subject { list[1, 2, 3].typed(result) }
 
-      it 'flips Rights' do
-        expect(subject.traverse { |x| right.(x + 1) }).to eql(right.(list[2, 3, 4]))
+      it 'flips Successes' do
+        expect(subject.traverse { |x| success.(x + 1) }).to eql(success.(list[2, 3, 4]))
       end
 
-      it 'halts on Left' do
-        expect(subject.traverse { |i| i == 2 ? left.(i) : right.(i) }).
-          to eql(left.(2))
+      it 'halts on Failure' do
+        expect(subject.traverse { |i| i == 2 ? failure.(i) : success.(i) }).
+          to eql(failure.(2))
       end
 
-      it 'halts on first Left' do
-        expect(subject.traverse { |i| i > 1 ? left.(i) : right.(i) }).
-          to eql(left.(2))
+      it 'halts on first Failure' do
+        expect(subject.traverse { |i| i > 1 ? failure.(i) : success.(i) }).
+          to eql(failure.(2))
       end
 
       it 'works without a block' do
-        expect(list[right.(1), left.(2), left.(3)].typed.traverse).to eql(left.(2))
+        expect(list[success.(1), failure.(2), failure.(3)].typed.traverse).to eql(failure.(2))
       end
     end
 
@@ -318,13 +318,13 @@ RSpec.describe(Dry::Monads::List) do
 
   describe '#typed' do
     it 'turns the list into a typed one' do
-      expect(subject.typed(either)).to be_typed
-      expect(subject.typed(either).type).to be either
+      expect(subject.typed(result)).to be_typed
+      expect(subject.typed(result).type).to be result
     end
 
     it 'infers type for not empty list' do
-      expect(list[right.(1)].typed.type).to be either
-      expect(list[left.(1)].typed.type).to be either
+      expect(list[success.(1)].typed.type).to be result
+      expect(list[failure.(1)].typed.type).to be result
       expect(list[some.(1)].typed.type).to be maybe
       expect(list[none].typed.type).to be maybe
       expect(list[list[]].typed.type).to be list

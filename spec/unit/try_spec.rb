@@ -2,7 +2,7 @@ require 'English'
 
 RSpec.describe(Dry::Monads::Try) do
   try = described_class
-  either = Dry::Monads::Either
+  result = Dry::Monads::Result
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
   success = try::Success.method(:new)
@@ -125,9 +125,9 @@ RSpec.describe(Dry::Monads::Try) do
       end
     end
 
-    describe '#to_either' do
-      it 'transforms self to Right' do
-        expect(subject.to_either).to eql(either::Right.new('foo'))
+    describe '#to_result' do
+      it 'transforms self to Result::Success' do
+        expect(subject.to_result).to eql(result::Success.new('foo'))
       end
     end
 
@@ -218,9 +218,9 @@ RSpec.describe(Dry::Monads::Try) do
       end
     end
 
-    describe '#to_either' do
-      it 'transforms self to Left' do
-        expect(subject.to_either).to eql(either::Left.new(division_error))
+    describe '#to_result' do
+      it 'transforms self to Result::Failure' do
+        expect(subject.to_result).to eql(result::Failure.new(division_error))
       end
     end
 

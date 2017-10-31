@@ -240,7 +240,7 @@ module Dry
       # Also if a block given, its returning type must be equal list's type.
       #
       # @example
-      #   List<Either>[Right(1), Right(2)].traverse # => Right([1, 2])
+      #   List<Result>[Success(1), Success(2)].traverse # => Success([1, 2])
       #   List<Maybe>[Some(1), None, Some(3)].traverse # => None
       #
       # @return [Monad] Result is a monadic value

@@ -5,7 +5,7 @@ require 'dry/monads/transformer'
 
 module Dry
   module Monads
-    # Represents a operation which either succeeded or failed.
+    # Represents an operation which either succeeded or failed.
     #
     # @api public
     class Result

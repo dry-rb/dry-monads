@@ -98,9 +98,9 @@ module Dry
           Dry::Monads::Maybe(@value)
         end
 
-        # @return [Either::Right]
-        def to_either
-          Dry::Monads::Right(@value)
+        # @return [Result::Success]
+        def to_result
+          Dry::Monads::Success(@value)
         end
 
         # @return [String]
@@ -127,9 +127,9 @@ module Dry
           Dry::Monads::None()
         end
 
-        # @return [Either::Left]
-        def to_either
-          Dry::Monads::Left(exception)
+        # @return [Result::Failure]
+        def to_result
+          Dry::Monads::Failure(exception)
         end
 
         # @return [String]

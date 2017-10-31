@@ -1,4 +1,3 @@
-require 'dry/monads/either'
 require 'dry/monads/maybe'
 require 'dry/monads/try'
 require 'dry/monads/list'
@@ -29,16 +28,18 @@ module Dry
       Maybe::Some::None.instance
     end
 
+    # @note This method is provided for backwards compatibility.
     # @param value [Object] the value to be stored in the monad
-    # @return [Either::Right]
+    # @return [Result::Success]
     def Right(value)
-      Either::Right.new(value)
+      Result::Success.new(value)
     end
 
+    # @note This method is provided for backwards compatibility.
     # @param value [Object] the value to be stored in the monad
-    # @return [Either::Left]
+    # @return [Result::Failure]
     def Left(value)
-      Either::Left.new(value)
+      Result::Failure.new(value)
     end
 
     # @param value [Object] the value to be stored in the monad
