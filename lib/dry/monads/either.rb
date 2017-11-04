@@ -181,9 +181,9 @@ module Dry
           Maybe::None.instance
         end
 
-        # Transform to a Left instance
+        # Transform to a Right instance
         #
-        # @returns [Either::Left]
+        # @returns [Either::Right]
         def flip
           Right.new(@value)
         end
