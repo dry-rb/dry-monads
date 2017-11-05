@@ -29,6 +29,7 @@ module Dry
       def to_result
         self
       end
+      alias to_either to_result
 
       # Returns the Result monad.
       # This is how we're doing polymorphism in Ruby 😕
@@ -63,11 +64,13 @@ module Dry
         def failure?
           false
         end
+        alias left? failure?
 
         # Returns true
         def success?
           true
         end
+        alias right? success?
 
         # Does the same thing as #bind except it also wraps the value
         # in an instance of Result::Success monad. This allows for easier
@@ -113,6 +116,7 @@ module Dry
         def failure
           @value
         end
+        alias left failure
 
         # @param failure [Object] a value in an error state
         def initialize(value)
@@ -130,11 +134,13 @@ module Dry
         def failure?
           true
         end
+        alias left? failure?
 
         # Returns false
         def success?
           false
         end
+        alias right? success?
 
         # If a block is given passes internal value to it and returns the result,
         # otherwise simply returns the first argument.
@@ -204,13 +210,19 @@ module Dry
         def Success(value)
           Success.new(value)
         end
+        alias_method :Right, :Success
 
         # @param value [Object] the value to be stored in the monad
         # @return [Result::Failure]
         def Failure(value)
           Failure.new(value)
         end
+        alias_method :Left, :Failure
       end
     end
+
+    Either = Result
+    Result::Right = Result::Success
+    Result::Left = Result::Failure
   end
 end

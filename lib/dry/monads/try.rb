@@ -104,6 +104,7 @@ module Dry
         def to_result
           Dry::Monads::Success(@value)
         end
+        alias to_either to_result
 
         # @return [String]
         def to_s
@@ -133,6 +134,7 @@ module Dry
         def to_result
           Dry::Monads::Failure(exception)
         end
+        alias to_either to_result
 
         # @return [String]
         def to_s
