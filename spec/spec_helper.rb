@@ -20,6 +20,7 @@ end
 
 begin
   require 'pry'
+  require 'pry-byebug'
 rescue LoadError
 end
 

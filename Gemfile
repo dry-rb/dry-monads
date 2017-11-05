@@ -9,5 +9,5 @@ end
 
 group :tools do
   gem 'pry-byebug', platform: :mri
-  gem 'pry'
+  gem 'pry', platform: :jruby
 end
