@@ -8,10 +8,10 @@ script:
 after_success:
   - '[ -d coverage ] && bundle exec codeclimate-test-reporter'
 rvm:
-  - 2.2.7
-  - 2.3.4
-  - 2.4.1
-  - jruby-9.1.12.0
+  - 2.2.8
+  - 2.3.5
+  - 2.4.2
+  - jruby-9.1.13.0
   - ruby-head
 env:
   global:
@@ -20,10 +20,6 @@ env:
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - rvm: jruby-head
-  include:
-    - rvm: jruby-head
-      before_install: gem update bundler
 
 notifications:
   email:
