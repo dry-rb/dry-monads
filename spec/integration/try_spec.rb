@@ -6,7 +6,7 @@ RSpec.describe(Dry::Monads::Try) do
 
     example do
       aggregate_failures do
-        expect(try).to be_kind_of(Dry::Monads::Try::Success)
+        expect(try).to be_kind_of(Dry::Monads::Try::Value)
         expect(try.success?).to eql(true)
         expect(try.failure?).to eql(false)
       end
@@ -18,7 +18,7 @@ RSpec.describe(Dry::Monads::Try) do
 
     example do
       aggregate_failures do
-        expect(try).to be_kind_of(Dry::Monads::Try::Failure)
+        expect(try).to be_kind_of(Dry::Monads::Try::Error)
         expect(try.success?).to eql(false)
         expect(try.failure?).to eql(true)
       end
@@ -113,7 +113,7 @@ RSpec.describe(Dry::Monads::Try) do
 
     example do
       aggregate_failures do
-        expect(try).to be_kind_of(Dry::Monads::Try::Failure)
+        expect(try).to be_kind_of(Dry::Monads::Try::Error)
         expect(try.exception).to be_kind_of(NotImplementedError)
       end
     end

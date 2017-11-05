@@ -19,25 +19,27 @@ module Dry
       # @param f [Proc] the proc to be called
       # @return [Try::Success, Try::Failure]
       def self.lift(exceptions, f)
-        Success.new(exceptions, f.call)
+        Value.new(exceptions, f.call)
       rescue *exceptions => e
-        Failure.new(e)
+        Error.new(e)
       end
 
       # Returns true for an instance of a {Try::Success} monad.
-      def success?
-        is_a? Success
+      def value?
+        is_a?(Value)
       end
+      alias_method :success?, :value?
 
       # Returns true for an instance of a {Try::Failure} monad.
-      def failure?
-        is_a? Failure
+      def error?
+        is_a?(Error)
       end
+      alias_method :failure?, :error?
 
       # Represents a result of a successful execution.
       #
       # @api public
-      class Success < Try
+      class Value < Try
         include Dry::Equalizer(:value!, :catchable)
         include RightBiased::Right
 
@@ -72,7 +74,7 @@ module Dry
         def bind(*)
           super
         rescue *catchable => e
-          Failure.new(e)
+          Error.new(e)
         end
 
         # Does the same thing as #bind except it also wraps the value
@@ -88,9 +90,9 @@ module Dry
         #                             just as in #bind
         # @return [Try::Success, Try::Failure]
         def fmap(*args, &block)
-          Success.new(catchable, bind_call(*args, &block))
+          Value.new(catchable, bind_call(*args, &block))
         rescue *catchable => e
-          Failure.new(e)
+          Error.new(e)
         end
 
         # @return [Maybe]
@@ -105,7 +107,7 @@ module Dry
 
         # @return [String]
         def to_s
-          "Try::Success(#{ @value.inspect })"
+          "Try::Value(#{ @value.inspect })"
         end
         alias inspect to_s
       end
@@ -113,7 +115,7 @@ module Dry
       # Represents a result of a failed execution.
       #
       # @api public
-      class Failure < Try
+      class Error < Try
         include Dry::Equalizer(:exception)
         include RightBiased::Left
 
@@ -134,7 +136,7 @@ module Dry
 
         # @return [String]
         def to_s
-          "Try::Failure(#{ exception.class }: #{ exception.message })"
+          "Try::Error(#{ exception.class }: #{ exception.message })"
         end
         alias inspect to_s
 

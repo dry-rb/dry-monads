@@ -3,36 +3,38 @@ require 'English'
 RSpec.describe(Dry::Monads::Try) do
   try = described_class
   result = Dry::Monads::Result
+  success = result::Success.method(:new)
+  failure = result::Failure.method(:new)
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
-  success = try::Success.method(:new)
-  div_success = -> value { success[[ZeroDivisionError], value] }
-  failure = try::Failure.method(:new)
+  value = try::Value.method(:new)
+  div_value = -> v { value[[ZeroDivisionError], v] }
+  error = try::Error.method(:new)
 
   division_error = 1 / 0 rescue $ERROR_INFO
   no_method_error = no_method rescue $ERROR_INFO
 
   let(:upcase) { :upcase.to_proc }
-  let(:divide_by_zero) { ->(_value) { raise division_error } }
+  let(:divide_by_zero) { -> _value { raise division_error } }
 
-  describe(try::Success) do
-    subject { div_success['foo'] }
+  describe(try::Value) do
+    subject { div_value['foo'] }
 
-    let(:upcase_success) { div_success['FOO'] }
-    let(:upcase_failure) { try::Failure.new(division_error) }
+    let(:upcase_value) { div_value['FOO'] }
+    let(:upcase_error) { try::Error.new(division_error) }
 
     it { is_expected.to be_success }
     it { is_expected.not_to be_failure }
 
     it { is_expected.to eql(described_class.new([ZeroDivisionError], 'foo')) }
-    it { is_expected.not_to eql(failure[division_error]) }
+    it { is_expected.not_to eql(error[division_error]) }
 
     it 'dumps to string' do
-      expect(subject.to_s).to eql('Try::Success("foo")')
+      expect(subject.to_s).to eql('Try::Value("foo")')
     end
 
     it 'has custom inspection' do
-      expect(subject.inspect).to eql('Try::Success("foo")')
+      expect(subject.inspect).to eql('Try::Value("foo")')
     end
 
     describe '#bind' do
@@ -45,7 +47,7 @@ RSpec.describe(Dry::Monads::Try) do
       end
 
       it 'captures checked exceptions and return Failure object' do
-        expect(subject.bind { raise division_error }).to be_an_instance_of try::Failure
+        expect(subject.bind { raise division_error }).to be_an_instance_of try::Error
       end
 
       it 'does not rescue unchecked exceptions' do
@@ -53,18 +55,18 @@ RSpec.describe(Dry::Monads::Try) do
       end
 
       it 'passes extra arguments to a block' do
-        result = subject.bind(:foo) do |value, c|
-          expect(value).to eql('foo')
+        tried = subject.bind(:foo) do |v, c|
+          expect(v).to eql('foo')
           expect(c).to eql(:foo)
           true
         end
 
-        expect(result).to be true
+        expect(tried).to be true
       end
 
       it 'passes extra arguments to a proc' do
-        proc = lambda do |value, c|
-          expect(value).to eql('foo')
+        proc = lambda do |v, c|
+          expect(v).to eql('foo')
           expect(c).to eql(:foo)
           true
         end
@@ -77,41 +79,41 @@ RSpec.describe(Dry::Monads::Try) do
 
     describe '#fmap' do
       it 'accepts a proc and lifts the result to Success' do
-        expect(subject.fmap(upcase)).to eql(upcase_success)
+        expect(subject.fmap(upcase)).to eql(upcase_value)
       end
 
       it 'accepts a proc and lifts the result to Failure' do
-        expect(subject.fmap(divide_by_zero)).to eql(upcase_failure)
+        expect(subject.fmap(divide_by_zero)).to eql(upcase_error)
       end
 
       it 'accepts a block and returns Success' do
-        expect(subject.fmap { |s| s.upcase }).to eql(upcase_success)
+        expect(subject.fmap { |s| s.upcase }).to eql(upcase_value)
       end
 
       it 'accepts a block and returns Failure' do
-        expect(subject.fmap { |_s| raise division_error }).to eql(upcase_failure)
+        expect(subject.fmap { |_s| raise division_error }).to eql(upcase_error)
       end
 
       it 'passes extra arguments to a block' do
-        result = subject.fmap(:foo, :bar) do |value, c1, c2|
+        tried = subject.fmap(:foo, :bar) do |val, c1, c2|
           expect(c1).to eql(:foo)
           expect(c2).to eql(:bar)
-          value.upcase
+          val.upcase
         end
 
-        expect(result).to eql(upcase_success)
+        expect(tried).to eql(upcase_value)
       end
 
       it 'passes extra arguments to a proc' do
-        proc = lambda do |value, c1, c2|
+        proc = lambda do |val, c1, c2|
           expect(c1).to eql(:foo)
           expect(c2).to eql(:bar)
-          value.upcase
+          val.upcase
         end
 
-        result = subject.fmap(proc, :foo, :bar)
+        tried = subject.fmap(proc, :foo, :bar)
 
-        expect(result).to eql(upcase_success)
+        expect(tried).to eql(upcase_value)
       end
     end
 
@@ -121,13 +123,13 @@ RSpec.describe(Dry::Monads::Try) do
       end
 
       it 'returns None if value is nil' do
-        expect(div_success[nil].to_maybe).to eql(maybe::None.new)
+        expect(div_value[nil].to_maybe).to eql(maybe::None.new)
       end
     end
 
     describe '#to_result' do
       it 'transforms self to Result::Success' do
-        expect(subject.to_result).to eql(result::Success.new('foo'))
+        expect(subject.to_result).to eql(success['foo'])
       end
     end
 
@@ -148,27 +150,27 @@ RSpec.describe(Dry::Monads::Try) do
     end
 
     describe '#apply' do
-      subject { div_success[:upcase.to_proc] }
+      subject { div_value[:upcase.to_proc] }
 
       it 'applies a wrapped function' do
-        expect(subject.apply(div_success['foo'])).to eql(div_success['FOO'])
-        expect(subject.apply(upcase_failure)).to eql(upcase_failure)
+        expect(subject.apply(div_value['foo'])).to eql(div_value['FOO'])
+        expect(subject.apply(upcase_error)).to eql(upcase_error)
       end
     end
   end
 
-  describe(try::Failure) do
+  describe(try::Error) do
     subject { described_class.new(division_error) }
     other_error = 1 / 0 rescue $ERROR_INFO
 
-    let(:upcase_success) { described_class.new([ZeroDivisionError], 'FOO') }
-    let(:upcase_failure) { try::Failure.new(division_error) }
+    let(:upcase_value) { described_class.new([ZeroDivisionError], 'FOO') }
+    let(:upcase_error) { try::Error.new(division_error) }
 
     it { is_expected.not_to be_success }
     it { is_expected.to be_failure }
 
     it { is_expected.to eql(described_class.new(division_error)) }
-    it { is_expected.not_to eql(try::Success.new([ZeroDivisionError], 'foo')) }
+    it { is_expected.not_to eql(try::Value.new([ZeroDivisionError], 'foo')) }
 
     # This assertion does not always pass on JRuby, but it's some deep JRuby's internals,
     # so let's just ignore it
@@ -177,11 +179,11 @@ RSpec.describe(Dry::Monads::Try) do
     end
 
     it 'dumps to string' do
-      expect(subject.to_s).to eql('Try::Failure(ZeroDivisionError: divided by 0)')
+      expect(subject.to_s).to eql('Try::Error(ZeroDivisionError: divided by 0)')
     end
 
     it 'has custom inspection' do
-      expect(subject.inspect).to eql('Try::Failure(ZeroDivisionError: divided by 0)')
+      expect(subject.inspect).to eql('Try::Error(ZeroDivisionError: divided by 0)')
     end
 
     describe '#bind' do
@@ -220,7 +222,7 @@ RSpec.describe(Dry::Monads::Try) do
 
     describe '#to_result' do
       it 'transforms self to Result::Failure' do
-        expect(subject.to_result).to eql(result::Failure.new(division_error))
+        expect(subject.to_result).to eql(failure[division_error])
       end
     end
 
@@ -242,8 +244,8 @@ RSpec.describe(Dry::Monads::Try) do
 
     describe '#apply' do
       it 'does nothing' do
-        expect(subject.apply(success[[ZeroDivisionError], 'foo'])).to be(subject)
-        expect(subject.apply(failure[division_error])).to be(subject)
+        expect(subject.apply(value[[ZeroDivisionError], 'foo'])).to be(subject)
+        expect(subject.apply(error[division_error])).to be(subject)
       end
     end
   end
