@@ -23,6 +23,8 @@ RSpec.describe(Dry::Monads::Try) do
     let(:upcase_value) { div_value['FOO'] }
     let(:upcase_error) { try::Error.new(division_error) }
 
+    it { is_expected.to be_value }
+    it { is_expected.not_to be_error }
     it { is_expected.to be_success }
     it { is_expected.not_to be_failure }
 
@@ -166,6 +168,8 @@ RSpec.describe(Dry::Monads::Try) do
     let(:upcase_value) { described_class.new([ZeroDivisionError], 'FOO') }
     let(:upcase_error) { try::Error.new(division_error) }
 
+    it { is_expected.not_to be_value }
+    it { is_expected.to be_error }
     it { is_expected.not_to be_success }
     it { is_expected.to be_failure }
 
