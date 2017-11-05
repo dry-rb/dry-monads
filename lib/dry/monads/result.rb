@@ -177,9 +177,9 @@ module Dry
           Maybe::None.instance
         end
 
-        # Transform to a Right instance
+        # Transform to a Success instance
         #
-        # @returns [Either::Right]
+        # @returns [Result::Success]
         def flip
           Success.new(@value)
         end
