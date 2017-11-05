@@ -1,32 +1,30 @@
-RSpec.describe(Dry::Monads::Either) do
-  either = described_class
+RSpec.describe(Dry::Monads::Result) do
+  mresult = described_class
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
-  left = either::Left.method(:new)
-  right = either::Right.method(:new)
+  rfail = mresult::Failure.method(:new)
+  rsucc = mresult::Success.method(:new)
 
   let(:upcase) { :upcase.to_proc }
 
-  describe either::Right do
-    subject { right['foo'] }
+  describe mresult::Success do
+    subject { rsucc['foo'] }
 
-    let(:upcased_subject) { right['FOO'] }
+    let(:upcased_subject) { rsucc['FOO'] }
 
-    it { is_expected.to be_right }
     it { is_expected.to be_success }
 
-    it { is_expected.not_to be_left }
     it { is_expected.not_to be_failure }
 
     it { is_expected.to eql(described_class.new('foo')) }
-    it { is_expected.not_to eql(left['foo']) }
+    it { is_expected.not_to eql(rfail['foo']) }
 
     it 'dumps to string' do
-      expect(subject.to_s).to eql('Right("foo")')
+      expect(subject.to_s).to eql('Success("foo")')
     end
 
     it 'has custom inspection' do
-      expect(subject.inspect).to eql('Right("foo")')
+      expect(subject.inspect).to eql('Success("foo")')
     end
 
     describe '#bind' do
@@ -61,9 +59,9 @@ RSpec.describe(Dry::Monads::Either) do
       end
     end
 
-    describe '#either' do
+    describe '#result' do
       subject do
-        either::Right.new('Foo').either(
+        mresult::Success.new('Foo').result(
           lambda { |v| v.downcase },
           lambda { |v| v.upcase }
         )
@@ -73,7 +71,7 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     describe '#fmap' do
-      it 'accepts a proc and lifts the result to either' do
+      it 'accepts a proc and lifts the result to Result' do
         expect(subject.fmap(upcase)).to eql(upcased_subject)
       end
 
@@ -89,7 +87,7 @@ RSpec.describe(Dry::Monads::Either) do
           true
         end
 
-        expect(result).to eql(either::Right.new(true))
+        expect(result).to eql(mresult::Success.new(true))
       end
 
       it 'passes extra arguments to a proc' do
@@ -102,7 +100,7 @@ RSpec.describe(Dry::Monads::Either) do
 
         result = subject.fmap(proc, :foo, :bar)
 
-        expect(result).to eql(either::Right.new(true))
+        expect(result).to eql(mresult::Success.new(true))
       end
     end
 
@@ -134,23 +132,23 @@ RSpec.describe(Dry::Monads::Either) do
       end
     end
 
-    describe '#to_either' do
-      subject { either::Right.new('foo').to_either }
+    describe '#to_result' do
+      subject { mresult::Success.new('foo').to_result }
 
       it 'returns self' do
-        is_expected.to eql(either::Right.new('foo'))
+        is_expected.to eql(mresult::Success.new('foo'))
       end
     end
 
     describe '#to_maybe' do
-      subject { either::Right.new('foo').to_maybe }
+      subject { mresult::Success.new('foo').to_maybe }
 
       it { is_expected.to be_an_instance_of maybe::Some }
       it { is_expected.to eql(some['foo']) }
 
       context 'value is nil' do
         around { |ex| suppress_warnings { ex.run } }
-        subject { either::Right.new(nil).to_maybe }
+        subject { mresult::Success.new(nil).to_maybe }
 
         it { is_expected.to be_an_instance_of maybe::None }
         it { is_expected.to eql(maybe::None.new) }
@@ -158,13 +156,13 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     describe '#tee' do
-      it 'passes through itself when the block returns a Right' do
-        expect(subject.tee(->(*) { either::Right.new('ignored') })).to eql(subject)
+      it 'passes through itself when the block returns a Success' do
+        expect(subject.tee(->(*) { mresult::Success.new('ignored') })).to eql(subject)
       end
 
-      it 'returns the block result when it is a left' do
-        expect(subject.tee(->(*) { either::Left.new('failure') }))
-          .to be_an_instance_of either::Left
+      it 'returns the block result when it is a Failure' do
+        expect(subject.tee(->(*) { mresult::Failure.new('failure') }))
+          .to be_an_instance_of mresult::Failure
       end
     end
 
@@ -179,7 +177,7 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     context 'keyword values' do
-      subject { either::Right.new(foo: 'foo') }
+      subject { mresult::Success.new(foo: 'foo') }
       let(:struct) { Class.new(Hash)[bar: 'foo'] }
 
       describe '#bind' do
@@ -194,14 +192,14 @@ RSpec.describe(Dry::Monads::Either) do
         end
 
         it "doesn't use destructuring if it's not needed" do
-          expect(right.(struct).bind { |x| x }.class).to be(struct.class)
-          expect(right.(struct).bind(nil, bar: 1) { |x| x }.class).to be(struct.class)
+          expect(rsucc.(struct).bind { |x| x }.class).to be(struct.class)
+          expect(rsucc.(struct).bind(nil, bar: 1) { |x| x }.class).to be(struct.class)
         end
       end
     end
 
     context 'mixed values' do
-      subject { either::Right.new(foo: 'foo', 'bar' => 'bar') }
+      subject { mresult::Success.new(foo: 'foo', 'bar' => 'bar') }
 
       describe '#bind' do
         it 'passed extra keywords to block along with value' do
@@ -228,17 +226,17 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     describe '#flip' do
-      it 'transforms Right to Left' do
-        expect(subject.flip).to eql(left['foo'])
+      it 'transforms Success to Failure' do
+        expect(subject.flip).to eql(rfail['foo'])
       end
     end
 
     describe '#apply' do
-      subject { right[:upcase.to_proc] }
+      subject { rsucc[:upcase.to_proc] }
 
       it 'applies a wrapped function' do
-        expect(subject.apply(right['foo'])).to eql(right['FOO'])
-        expect(subject.apply(left['foo'])).to eql(left['foo'])
+        expect(subject.apply(rsucc['foo'])).to eql(rsucc['FOO'])
+        expect(subject.apply(rfail['foo'])).to eql(rfail['foo'])
       end
     end
 
@@ -249,24 +247,22 @@ RSpec.describe(Dry::Monads::Either) do
     end
   end
 
-  describe either::Left do
-    subject { either::Left.new('bar') }
+  describe mresult::Failure do
+    subject { mresult::Failure.new('bar') }
 
-    it { is_expected.not_to be_right }
     it { is_expected.not_to be_success }
 
-    it { is_expected.to be_left }
     it { is_expected.to be_failure }
 
     it { is_expected.to eql(described_class.new('bar')) }
-    it { is_expected.not_to eql(either::Right.new('bar')) }
+    it { is_expected.not_to eql(mresult::Success.new('bar')) }
 
     it 'dumps to string' do
-      expect(subject.to_s).to eql('Left("bar")')
+      expect(subject.to_s).to eql('Failure("bar")')
     end
 
     it 'has custom inspection' do
-      expect(subject.inspect).to eql('Left("bar")')
+      expect(subject.inspect).to eql('Failure("bar")')
     end
 
     describe '#bind' do
@@ -283,9 +279,9 @@ RSpec.describe(Dry::Monads::Either) do
       end
     end
 
-    describe '#either' do
+    describe '#result' do
       subject do
-        either::Left.new('Foo').either(
+        mresult::Failure.new('Foo').result(
           lambda { |v| v.downcase },
           lambda { |v| v.upcase }
         )
@@ -331,11 +327,11 @@ RSpec.describe(Dry::Monads::Either) do
 
     describe '#or_fmap' do
       it 'maps an alternative' do
-        expect(subject.or_fmap('baz')).to eql(right['baz'])
+        expect(subject.or_fmap('baz')).to eql(rsucc['baz'])
       end
 
       it 'accepts a block' do
-        expect(subject.or_fmap { 'baz' }).to eql(right['baz'])
+        expect(subject.or_fmap { 'baz' }).to eql(rsucc['baz'])
       end
 
       it 'passes extra arguments to a block' do
@@ -346,20 +342,20 @@ RSpec.describe(Dry::Monads::Either) do
           'baz'
         end
 
-        expect(result).to eql(right['baz'])
+        expect(result).to eql(rsucc['baz'])
       end
     end
 
-    describe '#to_either' do
-      let(:subject) { either::Left.new('bar').to_either }
+    describe '#to_result' do
+      let(:subject) { mresult::Failure.new('bar').to_result }
 
       it 'returns self' do
-        is_expected.to eql(either::Left.new('bar'))
+        is_expected.to eql(mresult::Failure.new('bar'))
       end
     end
 
     describe '#to_maybe' do
-      let(:subject) { either::Left.new('bar').to_maybe }
+      let(:subject) { mresult::Failure.new('bar').to_maybe }
 
       it { is_expected.to be_an_instance_of maybe::None }
       it { is_expected.to eql(maybe::None.new) }
@@ -380,8 +376,8 @@ RSpec.describe(Dry::Monads::Either) do
     end
 
     describe '#flip' do
-      it 'transforms Left to Right' do
-        expect(subject.flip).to eql(right['bar'])
+      it 'transforms Failure to Success' do
+        expect(subject.flip).to eql(rsucc['bar'])
       end
     end
 
@@ -397,14 +393,14 @@ RSpec.describe(Dry::Monads::Either) do
 
     describe '#apply' do
       it 'does nothing' do
-        expect(subject.apply(right['foo'])).to be(subject)
-        expect(subject.apply(left['foo'])).to be(subject)
+        expect(subject.apply(rsucc['foo'])).to be(subject)
+        expect(subject.apply(rfail['foo'])).to be(subject)
       end
     end
 
     describe '#value!' do
       it 'raises an error' do
-        expect { subject.value! }.to raise_error(Dry::Monads::UnwrapError, 'value! was called on Left("bar")')
+        expect { subject.value! }.to raise_error(Dry::Monads::UnwrapError, 'value! was called on Failure("bar")')
       end
     end
   end

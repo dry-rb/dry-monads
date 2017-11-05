@@ -1,18 +1,18 @@
 RSpec.describe(Dry::Monads::Transformer) do
   list = Dry::Monads::List
-  right = Dry::Monads::Either::Right.method(:new)
-  left = Dry::Monads::Either::Left.method(:new)
+  success = Dry::Monads::Result::Success.method(:new)
+  failure = Dry::Monads::Result::Failure.method(:new)
   some = Dry::Monads::Maybe::Some.method(:new)
   none = Dry::Monads::Maybe::None.new
 
   context '2-level composition' do
-    context 'List Either String' do
-      subject(:value) { list[right.('success'), left.('failure')] }
+    context 'List Result String' do
+      subject(:value) { list[success.('success'), failure.('failure')] }
 
       context 'using fmap2' do
         example 'for lifting the block' do
           expect(value.fmap2 { |v| v.upcase }).
-            to eql(list[right.('SUCCESS'), left.('failure')])
+            to eql(list[success.('SUCCESS'), failure.('failure')])
         end
 
         example 'for lifting over the empty list' do
@@ -21,7 +21,7 @@ RSpec.describe(Dry::Monads::Transformer) do
 
         example 'with a proc' do
           expect(value.fmap2(-> v { v.upcase })).
-            to eql(list[right.('SUCCESS'), left.('failure')])
+            to eql(list[success.('SUCCESS'), failure.('failure')])
         end
       end
     end
@@ -35,16 +35,16 @@ RSpec.describe(Dry::Monads::Transformer) do
       end
     end
 
-    context 'Either Maybe String' do
+    context 'Result Maybe String' do
       context 'using fmap2' do
-        example 'with Right Some' do
-          expect(right.(some.('result')).fmap2(&:upcase)).
-            to eql(right.(some.('RESULT')))
+        example 'with Success Some' do
+          expect(success.(some.('result')).fmap2(&:upcase)).
+            to eql(success.(some.('RESULT')))
         end
 
-        example 'with Left None' do
-          expect(left.(none).fmap2 { fail }).
-            to eql(left.(none))
+        example 'with Failure None' do
+          expect(failure.(none).fmap2 { fail }).
+            to eql(failure.(none))
         end
       end
     end
@@ -65,23 +65,23 @@ RSpec.describe(Dry::Monads::Transformer) do
   end
 
   context '3-level composition' do
-    context 'list of eithers' do
-      subject(:value) { list[right.(some.('success')),
-                             right.(none),
-                             left.(some.('failure')),
-                             left.(none)] }
+    context 'list of results' do
+      subject(:value) { list[success.(some.('success')),
+                             success.(none),
+                             failure.(some.('failure')),
+                             failure.(none)] }
 
       context 'using fmap3' do
         example 'lifting a block' do
           expect(value.fmap3 { |v| v.upcase }).
-            to eql(list[right.(some.('SUCCESS')), right.(none),
-                        left.(some.('failure')), left.(none)])
+            to eql(list[success.(some.('SUCCESS')), success.(none),
+                        failure.(some.('failure')), failure.(none)])
         end
 
         example 'lifting a proc' do
           expect(value.fmap3(-> v { v.upcase })).
-            to eql(list[right.(some.('SUCCESS')), right.(none),
-                        left.(some.('failure')), left.(none)])
+            to eql(list[success.(some.('SUCCESS')), success.(none),
+                        failure.(some.('failure')), failure.(none)])
         end
       end
     end

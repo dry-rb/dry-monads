@@ -89,21 +89,21 @@ RSpec.describe(Dry::Monads::Try) do
     end
   end
 
-  context 'to either success' do
-    let(:try) { Try { 10 / 5 }.to_either }
+  context 'to result success' do
+    let(:try) { Try { 10 / 5 }.to_result }
 
     example do
-      expect(try).to eql(Dry::Monads::Right(2))
+      expect(try).to eql(Dry::Monads::Success(2))
     end
   end
 
-  context 'to either failure' do
-    let(:try) { Try { 10 / 0 }.to_either }
+  context 'to result failure' do
+    let(:try) { Try { 10 / 0 }.to_result }
 
     example do
       aggregate_failures do
-        expect(try).to be_kind_of(Dry::Monads::Either::Left)
-        expect(try.left).to be_kind_of(ZeroDivisionError)
+        expect(try).to be_kind_of(Dry::Monads::Result::Failure)
+        expect(try.failure).to be_kind_of(ZeroDivisionError)
       end
     end
   end

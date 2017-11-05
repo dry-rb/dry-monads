@@ -1,8 +1,8 @@
 RSpec.describe(Dry::Monads) do
   let(:m) { described_class }
-  either = Dry::Monads::Either
   maybe = Dry::Monads::Maybe
   list = Dry::Monads::List
+  result = Dry::Monads::Result
 
   describe 'maybe monad' do
     describe '.Maybe' do
@@ -36,20 +36,6 @@ RSpec.describe(Dry::Monads) do
     end
   end
 
-  describe 'either monad' do
-    describe '.Right' do
-      subject { m.Right('everything went right') }
-
-      it { is_expected.to eq either::Right.new('everything went right') }
-    end
-
-    describe '.Left' do
-      subject { m.Left('something has gone wrong') }
-
-      it { is_expected.to eq either::Left.new('something has gone wrong') }
-    end
-  end
-
   describe 'list monad' do
     subject(:instance) do
       module Test
@@ -69,4 +55,19 @@ RSpec.describe(Dry::Monads) do
       expect(instance.get_list).to eql(list[1, 2, 3])
     end
   end
+
+   describe 'result monad' do
+    describe '.Success' do
+      subject { m.Success('everything went right') }
+
+      it { is_expected.to eq result::Success.new('everything went right') }
+    end
+
+    describe '.Failure' do
+      subject { m.Failure('something has gone wrong') }
+
+      it { is_expected.to eq result::Failure.new('something has gone wrong') }
+    end
+  end
+
 end
