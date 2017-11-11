@@ -11,6 +11,15 @@
 * `Maybe#success?` and `Maybe#failure?` (aliases for `#some?` and `#none?`) (flash-gordon)
 * `Either#flip` inverts a `Result` value  (flash-gordon)
 * `List#map` called without a block returns an `Enumerator` object (flash-gordon)
+* Right-biased monads (`Maybe`, `Result`, and `Try`) now implement the `===` operator which is used for equality checks in the `case` statement (flash-gordon)
+  ```ruby
+    case value
+    when Some(1..100)       then :ok
+    when Some { |x| x < 0 } then :negative
+    when Some(Integer)      then :invalid
+    else raise TypeError
+    end
+  ```
 
 ## Deprecated
 
