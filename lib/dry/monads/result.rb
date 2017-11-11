@@ -201,6 +201,8 @@ module Dry
           end
         end
 
+        # @param other [Result]
+        # @return [Boolean]
         def ===(other)
           Failure === other && failure === other.failure
         end

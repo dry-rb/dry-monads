@@ -162,6 +162,8 @@ module Dry
           end
         end
 
+        # @param other [Try]
+        # @return [Boolean]
         def ===(other)
           Error === other && exception === other.exception
         end
