@@ -1,3 +1,4 @@
 --markup-provider=redcarpet
 --markup=markdown
+--plugin junk
 lib/**/*.rb

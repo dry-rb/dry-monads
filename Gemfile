@@ -14,5 +14,6 @@ end
 
 group :docs do
   gem 'yard'
+  gem 'yard-junk'
   gem 'redcarpet'
 end

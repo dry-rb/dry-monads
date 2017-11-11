@@ -71,7 +71,7 @@ module Dry
         #                             object and the rest of args will be passed
         #                             to this object along with the internal value
         # @return [Object, Try::Error]
-        def bind(*)
+        def bind(*args)
           super
         rescue *catchable => e
           Error.new(e)
@@ -181,10 +181,12 @@ module Dry
 
         DEFAULT_EXCEPTIONS = [StandardError].freeze
 
-        # A convenience wrapper for {Try.lift}.
+        # A convenience wrapper for {Monads::Try.lift}.
         # If no exceptions are provided it falls back to StandardError.
         # In general, relying on this behaviour is not recommended as it can lead to unnoticed
         # bugs and it is always better to explicitly specify a list of exceptions if possible.
+        #
+        # @param exceptions [Array<Exception>]
         def Try(*exceptions, &f)
           catchable = exceptions.empty? ? DEFAULT_EXCEPTIONS : exceptions.flatten
           Try.lift(catchable, f)

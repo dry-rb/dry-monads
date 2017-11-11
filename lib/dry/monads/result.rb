@@ -48,7 +48,7 @@ module Dry
 
         alias_method :success, :value!
 
-        # @param success [Object] a value of a successful operation
+        # @param value [Object] a value of a successful operation
         def initialize(value)
           @value = value
         end
@@ -99,7 +99,7 @@ module Dry
 
         # Transform to a Failure instance
         #
-        # @returns [Result::Failure]
+        # @return [Result::Failure]
         def flip
           Failure.new(@value)
         end
@@ -118,7 +118,7 @@ module Dry
         end
         alias_method :left, :failure
 
-        # @param failure [Object] a value in an error state
+        # @param value [Object] a value in an error state
         def initialize(value)
           @value = value
         end
@@ -185,7 +185,7 @@ module Dry
 
         # Transform to a Success instance
         #
-        # @returns [Result::Success]
+        # @return [Result::Success]
         def flip
           Success.new(@value)
         end

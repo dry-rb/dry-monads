@@ -202,7 +202,7 @@ module Dry
 
         # Returns the passed value
         #
-        # @returns [Object]
+        # @return [Object]
         def value_or(val = nil)
           if block_given?
             yield

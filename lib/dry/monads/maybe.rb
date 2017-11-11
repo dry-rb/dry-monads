@@ -68,8 +68,8 @@ module Dry
       #
       # @api public
       class Some < Maybe
-        include RightBiased::Right
         include Dry::Equalizer(:value!)
+        include RightBiased::Right
 
         def initialize(value)
           raise ArgumentError, 'nil cannot be some' if value.nil?
