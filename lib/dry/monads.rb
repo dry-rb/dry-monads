@@ -15,6 +15,11 @@ module Dry
       Result::Mixin::Constructors
     ].freeze
 
+    Some = Maybe::Some
+    None = Maybe::None
+    Success = Result::Success
+    Failure = Result::Failure
+
     extend(*CONSTRUCTORS)
 
     def self.included(base)
