@@ -178,6 +178,15 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(subject.apply(none)).to eql(none)
       end
     end
+
+    describe '#===' do
+      it 'matches on the wrapped value' do
+        expect(some['foo']).to be === some['foo']
+        expect(some[/\w+/]).to be === some['foo']
+        expect(some[:bar]).not_to be === some['foo']
+        expect(some[10..50]).to be === some[42]
+      end
+    end
   end
 
   describe maybe::None do
@@ -329,6 +338,16 @@ RSpec.describe(Dry::Monads::Maybe) do
       it 'does nothing' do
         expect(subject.apply(some['foo'])).to be(subject)
         expect(subject.apply(none)).to be(subject)
+      end
+    end
+
+    describe '#===' do
+      it 'matches against other None' do
+        expect(none).to be === maybe::None.new
+      end
+
+      it "doesn't match a Some" do
+        expect(none).not_to be === some['foo']
       end
     end
   end

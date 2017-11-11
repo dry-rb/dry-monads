@@ -80,9 +80,9 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       example 'using block' do
-        result = some.bind do |x|
+        result = some.bind { |x|
           Some(inc[x])
-        end.or(0)
+        }.or(0)
 
         expect(result).to eql(Some(4))
       end
@@ -148,6 +148,36 @@ RSpec.describe(Dry::Monads::Maybe) do
           Some(build_name).apply(Some('John')).apply(Some('Doe'))
         }.to raise_error(TypeError, /Cannot apply/)
       end
+    end
+  end
+
+  context 'matching' do
+    let(:match) do
+      -> value do
+        case value
+        when Some('foo') then :foo_eql
+        when Some(/\w+/) then :bar_rg
+        when Some(42) then :int_match
+        when Some(10..50) then :int_range
+        when Some(-> x { x > 9000 }) then :int_proc_arg
+        when Some { |x| x > 100 } then :int_proc_block
+        when None() then :none
+        else
+          :else
+        end
+      end
+    end
+
+    it 'can be used in a case statement' do
+      expect(match.(Some('foo'))).to eql(:foo_eql)
+      expect(match.(Some('bar'))).to eql(:bar_rg)
+      expect(match.(Some(42))).to eql(:int_match)
+      expect(match.(Some(42.0))).to eql(:int_match)
+      expect(match.(Some(12))).to eql(:int_range)
+      expect(match.(Some(9123))).to eql(:int_proc_arg)
+      expect(match.(Some(144))).to eql(:int_proc_block)
+      expect(match.(None())).to eql(:none)
+      expect(match.(Some(-1))).to eql(:else)
     end
   end
 end

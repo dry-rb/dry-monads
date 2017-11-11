@@ -116,6 +116,10 @@ module Dry
           val.fmap { |unwrapped| curry.(unwrapped) }
         end
 
+        def ===(other)
+          self.class == other.class && value! === other.value!
+        end
+
         private
 
         # @api private

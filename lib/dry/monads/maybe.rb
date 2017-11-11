@@ -1,5 +1,6 @@
 require 'dry/equalizer'
 require 'dry/core/deprecations'
+require 'dry/core/constants'
 
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
@@ -170,8 +171,13 @@ module Dry
 
         # @param value [Object] the value to be stored in the monad
         # @return [Maybe::Some]
-        def Some(value)
-          Some.new(value)
+        def Some(value = Dry::Core::Constants::Undefined, &block)
+          if value.equal?(Dry::Core::Constants::Undefined)
+            raise ArgumentError, "No value given" if block.nil?
+            Some.new(block)
+          else
+            Some.new(value)
+          end
         end
 
         # @return [Maybe::None]
