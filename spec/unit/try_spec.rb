@@ -268,4 +268,38 @@ RSpec.describe(Dry::Monads::Try) do
       end
     end
   end
+
+  describe try::Mixin do
+    subject(:obj) { Object.new.tap { |o| o.extend(try::Mixin) } }
+
+    describe '#Value' do
+      example 'with plain value' do
+        expect(subject.Value('something')).to eql(value[[StandardError], 'something'])
+      end
+
+      example 'with a block' do
+        block = -> { 'something' }
+        expect(subject.Value(&block)).to eql(value[[StandardError], block])
+      end
+
+      it 'raises an ArgumentError on missing value' do
+        expect { subject.Value() }.to raise_error(ArgumentError, 'No value given')
+      end
+    end
+
+    describe '#Error' do
+      example 'with plain value' do
+        expect(subject.Error(division_error)).to eql(error[division_error])
+      end
+
+      example 'with a block' do
+        block = -> { 'something' }
+        expect(subject.Error(&block)).to eql(error[block])
+      end
+
+      it 'raises an ArgumentError on missing value' do
+        expect { subject.Error() }.to raise_error(ArgumentError, 'No value given')
+      end
+    end
+  end
 end

@@ -351,4 +351,29 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
   end
+
+  describe maybe::Mixin do
+    subject(:obj) { Object.new.tap { |o| o.extend(maybe::Mixin) } }
+
+    describe '#Some' do
+      example 'with plain value' do
+        expect(subject.Some('thing')).to eql(some['thing'])
+      end
+
+      example 'with a block' do
+        block = -> { 'thing' }
+        expect(subject.Some(&block)).to eql(some[block])
+      end
+
+      it 'raises an ArgumentError on missing value' do
+        expect { subject.Some() }.to raise_error(ArgumentError, 'No value given')
+      end
+    end
+
+    describe '#None' do
+      example 'returns the singleton' do
+        expect(subject.None()).to be(maybe::None.instance)
+      end
+    end
+  end
 end

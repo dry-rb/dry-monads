@@ -6,13 +6,13 @@ RSpec.describe(Dry::Monads) do
 
   describe 'maybe monad' do
     describe '.Maybe' do
-      describe 'lifting to Some' do
+      describe 'mapping to Some' do
         subject { m.Some(5) }
 
         it { is_expected.to eq maybe::Some.new(5) }
       end
 
-      describe 'lifting to None' do
+      describe 'mapping to None' do
         subject { m.Maybe(nil) }
 
         it { is_expected.to eq maybe::None.new }
@@ -20,12 +20,25 @@ RSpec.describe(Dry::Monads) do
     end
 
     describe '.Some' do
-      subject { m.Some(10) }
+      context 'with a value' do
+        subject { m.Some(10) }
 
-      it { is_expected.to eq maybe::Some.new(10) }
+        it { is_expected.to eq maybe::Some.new(10) }
 
-      example 'lifting nil produces an error' do
-        expect { m.Some(nil) }.to raise_error(ArgumentError)
+        example 'mapping nil produces an error' do
+          expect { m.Some(nil) }.to raise_error(ArgumentError)
+        end
+      end
+
+      describe 'lifting a block' do
+        let(:block) { -> _ { Integer } }
+        subject { m.Some(&block) }
+
+        it { is_expected.to eql(maybe::Some.new(block)) }
+      end
+
+      example 'using without values produces an error' do
+        expect { m.Some() }.to raise_error(ArgumentError, 'No value given')
       end
     end
 
@@ -56,18 +69,17 @@ RSpec.describe(Dry::Monads) do
     end
   end
 
-   describe 'result monad' do
+  describe 'result monad' do
     describe '.Success' do
       subject { m.Success('everything went right') }
 
-      it { is_expected.to eq result::Success.new('everything went right') }
+      it { is_expected.to eql(result::Success.new('everything went right')) }
     end
 
     describe '.Failure' do
       subject { m.Failure('something has gone wrong') }
 
-      it { is_expected.to eq result::Failure.new('something has gone wrong') }
+      it { is_expected.to eql(result::Failure.new('something has gone wrong')) }
     end
   end
-
 end

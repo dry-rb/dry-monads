@@ -3,6 +3,7 @@ require 'dry/core/constants'
 
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
+require 'dry/monads/maybe'
 
 module Dry
   module Monads
@@ -210,29 +211,33 @@ module Dry
         Success = Dry::Monads::Result::Success
         Failure = Dry::Monads::Result::Failure
 
-        # @param value [Object] the value to be stored in the monad
-        # @return [Result::Success]
-        def Success(value = Dry::Core::Constants::Undefined, &block)
-          if value.equal?(Dry::Core::Constants::Undefined)
-            raise ArgumentError, "No value given" if block.nil?
-            Success.new(block)
-          else
-            Success.new(value)
+        module Constructors
+          # @param value [Object] the value to be stored in the monad
+          # @return [Result::Success]
+          def Success(value = Dry::Core::Constants::Undefined, &block)
+            if value.equal?(Dry::Core::Constants::Undefined)
+              raise ArgumentError, 'No value given' if block.nil?
+              Success.new(block)
+            else
+              Success.new(value)
+            end
           end
-        end
-        alias_method :Right, :Success
+          alias_method :Right, :Success
 
-        # @param value [Object] the value to be stored in the monad
-        # @return [Result::Failure]
-        def Failure(value = Dry::Core::Constants::Undefined, &block)
-          if value.equal?(Dry::Core::Constants::Undefined)
-            raise ArgumentError, "No value given" if block.nil?
-            Failure.new(block)
-          else
-            Failure.new(value)
+          # @param value [Object] the value to be stored in the monad
+          # @return [Result::Failure]
+          def Failure(value = Dry::Core::Constants::Undefined, &block)
+            if value.equal?(Dry::Core::Constants::Undefined)
+              raise ArgumentError, 'No value given' if block.nil?
+              Failure.new(block)
+            else
+              Failure.new(value)
+            end
           end
+          alias_method :Left, :Failure
         end
-        alias_method :Left, :Failure
+
+        include Constructors
       end
     end
 

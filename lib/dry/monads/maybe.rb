@@ -163,27 +163,31 @@ module Dry
         Some = Some
         None = None
 
-        # @param value [Object] the value to be stored in the monad
-        # @return [Maybe::Some, Maybe::None]
-        def Maybe(value)
-          Maybe.lift(value)
-        end
+        module Constructors
+          # @param value [Object] the value to be stored in the monad
+          # @return [Maybe::Some, Maybe::None]
+          def Maybe(value)
+            Maybe.lift(value)
+          end
 
-        # @param value [Object] the value to be stored in the monad
-        # @return [Maybe::Some]
-        def Some(value = Dry::Core::Constants::Undefined, &block)
-          if value.equal?(Dry::Core::Constants::Undefined)
-            raise ArgumentError, "No value given" if block.nil?
-            Some.new(block)
-          else
-            Some.new(value)
+          # @param value [Object] the value to be stored in the monad
+          # @return [Maybe::Some]
+          def Some(value = Dry::Core::Constants::Undefined, &block)
+            if value.equal?(Dry::Core::Constants::Undefined)
+              raise ArgumentError, 'No value given' if block.nil?
+              Some.new(block)
+            else
+              Some.new(value)
+            end
+          end
+
+          # @return [Maybe::None]
+          def None
+            None.instance
           end
         end
 
-        # @return [Maybe::None]
-        def None
-          None.instance
-        end
+        include Constructors
       end
     end
   end

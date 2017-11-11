@@ -1,6 +1,8 @@
 require 'dry/equalizer'
 
 require 'dry/monads/right_biased'
+require 'dry/monads/result'
+require 'dry/monads/maybe'
 
 module Dry
   module Monads
@@ -198,7 +200,7 @@ module Dry
 
         def Value(value = Undefined, exceptions = DEFAULT_EXCEPTIONS, &block)
           if value.equal?(Undefined)
-            raise ArgumentError, "No value given" if block.nil?
+            raise ArgumentError, 'No value given' if block.nil?
             Try::Value.new(exceptions, block)
           else
             Try::Value.new(exceptions, value)
@@ -207,7 +209,7 @@ module Dry
 
         def Error(error = Undefined, &block)
           if error.equal?(Undefined)
-            raise ArgumentError, "No value given" if block.nil?
+            raise ArgumentError, 'No value given' if block.nil?
             Try::Error.new(block)
           else
             Try::Error.new(error)

@@ -8,54 +8,19 @@ require 'dry/monads/result/fixed'
 module Dry
   # @api public
   module Monads
-    extend self
-
     Undefined = Dry::Core::Constants::Undefined
 
-    # Stores the given value in one of the subtypes of {Maybe} monad.
-    # It is essentially a wrapper for {Maybe.lift}.
-    #
-    # @param value [Object] the value to be stored in the monad
-    # @return [Maybe::Some, Maybe::None]
-    def Maybe(value)
-      Maybe.lift(value)
-    end
+    CONSTRUCTORS = [
+      Maybe::Mixin::Constructors,
+      Result::Mixin::Constructors
+    ].freeze
 
-    # @param value [Object] the value to be stored in the monad
-    # @return [Maybe::Some]
-    def Some(value)
-      Maybe::Some.new(value)
-    end
+    extend(*CONSTRUCTORS)
 
-    # @return [Maybe::None]
-    def None
-      Maybe::Some::None.instance
-    end
+    def self.included(base)
+      super
 
-    # @note This method is provided for backwards compatibility.
-    # @param value [Object] the value to be stored in the monad
-    # @return [Result::Success]
-    def Right(value)
-      Result::Success.new(value)
-    end
-
-    # @note This method is provided for backwards compatibility.
-    # @param value [Object] the value to be stored in the monad
-    # @return [Result::Failure]
-    def Left(value)
-      Result::Failure.new(value)
-    end
-
-    # @param value [Object] the value to be stored in the monad
-    # @return [Result::Success]
-    def Success(value)
-      Result::Success.new(value)
-    end
-
-    # @param value [Object] the value to be stored in the monad
-    # @return [Result::Failure]
-    def Failure(value)
-      Result::Failure.new(value)
+      base.include(*CONSTRUCTORS)
     end
 
     # Creates a module that has two methods: `Success` and `Failure`.
@@ -89,7 +54,7 @@ module Dry
     #
     # @param error [#===] the type of allowed failures
     # @return [Module]
-    def Result(error, **options)
+    def self.Result(error, **options)
       Result::Fixed[error, **options]
     end
   end
