@@ -1,6 +1,4 @@
 RSpec.describe(Dry::Monads::Result) do
-  result = described_class
-
   include Dry::Monads::Result::Mixin
 
   describe 'matching' do
