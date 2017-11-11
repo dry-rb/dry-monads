@@ -4,6 +4,8 @@ RSpec.describe(Dry::Monads::Result) do
   include Dry::Monads::Result::Mixin
 
   describe 'matching' do
+    include Dry::Monads::Maybe::Mixin
+
     let(:match) do
       -> value do
         case value
@@ -34,6 +36,11 @@ RSpec.describe(Dry::Monads::Result) do
       expect(match.(Failure('foo'))).to eql(:failure_rg)
       expect(match.(Failure(100))).to eql(:failure_block)
       expect(match.(Success(-1))).to eql(:else)
+    end
+
+    it 'works with nested values' do
+      expect(Success(Some(Integer))).to be === Success(Some(5))
+      expect(Success(Some(Integer))).not_to be === Success(None())
     end
   end
 end
