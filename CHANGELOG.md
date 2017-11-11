@@ -1,4 +1,4 @@
-# v0.4.0 to-be-released
+# v0.4.0 2017-11-11
 
 ## Changed
 
@@ -25,7 +25,7 @@
 
 * Direct accessing `value` on right-biased monads has been deprecated, use the `value!` method instead. `value!` will raise an exception if it is called on a Sailure/None/Error instance (flash-gordon)
 
-[Compare v0.3.1...master](https://github.com/dry-rb/dry-monads/compare/v0.3.1...master)
+[Compare v0.3.1...v0.4.0](https://github.com/dry-rb/dry-monads/compare/v0.3.1...v0.4.0)
 
 # v0.3.1 2017-03-18
 
