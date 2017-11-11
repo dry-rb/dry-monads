@@ -94,7 +94,7 @@ module Dry
         def to_s
           "Some(#{ @value.inspect })"
         end
-        alias inspect to_s
+        alias_method :inspect, :to_s
       end
 
       # Represents an absence of a value, i.e. the value nil.
@@ -142,13 +142,13 @@ module Dry
         def to_s
           'None'
         end
-        alias inspect to_s
+        alias_method :inspect, :to_s
 
         # @api private
         def eql?(other)
           other.is_a?(None)
         end
-        alias == eql?
+        alias_method :==, :eql?
 
         # @api private
         def hash

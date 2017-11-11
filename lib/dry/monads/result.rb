@@ -29,7 +29,7 @@ module Dry
       def to_result
         self
       end
-      alias to_either to_result
+      alias_method :to_either, :to_result
 
       # Returns the Result monad.
       # This is how we're doing polymorphism in Ruby 😕
@@ -46,7 +46,7 @@ module Dry
         include RightBiased::Right
         include Dry::Equalizer(:value!)
 
-        alias success value!
+        alias_method :success, :value!
 
         # @param success [Object] a value of a successful operation
         def initialize(value)
@@ -64,13 +64,13 @@ module Dry
         def failure?
           false
         end
-        alias left? failure?
+        alias_method :left?, :failure?
 
         # Returns true
         def success?
           true
         end
-        alias right? success?
+        alias_method :right?, :success?
 
         # Does the same thing as #bind except it also wraps the value
         # in an instance of Result::Success monad. This allows for easier
@@ -89,7 +89,7 @@ module Dry
         def to_s
           "Success(#{ @value.inspect })"
         end
-        alias inspect to_s
+        alias_method :inspect, :to_s
 
         # @return [Maybe::Some]
         def to_maybe
@@ -116,7 +116,7 @@ module Dry
         def failure
           @value
         end
-        alias left failure
+        alias_method :left, :failure
 
         # @param failure [Object] a value in an error state
         def initialize(value)
@@ -134,13 +134,13 @@ module Dry
         def failure?
           true
         end
-        alias left? failure?
+        alias_method :left?, :failure?
 
         # Returns false
         def success?
           false
         end
-        alias right? success?
+        alias_method :right?, :success?
 
         # If a block is given passes internal value to it and returns the result,
         # otherwise simply returns the first argument.
@@ -176,7 +176,7 @@ module Dry
         def to_s
           "Failure(#{ @value.inspect })"
         end
-        alias inspect to_s
+        alias_method :inspect, :to_s
 
         # @return [Maybe::None]
         def to_maybe

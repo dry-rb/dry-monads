@@ -52,7 +52,7 @@ module Dry
           @value = value
         end
 
-        alias bind_call bind
+        alias_method :bind_call, :bind
         private :bind_call
 
         # Calls the passed in Proc object with value stored in self
@@ -104,13 +104,13 @@ module Dry
         def to_result
           Dry::Monads::Success(@value)
         end
-        alias to_either to_result
+        alias_method :to_either, :to_result
 
         # @return [String]
         def to_s
           "Try::Value(#{ @value.inspect })"
         end
-        alias inspect to_s
+        alias_method :inspect, :to_s
       end
 
       # Represents a result of a failed execution.
@@ -134,13 +134,13 @@ module Dry
         def to_result
           Dry::Monads::Failure(exception)
         end
-        alias to_either to_result
+        alias_method :to_either, :to_result
 
         # @return [String]
         def to_s
           "Try::Error(#{ exception.class }: #{ exception.message })"
         end
-        alias inspect to_s
+        alias_method :inspect, :to_s
 
         # If a block is given passes internal value to it and returns the result,
         # otherwise simply returns the first argument.
