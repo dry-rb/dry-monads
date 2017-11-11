@@ -12,25 +12,25 @@ module Dry
       attr_reader :exception
 
       # Calls the passed in proc object and if successful stores the result in a
-      # {Try::Success} monad, but if one of the specified exceptions was raised it stores
-      # it in a {Try::Failure} monad.
+      # {Try::Value} monad, but if one of the specified exceptions was raised it stores
+      # it in a {Try::Error} monad.
       #
       # @param exceptions [Array<Exception>] list of exceptions to be rescued
       # @param f [Proc] the proc to be called
-      # @return [Try::Success, Try::Failure]
+      # @return [Try::Value, Try::Error]
       def self.lift(exceptions, f)
         Value.new(exceptions, f.call)
       rescue *exceptions => e
         Error.new(e)
       end
 
-      # Returns true for an instance of a {Try::Success} monad.
+      # Returns true for an instance of a {Try::Value} monad.
       def value?
         is_a?(Value)
       end
       alias_method :success?, :value?
 
-      # Returns true for an instance of a {Try::Failure} monad.
+      # Returns true for an instance of a {Try::Error} monad.
       def error?
         is_a?(Error)
       end
@@ -61,16 +61,16 @@ module Dry
         # If proc is nil, it expects a block to be given and will yield to it.
         #
         # @example
-        #   success = Dry::Monads::Try::Success.new(ZeroDivisionError, 10)
+        #   success = Dry::Monads::Try::Value.new(ZeroDivisionError, 10)
         #   success.bind(->(n) { n / 2 }) # => 5
-        #   success.bind { |n| n / 0 } # => Try::Failure(ZeroDivisionError: divided by 0)
+        #   success.bind { |n| n / 0 } # => Try::Error(ZeroDivisionError: divided by 0)
         #
         # @param args [Array<Object>] arguments that will be passed to a block
         #                             if one was given, otherwise the first
         #                             value assumed to be a Proc (callable)
         #                             object and the rest of args will be passed
         #                             to this object along with the internal value
-        # @return [Object, Try::Failure]
+        # @return [Object, Try::Error]
         def bind(*)
           super
         rescue *catchable => e
@@ -82,13 +82,13 @@ module Dry
         # chaining of calls.
         #
         # @example
-        #   success = Dry::Monads::Try::Success.new(ZeroDivisionError, 10)
+        #   success = Dry::Monads::Try::Value.new(ZeroDivisionError, 10)
         #   success.fmap(&:succ).fmap(&:succ).value # => 12
         #   success.fmap(&:succ).fmap { |n| n / 0 }.fmap(&:succ).value # => nil
         #
         # @param args [Array<Object>] extra arguments for the block, arguments are being processes
         #                             just as in #bind
-        # @return [Try::Success, Try::Failure]
+        # @return [Try::Value, Try::Error]
         def fmap(*args, &block)
           Value.new(catchable, bind_call(*args, &block))
         rescue *catchable => e
