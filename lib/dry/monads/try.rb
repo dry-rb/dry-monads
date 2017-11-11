@@ -159,6 +159,10 @@ module Dry
             args[0]
           end
         end
+
+        def ===(other)
+          Error === other && exception === other.exception
+        end
       end
 
       # A module that can be included for easier access to Try monads.
@@ -190,6 +194,24 @@ module Dry
         def Try(*exceptions, &f)
           catchable = exceptions.empty? ? DEFAULT_EXCEPTIONS : exceptions.flatten
           Try.lift(catchable, f)
+        end
+
+        def Value(value = Undefined, exceptions = DEFAULT_EXCEPTIONS, &block)
+          if value.equal?(Undefined)
+            raise ArgumentError, "No value given" if block.nil?
+            Try::Value.new(exceptions, block)
+          else
+            Try::Value.new(exceptions, value)
+          end
+        end
+
+        def Error(error = Undefined, &block)
+          if error.equal?(Undefined)
+            raise ArgumentError, "No value given" if block.nil?
+            Try::Error.new(block)
+          else
+            Try::Error.new(error)
+          end
         end
       end
     end

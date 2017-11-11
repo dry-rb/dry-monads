@@ -1,3 +1,4 @@
+require 'dry/core/constants'
 require 'dry/monads/maybe'
 require 'dry/monads/try'
 require 'dry/monads/list'
@@ -8,6 +9,8 @@ module Dry
   # @api public
   module Monads
     extend self
+
+    Undefined = Dry::Core::Constants::Undefined
 
     # Stores the given value in one of the subtypes of {Maybe} monad.
     # It is essentially a wrapper for {Maybe.lift}.

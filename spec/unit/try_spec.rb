@@ -159,6 +159,14 @@ RSpec.describe(Dry::Monads::Try) do
         expect(subject.apply(upcase_error)).to eql(upcase_error)
       end
     end
+
+    describe '#===' do
+      it 'matches on the wrapped value' do
+        expect(div_value[10]).to be === div_value[10]
+        expect(div_value[Integer]).to be === div_value[10]
+        expect(div_value[String]).not_to be === div_value[10]
+      end
+    end
   end
 
   describe(try::Error) do
@@ -250,6 +258,13 @@ RSpec.describe(Dry::Monads::Try) do
       it 'does nothing' do
         expect(subject.apply(value[[ZeroDivisionError], 'foo'])).to be(subject)
         expect(subject.apply(error[division_error])).to be(subject)
+      end
+    end
+
+    describe '#===' do
+      it 'matches using the error value' do
+        expect(error[division_error]).to be === error[division_error]
+        expect(error[ZeroDivisionError]).to be === error[division_error]
       end
     end
   end

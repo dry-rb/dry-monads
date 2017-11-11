@@ -128,4 +128,38 @@ RSpec.describe(Dry::Monads::Try) do
       end
     end
   end
+
+  describe 'matching' do
+    let(:match) do
+      -> value do
+        case value
+        when Value('foo') then :foo_eql
+        when Value(/\w+/) then :bar_rg
+        when Value(42) then :int_match
+        when Value(10..50) then :int_range
+        when Value(-> x { x > 9000 }) then :int_proc_arg
+        when Value { |x| x > 100 } then :int_proc_block
+        when Error(10) then :ten_eql
+        when Error(/\w+/) then :failure_rg
+        when Error { |x| x > 90 } then :failure_block
+        else
+          :else
+        end
+      end
+    end
+
+    it 'can be used in a case statement' do
+      expect(match.(Value('foo'))).to eql(:foo_eql)
+      expect(match.(Value('bar'))).to eql(:bar_rg)
+      expect(match.(Value(42))).to eql(:int_match)
+      expect(match.(Value(42.0))).to eql(:int_match)
+      expect(match.(Value(12))).to eql(:int_range)
+      expect(match.(Value(9123))).to eql(:int_proc_arg)
+      expect(match.(Value(144))).to eql(:int_proc_block)
+      expect(match.(Error(10))).to eql(:ten_eql)
+      expect(match.(Error('foo'))).to eql(:failure_rg)
+      expect(match.(Error(100))).to eql(:failure_block)
+      expect(match.(Value(-1))).to eql(:else)
+    end
+  end
 end
