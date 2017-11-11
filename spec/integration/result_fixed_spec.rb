@@ -4,36 +4,64 @@ RSpec.describe(Dry::Monads::Result) do
   result = Dry::Monads::Result
   failure = result::Failure.method(:new)
 
-  before do
-    module Test
-      module Types
-        include Dry::Types.module
+  subject { Test::Operation.new }
+
+  context 'dry-types' do
+    before do
+      module Test
+        module Types
+          include Dry::Types.module
+        end
+      end
+    end
+
+    context 'errors as failures' do
+      before do
+        module Test
+          class Operation
+            Error =
+              Types.Instance(ZeroDivisionError) |
+              Types.Instance(NoMethodError)
+
+            include Dry::Monads::Result(Error)
+          end
+        end
       end
 
-      class Operation
-        wrap_error = -> error { Types::Instance(error).constrained(type: error) }
+      let(:division_error) { 1 / 0 rescue $! }
+      let(:no_method_error) { self.missing rescue $! }
+      let(:runtime_error) { 'foo'.freeze.upcase! rescue $! }
 
-        Errors =
-          wrap_error.(ZeroDivisionError) |
-          wrap_error.(NoMethodError)
+      it 'passes with known errors' do
+        expect(subject.Failure(division_error)).to eql(failure.(division_error))
+        expect(subject.Failure(no_method_error)).to eql(failure.(no_method_error))
+      end
 
-        include Dry::Monads::Result(Errors)
+      it 'raises an error on unexpected type' do
+        expect { subject.Failure(runtime_error) }.to raise_error(Dry::Monads::InvalidFailureTypeError)
       end
     end
   end
 
-  subject { Test::Operation.new }
+  context 'arbitrary objects' do
+    before do
+      module Test
+        class Operation
+          include Dry::Monads::Result(Symbol)
+        end
+      end
+    end
 
-  let(:division_error) { 1 / 0 rescue $! }
-  let(:no_method_error) { self.missing rescue $! }
-  let(:runtime_error) { 'foo'.freeze.upcase! rescue $! }
+    it 'wraps symbols with failures' do
+      expect(subject.Failure(:no_user)).to eql(failure.(:no_user))
+    end
 
-  it 'passes with known errors' do
-    expect(subject.Failure(division_error)).to eql(failure.(division_error))
-    expect(subject.Failure(no_method_error)).to eql(failure.(no_method_error))
-  end
-
-  it 'raises an error on unexpected type' do
-    expect { subject.Failure(runtime_error) }.to raise_error(Dry::Types::ConstraintError)
+    it 'raises an error on invalid type' do
+      expect { subject.Failure("no_user") }.
+        to raise_error(
+             Dry::Monads::InvalidFailureTypeError,
+             %q[Cannot create Failure from "no_user", it doesn't meet constraints]
+           )
+    end
   end
 end

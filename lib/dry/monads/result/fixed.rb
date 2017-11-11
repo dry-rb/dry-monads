@@ -8,7 +8,11 @@ module Dry::Monads
       def initialize(error, **options)
         @mod = Module.new do
           define_method(:Failure) do |value|
-            Failure.new(error[value])
+            if error === value
+              Failure.new(value)
+            else
+              raise InvalidFailureTypeError.new(value)
+            end
           end
 
           def Success(value)
