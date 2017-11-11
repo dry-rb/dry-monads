@@ -11,3 +11,8 @@ group :tools do
   gem 'pry-byebug', platform: :mri
   gem 'pry', platform: :jruby
 end
+
+group :docs do
+  gem 'yard'
+  gem 'redcarpet'
+end

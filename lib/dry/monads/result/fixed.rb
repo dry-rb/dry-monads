@@ -1,5 +1,7 @@
 module Dry::Monads
   class Result
+    # @see Monads#Result
+    # @api private
     class Fixed < Module
       def self.[](error, **options)
         new(error, **options)
@@ -21,6 +23,7 @@ module Dry::Monads
         end
       end
 
+      # @api private
       def included(base)
         super
 

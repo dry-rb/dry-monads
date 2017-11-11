@@ -2,7 +2,7 @@ language: ruby
 dist: trusty
 sudo: false
 cache: bundler
-bundler_args: --without benchmarks
+bundler_args: --without benchmarks docs
 script:
   - bundle exec rake spec
 after_success:

@@ -55,6 +55,37 @@ module Dry
       Result::Failure.new(value)
     end
 
+    # Creates a module that has two methods: `Success` and `Failure`.
+    # `Success` is identical to {Monads#Success} and Failure
+    # rejects values that don't conform the value of the `error`
+    # parameter. This is essentially a Result type with the `Failure` part
+    # fixed.
+    #
+    # @example using dry-types
+    #   module Types
+    #     include Dry::Types.module
+    #   end
+    #
+    #   class Operation
+    #     # :user_not_found and :account_not_found are the only
+    #     # values allowed as failure results
+    #     Error =
+    #       Types.Value(:user_not_found) |
+    #       Types.Value(:account_not_found)
+    #
+    #     def find_account(id)
+    #       account = acount_repo.find(id)
+    #
+    #       account ? Success(account) : Failure(:account_not_found)
+    #     end
+    #
+    #     def find_user(id)
+    #       # ...
+    #     end
+    #   end
+    #
+    # @param error [#===] the type of allowed failures
+    # @return [Module]
     def Result(error, **options)
       Result::Fixed[error, **options]
     end
