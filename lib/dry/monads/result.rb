@@ -1,4 +1,5 @@
 require 'dry/equalizer'
+require 'dry/core/constants'
 
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
@@ -198,6 +199,10 @@ module Dry
             val
           end
         end
+
+        def ===(other)
+          Failure === other && failure === other.failure
+        end
       end
 
       # A module that can be included for easier access to Result monads.
@@ -207,15 +212,25 @@ module Dry
 
         # @param value [Object] the value to be stored in the monad
         # @return [Result::Success]
-        def Success(value)
-          Success.new(value)
+        def Success(value = Dry::Core::Constants::Undefined, &block)
+          if value.equal?(Dry::Core::Constants::Undefined)
+            raise ArgumentError, "No value given" if block.nil?
+            Success.new(block)
+          else
+            Success.new(value)
+          end
         end
         alias_method :Right, :Success
 
         # @param value [Object] the value to be stored in the monad
         # @return [Result::Failure]
-        def Failure(value)
-          Failure.new(value)
+        def Failure(value = Dry::Core::Constants::Undefined, &block)
+          if value.equal?(Dry::Core::Constants::Undefined)
+            raise ArgumentError, "No value given" if block.nil?
+            Failure.new(block)
+          else
+            Failure.new(value)
+          end
         end
         alias_method :Left, :Failure
       end

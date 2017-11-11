@@ -2,22 +2,22 @@ RSpec.describe(Dry::Monads::Result) do
   mresult = described_class
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
-  rfail = mresult::Failure.method(:new)
-  rsucc = mresult::Success.method(:new)
+  failure = mresult::Failure.method(:new)
+  success = mresult::Success.method(:new)
 
   let(:upcase) { :upcase.to_proc }
 
   describe mresult::Success do
-    subject { rsucc['foo'] }
+    subject { success['foo'] }
 
-    let(:upcased_subject) { rsucc['FOO'] }
+    let(:upcased_subject) { success['FOO'] }
 
     it { is_expected.to be_success }
 
     it { is_expected.not_to be_failure }
 
     it { is_expected.to eql(described_class.new('foo')) }
-    it { is_expected.not_to eql(rfail['foo']) }
+    it { is_expected.not_to eql(failure['foo']) }
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Success("foo")')
@@ -192,8 +192,8 @@ RSpec.describe(Dry::Monads::Result) do
         end
 
         it "doesn't use destructuring if it's not needed" do
-          expect(rsucc.(struct).bind { |x| x }.class).to be(struct.class)
-          expect(rsucc.(struct).bind(nil, bar: 1) { |x| x }.class).to be(struct.class)
+          expect(success.(struct).bind { |x| x }.class).to be(struct.class)
+          expect(success.(struct).bind(nil, bar: 1) { |x| x }.class).to be(struct.class)
         end
       end
     end
@@ -227,22 +227,31 @@ RSpec.describe(Dry::Monads::Result) do
 
     describe '#flip' do
       it 'transforms Success to Failure' do
-        expect(subject.flip).to eql(rfail['foo'])
+        expect(subject.flip).to eql(failure['foo'])
       end
     end
 
     describe '#apply' do
-      subject { rsucc[:upcase.to_proc] }
+      subject { success[:upcase.to_proc] }
 
       it 'applies a wrapped function' do
-        expect(subject.apply(rsucc['foo'])).to eql(rsucc['FOO'])
-        expect(subject.apply(rfail['foo'])).to eql(rfail['foo'])
+        expect(subject.apply(success['foo'])).to eql(success['FOO'])
+        expect(subject.apply(failure['foo'])).to eql(failure['foo'])
       end
     end
 
     describe '#value!' do
       it 'unwraps the value' do
         expect(subject.value!).to eql('foo')
+      end
+    end
+
+    describe '#===' do
+      it 'matches on the wrapped value' do
+        expect(success['foo']).to be === success['foo']
+        expect(success[/\w+/]).to be === success['foo']
+        expect(success[:bar]).not_to be === success['foo']
+        expect(success[10..50]).to be === success[42]
       end
     end
   end
@@ -327,11 +336,11 @@ RSpec.describe(Dry::Monads::Result) do
 
     describe '#or_fmap' do
       it 'maps an alternative' do
-        expect(subject.or_fmap('baz')).to eql(rsucc['baz'])
+        expect(subject.or_fmap('baz')).to eql(success['baz'])
       end
 
       it 'accepts a block' do
-        expect(subject.or_fmap { 'baz' }).to eql(rsucc['baz'])
+        expect(subject.or_fmap { 'baz' }).to eql(success['baz'])
       end
 
       it 'passes extra arguments to a block' do
@@ -342,7 +351,7 @@ RSpec.describe(Dry::Monads::Result) do
           'baz'
         end
 
-        expect(result).to eql(rsucc['baz'])
+        expect(result).to eql(success['baz'])
       end
     end
 
@@ -377,7 +386,7 @@ RSpec.describe(Dry::Monads::Result) do
 
     describe '#flip' do
       it 'transforms Failure to Success' do
-        expect(subject.flip).to eql(rsucc['bar'])
+        expect(subject.flip).to eql(success['bar'])
       end
     end
 
@@ -393,14 +402,23 @@ RSpec.describe(Dry::Monads::Result) do
 
     describe '#apply' do
       it 'does nothing' do
-        expect(subject.apply(rsucc['foo'])).to be(subject)
-        expect(subject.apply(rfail['foo'])).to be(subject)
+        expect(subject.apply(success['foo'])).to be(subject)
+        expect(subject.apply(failure['foo'])).to be(subject)
       end
     end
 
     describe '#value!' do
       it 'raises an error' do
         expect { subject.value! }.to raise_error(Dry::Monads::UnwrapError, 'value! was called on Failure("bar")')
+      end
+    end
+
+    describe '#===' do
+      it 'matches using the error value' do
+        expect(failure['bar']).to be === subject
+        expect(failure[/\w+/]).to be === subject
+        expect(failure[String]).to be === subject
+        expect(failure['foo']).not_to be === subject
       end
     end
   end

@@ -151,7 +151,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
   end
 
-  context 'matching' do
+  describe 'matching' do
     let(:match) do
       -> value do
         case value
