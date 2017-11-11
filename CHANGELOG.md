@@ -1,15 +1,20 @@
 # v0.4.0 to-be-released
 
+## Changed
+
+* The `Either` monad was renamed to `Result` which sounds less nerdy but better reflects the purpose of the type. `Either::Right` became `Result::Success` and `Either::Left` became `Result::Failure`. This change is backward-compatible overall but you will see the new names when using old `Left` and `Right` methods (citizen428)
+* Consequently, `Try::Success` and `Try::Failure` were renamed to `Try::Value` and `Try::Error` (flash-gordon)
+
 ## Added
 
-* `Try#or`, works as `Either#or` (flash-gordon)
+* `Try#or`, works as `Result#or` (flash-gordon)
 * `Maybe#success?` and `Maybe#failure?` (aliases for `#some?` and `#none?`) (flash-gordon)
-* `Either#flip` inverts an `Either` value  (flash-gordon)
+* `Either#flip` inverts a `Result` value  (flash-gordon)
 * `List#map` called without a block returns an `Enumerator` object (flash-gordon)
 
 ## Deprecated
 
-* Direct accessing `value` on right-biased monads has been deprecated, use the `value!` method instead. `value!` will raise an exception if it is called on a Left/None/Failure instance (flash-gordon)
+* Direct accessing `value` on right-biased monads has been deprecated, use the `value!` method instead. `value!` will raise an exception if it is called on a Sailure/None/Error instance (flash-gordon)
 
 [Compare v0.3.1...master](https://github.com/dry-rb/dry-monads/compare/v0.3.1...master)
 
