@@ -23,7 +23,7 @@
 
 ## Deprecated
 
-* Direct accessing `value` on right-biased monads has been deprecated, use the `value!` method instead. `value!` will raise an exception if it is called on a Sailure/None/Error instance (flash-gordon)
+* Direct accessing `value` on right-biased monads has been deprecated, use the `value!` method instead. `value!` will raise an exception if it is called on a Failure/None/Error instance (flash-gordon)
 
 [Compare v0.3.1...v0.4.0](https://github.com/dry-rb/dry-monads/compare/v0.3.1...v0.4.0)
 
