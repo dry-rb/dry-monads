@@ -4,6 +4,7 @@ require 'dry/monads/try'
 require 'dry/monads/list'
 require 'dry/monads/result'
 require 'dry/monads/result/fixed'
+require 'dry/monads/do'
 
 module Dry
   # @api public
