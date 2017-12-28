@@ -5,6 +5,8 @@ cache: bundler
 bundler_args: --without benchmarks docs
 script:
   - bundle exec rake spec
+before_install:
+  - gem update --system
 after_success:
   - '[ -d coverage ] && bundle exec codeclimate-test-reporter'
 rvm:
