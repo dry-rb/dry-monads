@@ -118,7 +118,7 @@ RSpec.describe(Dry::Monads::Do) do
             m1 = Some(1)
             m2 = Some(2)
 
-            Some(yield(m1, m2).sum)
+            Some(yield(m1, m2).reduce(:+))
           end
         end
       end
@@ -135,7 +135,7 @@ RSpec.describe(Dry::Monads::Do) do
             m1 = None()
             m2 = Some(2)
 
-            Some(yield(m1, m2).sum)
+            Some(yield(m1, m2).reduce(:+))
           end
         end
       end
@@ -152,7 +152,7 @@ RSpec.describe(Dry::Monads::Do) do
             m1 = Some(1)
             m2 = None()
 
-            Some(yield(m1, m2).sum)
+            Some(yield(m1, m2).reduce(:+))
           end
         end
       end
@@ -171,7 +171,7 @@ RSpec.describe(Dry::Monads::Do) do
             m1 = Try { 1 }
             m2 = Try { 2 }
 
-            Dry::Monads::Try::pure(yield(m1, m2).sum)
+            Dry::Monads::Try::pure(yield(m1, m2).reduce(:+))
           end
         end
       end
@@ -188,7 +188,7 @@ RSpec.describe(Dry::Monads::Do) do
             m1 = Try { 1 / 0 }
             m2 = Try { 2 }
 
-            Dry::Monads::Try::pure(yield(m1, m2).sum)
+            Dry::Monads::Try::pure(yield(m1, m2).reduce(:+))
           end
         end
       end
@@ -205,7 +205,7 @@ RSpec.describe(Dry::Monads::Do) do
             m1 = Try { 1 }
             m2 = Try { 2 / 0 }
 
-            Dry::Monads::Try::pure(yield(m1, m2).sum)
+            Dry::Monads::Try::pure(yield(m1, m2).reduce(:+))
           end
         end
       end
