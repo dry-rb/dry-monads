@@ -72,5 +72,41 @@ RSpec.describe(Dry::Monads::Do) do
         expect(instance.call).to eql(Failure(:no_two))
       end
     end
+
+    context 'with stateful blocks' do
+      before do
+        klass.class_eval do
+          attr_reader :rolled_back
+
+          def initialize
+            @rolled_back = false
+          end
+
+          def call
+            m1 = Success(1)
+            m2 = Failure(:no_two)
+
+            transaction do
+              one = yield m1
+              two = yield m2
+            end
+
+            Success(one + two)
+          end
+
+          def transaction
+            yield
+          rescue => e
+            @rolled_back = true
+            raise e
+          end
+        end
+      end
+
+      it 'halts the executing with an exception' do
+        expect(instance.call).to eql(Failure(:no_two))
+        expect(instance.rolled_back).to be(true)
+      end
+    end
   end
 end
