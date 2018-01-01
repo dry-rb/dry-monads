@@ -1,12 +1,12 @@
 RSpec.describe(Dry::Monads::Do) do
   include Dry::Monads
+  include Dry::Monads::Try::Mixin
 
   let(:klass) do
-    spec = self
-
     Class.new do
       include Dry::Monads::Do.for(:call)
       include Dry::Monads
+      include Dry::Monads::Try::Mixin
     end
   end
 
@@ -28,7 +28,7 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns result of a statement' do
+      it 'returns the result of a statement' do
         expect(instance.call).to eql(Success(3))
       end
     end
@@ -89,9 +89,9 @@ RSpec.describe(Dry::Monads::Do) do
             transaction do
               one = yield m1
               two = yield m2
-            end
 
-            Success(one + two)
+              Success(one + two)
+            end
           end
 
           def transaction
@@ -106,6 +106,112 @@ RSpec.describe(Dry::Monads::Do) do
       it 'halts the executing with an exception' do
         expect(instance.call).to eql(Failure(:no_two))
         expect(instance.rolled_back).to be(true)
+      end
+    end
+  end
+
+  context 'with Maybe' do
+    context 'successful case' do
+      before do
+        klass.class_eval do
+          def call
+            m1 = Some(1)
+            m2 = Some(2)
+
+            Some(yield(m1, m2).sum)
+          end
+        end
+      end
+
+      it 'returns the result of a statement' do
+        expect(instance.call).to eql(Some(3))
+      end
+    end
+
+    context 'first failure' do
+      before do
+        klass.class_eval do
+          def call
+            m1 = None()
+            m2 = Some(2)
+
+            Some(yield(m1, m2).sum)
+          end
+        end
+      end
+
+      it 'returns none' do
+        expect(instance.call).to be_none
+      end
+    end
+
+    context 'second failure' do
+      before do
+        klass.class_eval do
+          def call
+            m1 = Some(1)
+            m2 = None()
+
+            Some(yield(m1, m2).sum)
+          end
+        end
+      end
+
+      it 'returns none' do
+        expect(instance.call).to be_none
+      end
+    end
+  end
+
+  context 'with Try' do
+    context 'successful case' do
+      before do
+        klass.class_eval do
+          def call
+            m1 = Try { 1 }
+            m2 = Try { 2 }
+
+            Dry::Monads::Try::pure(yield(m1, m2).sum)
+          end
+        end
+      end
+
+      it 'returns the result of a statement' do
+        expect(instance.call).to eql(Dry::Monads::Try::pure(3))
+      end
+    end
+
+    context 'first failure' do
+      before do
+        klass.class_eval do
+          def call
+            m1 = Try { 1 / 0 }
+            m2 = Try { 2 }
+
+            Dry::Monads::Try::pure(yield(m1, m2).sum)
+          end
+        end
+      end
+
+      it 'returns Error' do
+        expect(instance.call).to be_error
+      end
+    end
+
+    context 'second failure' do
+      before do
+        klass.class_eval do
+          def call
+            m1 = Try { 1 }
+            m2 = Try { 2 / 0 }
+
+            Dry::Monads::Try::pure(yield(m1, m2).sum)
+          end
+        end
+      end
+
+      it 'returns Error' do
+        expect(instance.call).to be_error
       end
     end
   end

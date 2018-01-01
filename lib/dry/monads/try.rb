@@ -11,19 +11,32 @@ module Dry
     #
     # @api public
     class Try
+      DEFAULT_EXCEPTIONS = [StandardError].freeze
+
       attr_reader :exception
 
-      # Calls the passed in proc object and if successful stores the result in a
-      # {Try::Value} monad, but if one of the specified exceptions was raised it stores
-      # it in a {Try::Error} monad.
-      #
-      # @param exceptions [Array<Exception>] list of exceptions to be rescued
-      # @param f [Proc] the proc to be called
-      # @return [Try::Value, Try::Error]
-      def self.lift(exceptions, f)
-        Value.new(exceptions, f.call)
-      rescue *exceptions => e
-        Error.new(e)
+      class << self
+        # Calls the passed in proc object and if successful stores the result in a
+        # {Try::Value} monad, but if one of the specified exceptions was raised it stores
+        # it in a {Try::Error} monad.
+        #
+        # @param exceptions [Array<Exception>] list of exceptions to be rescued
+        # @param f [Proc] the proc to be called
+        # @return [Try::Value, Try::Error]
+        def lift(exceptions, f)
+          Value.new(exceptions, f.call)
+        rescue *exceptions => e
+          Error.new(e)
+        end
+
+        # Wraps the given value with `Value`.
+        #
+        # @param value [Object] the value to be stored inside Value
+        # @param exceptions [Array<Exception>]
+        # @return [Try::Value]
+        def pure(value, exceptions = DEFAULT_EXCEPTIONS)
+          Value.new(exceptions, value)
+        end
       end
 
       # Returns true for an instance of a {Try::Value} monad.
@@ -187,8 +200,6 @@ module Dry
       module Mixin
         Try = Try
 
-        DEFAULT_EXCEPTIONS = [StandardError].freeze
-
         # A convenience wrapper for {Monads::Try.lift}.
         # If no exceptions are provided it falls back to StandardError.
         # In general, relying on this behaviour is not recommended as it can lead to unnoticed
@@ -196,7 +207,7 @@ module Dry
         #
         # @param exceptions [Array<Exception>]
         def Try(*exceptions, &f)
-          catchable = exceptions.empty? ? DEFAULT_EXCEPTIONS : exceptions.flatten
+          catchable = exceptions.empty? ? Try::DEFAULT_EXCEPTIONS : exceptions.flatten
           Try.lift(catchable, f)
         end
 
