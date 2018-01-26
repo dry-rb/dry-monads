@@ -3,6 +3,7 @@ require 'thread'
 RSpec.describe(Dry::Monads::Task) do
   result = Dry::Monads::Result
   success = result::Success.method(:new)
+  failure = result::Failure.method(:new)
 
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
@@ -33,6 +34,14 @@ RSpec.describe(Dry::Monads::Task) do
       chain = subject.fmap { |v| v * 2 }
 
       expect(chain.value!).to be 2
+    end
+
+    it 'runs a block only on success' do
+      called = false
+      t = task { 1 / 0 }.fmap { called = true }
+      t.to_result
+
+      expect(called).to be(false)
     end
   end
 
@@ -92,6 +101,36 @@ RSpec.describe(Dry::Monads::Task) do
       1 / 0 rescue err = $!
       t = task { raise err }.tap(&:to_result)
       expect(t.inspect).to eql("Task(state=rejected error=#{ err.inspect })")
+    end
+  end
+
+  describe '#to_s' do
+    it 'is an alias for inspect' do
+      expect(subject.method(:to_s)).to eql(subject.method(:inspect))
+    end
+  end
+
+  describe '#or' do
+    it 'runs a block on failure' do
+      m = task { 1 / 0 }.or { task { :success } }
+      expect(m.wait).to eql(task { :success }.wait)
+    end
+  end
+
+  describe '#or_fmap' do
+    it 'runs a block on failure' do
+      m = task { 1 / 0 }.or_fmap { :success }.to_result
+      expect(m).to eql(success[:success])
+    end
+  end
+
+  describe '#value_or' do
+    specify 'if success unwraps the value' do
+      expect(subject.value_or { 2 }).to be(1)
+    end
+
+    specify 'if failure calls the given block' do
+      expect(task { 1 / 0 }.value_or { 2 }).to be(2)
     end
   end
 end
