@@ -3,7 +3,6 @@ require 'thread'
 RSpec.describe(Dry::Monads::Task) do
   result = Dry::Monads::Result
   success = result::Success.method(:new)
-  failure = result::Failure.method(:new)
 
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
@@ -48,10 +47,16 @@ RSpec.describe(Dry::Monads::Task) do
   end
 
   describe '#bind' do
-    it 'combines computations' do
+    it 'combines tasks' do
       chain = subject.bind { |v| task { v * 2 } }
 
       expect(chain.value!).to be 2
+    end
+  end
+
+  describe '#then' do
+    it 'is an alias of #bind' do
+      expect(subject.method(:then)).to eql(subject.method(:bind))
     end
   end
 
@@ -84,7 +89,7 @@ RSpec.describe(Dry::Monads::Task) do
     end
 
     it 'raises an error on unsuccessful computation' do
-      expect { task { 1 / 0 }.value! }.to raise_error(Dry::Monads::UnwrapError)
+      expect { task { 1 / 0 }.value! }.to raise_error(ZeroDivisionError)
     end
   end
 
@@ -177,11 +182,17 @@ RSpec.describe(Dry::Monads::Task) do
     it 'creates a resolved task' do
       expect(task.pure(1)).to eql(subject.wait)
     end
+
+    it 'accepts a block too' do
+      one = -> { 1 }
+      expect(task.pure(&one)).to eql(task { one }.wait)
+    end
   end
 
   describe '#apply' do
     let(:two) { task { 2 } }
     let(:three) { task { 3 } }
+
     it 'applies arguments to the underlying callable' do
       lifted = task.pure(-> x { x * 2 })
       expect(lifted.apply(two).to_result).to eql(success[4])
@@ -189,6 +200,11 @@ RSpec.describe(Dry::Monads::Task) do
 
     it 'curries the callable' do
       lifted = task.pure(-> x, y { x * y * 2 })
+      expect(lifted.apply(two).apply(three).to_result).to eql(success[12])
+    end
+
+    it 'can be used via pure with block' do
+      lifted = task.pure { |x, y| x * y * 2 }
       expect(lifted.apply(two).apply(three).to_result).to eql(success[12])
     end
   end

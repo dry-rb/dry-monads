@@ -66,8 +66,8 @@ module Dry
           bind(*args, &block).bind { self }
         end
 
-        # Abstract method for lifting a block over the monad type
-        # Must be implemented for a right-biased monad
+        # Abstract method for lifting a block over the monad type.
+        # Must be implemented for a right-biased monad.
         #
         # @return [RightBiased::Right]
         def fmap(*)
@@ -98,7 +98,7 @@ module Dry
         end
 
         # Applies the stored value to the given argument if the argument has type of Right,
-        # otherwise returns the argument
+        # otherwise returns the argument.
         #
         # @example happy path
         #   create_user = Dry::Monads::Right(CreateUser.new)
