@@ -178,4 +178,18 @@ RSpec.describe(Dry::Monads::Task) do
       expect(task.pure(1)).to eql(subject.wait)
     end
   end
+
+  describe '#apply' do
+    let(:two) { task { 2 } }
+    let(:three) { task { 3 } }
+    it 'applies arguments to the underlying callable' do
+      lifted = task.pure(-> x { x * 2 })
+      expect(lifted.apply(two).to_result).to eql(success[4])
+    end
+
+    it 'curries the callable' do
+      lifted = task.pure(-> x, y { x * y * 2 })
+      expect(lifted.apply(two).apply(three).to_result).to eql(success[12])
+    end
+  end
 end
