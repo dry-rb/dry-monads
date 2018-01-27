@@ -1,6 +1,7 @@
 require 'dry/core/constants'
 require 'dry/core/deprecations'
 
+require 'dry/monads/curry'
 require 'dry/monads/errors'
 
 module Dry
@@ -65,8 +66,8 @@ module Dry
           bind(*args, &block).bind { self }
         end
 
-        # Abstract method for lifting a block over the monad type
-        # Must be implemented for a right-biased monad
+        # Abstract method for lifting a block over the monad type.
+        # Must be implemented for a right-biased monad.
         #
         # @return [RightBiased::Right]
         def fmap(*)
@@ -97,7 +98,7 @@ module Dry
         end
 
         # Applies the stored value to the given argument if the argument has type of Right,
-        # otherwise returns the argument
+        # otherwise returns the argument.
         #
         # @example happy path
         #   create_user = Dry::Monads::Right(CreateUser.new)
@@ -131,18 +132,7 @@ module Dry
 
         # @api private
         def curry
-          @curried ||=
-            begin
-              func = @value.is_a?(Proc) ? @value : @value.method(:call)
-              seq_args = func.parameters.count { |type, _| type == :req }
-              seq_args += 1 if func.parameters.any? { |type, _| type == :keyreq }
-
-              if seq_args > 1
-                func.curry
-              else
-                func
-              end
-            end
+          @curried ||= Curry.(@value)
         end
       end
 
