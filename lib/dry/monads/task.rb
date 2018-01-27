@@ -1,5 +1,7 @@
 require 'concurrent/promise'
 
+require 'dry/monads/curry'
+
 module Dry
   module Monads
     class Task
@@ -13,12 +15,12 @@ module Dry
           if promise
             super(promise, &block)
           else
-            super(Promise.execute(&block), &block)
+            super(Promise.execute(&block))
           end
         end
 
         def [](executor, &block)
-          new(Promise.execute(executor: executor, &block), &block)
+          new(Promise.execute(executor: executor, &block))
         end
 
         def pure(value)
@@ -29,9 +31,8 @@ module Dry
       attr_reader :promise
       protected :promise
 
-      def initialize(promise, &block)
+      def initialize(promise)
         @promise = promise
-        @block = block
       end
 
       def value!
@@ -45,11 +46,11 @@ module Dry
       end
 
       def fmap(&block)
-        self.class.new(promise.then(&block), &block)
+        self.class.new(promise.then(&block))
       end
 
       def bind(&block)
-        self.class.new(promise.flat_map { |value| block.(value).promise }, &block)
+        self.class.new(promise.flat_map { |value| block.(value).promise })
       end
 
       def to_result
@@ -143,14 +144,15 @@ module Dry
       private
 
       def curry(value)
-        func = value.is_a?(Proc) ? value : value.method(:call)
-        seq_args = func.parameters.count { |type, _| type == :req }
-        seq_args += 1 if func.parameters.any? { |type, _| type == :keyreq }
-
-        if seq_args > 1
-          func.curry
+        if defined?(@curried)
+          if @curried[0].equal?(value)
+            @curried[1]
+          else
+            Curry.(value)
+          end
         else
-          func
+          @curried = [value, Curry.(value)]
+          @curried[1]
         end
       end
 
