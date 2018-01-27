@@ -120,12 +120,12 @@ RSpec.describe(Dry::Monads::Task) do
   describe '#or' do
     it 'runs a block on failure' do
       m = task { 1 / 0 }.or { task { :success } }
-      expect(m.wait).to eql(task { :success }.wait)
+      expect(m.wait).to be == task { :success }.wait
     end
 
     it 'ignores blocks on success' do
       m = subject.or { task { :success } }
-      expect(m.wait).to eql(task { 1 }.wait)
+      expect(m.wait).to be == task { 1 }.wait
     end
   end
 
@@ -180,12 +180,12 @@ RSpec.describe(Dry::Monads::Task) do
 
   describe '.pure' do
     it 'creates a resolved task' do
-      expect(task.pure(1)).to eql(subject.wait)
+      expect(task.pure(1)).to be == subject.wait
     end
 
     it 'accepts a block too' do
       one = -> { 1 }
-      expect(task.pure(&one)).to eql(task { one }.wait)
+      expect(task.pure(&one)).to be == task { one }.wait
     end
   end
 

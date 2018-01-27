@@ -194,17 +194,7 @@ module Dry
       def ==(other)
         return true if equal?(other)
         return false unless self.class == other.class
-        compare_promises(promise, other.promise) { |x, y| x == y }
-      end
-
-      # Compares two tasks with hash equality. Note, it works
-      # good enough only for complete tasks.
-      #
-      # @return [Boolean]
-      def eql?(other)
-        return true if equal?(other)
-        return false unless self.class == other.class
-        compare_promises(promise, other.promise) { |x, y| x.eql?(y) }
+        compare_promises(promise, other.promise)
       end
 
       # Whether the computation is complete.
@@ -253,8 +243,8 @@ module Dry
       # @api private
       def compare_promises(x, y)
         x.equal?(y) ||
-          x.fulfilled? && y.fulfilled? && yield(x.value, y.value) ||
-          x.rejected? && y.rejected? && yield(x.reason, y.reason)
+          x.fulfilled? && y.fulfilled? && x.value == y.value ||
+          x.rejected? && y.rejected? && x.reason == y.reason
       end
 
       # Task constructors.
