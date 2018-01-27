@@ -11,8 +11,10 @@ module Dry
     #
     # @api public
     class Try
+      # @private
       DEFAULT_EXCEPTIONS = [StandardError].freeze
 
+      # @return [Exception] Caught exception
       attr_reader :exception
 
       class << self
@@ -58,6 +60,7 @@ module Dry
         include Dry::Equalizer(:value!, :catchable)
         include RightBiased::Right
 
+        # @private
         attr_reader :catchable
 
         # @param exceptions [Array<Exception>] list of exceptions to be rescued
@@ -198,6 +201,7 @@ module Dry
       #   Foo.new(10, 2).average # => 5
       #   Foo.new(10, 0).average # => nil
       module Mixin
+        # @see Dry::Monads::Try
         Try = Try
 
         # A convenience wrapper for {Monads::Try.lift}.
@@ -206,11 +210,16 @@ module Dry
         # bugs and it is always better to explicitly specify a list of exceptions if possible.
         #
         # @param exceptions [Array<Exception>]
+        # @return [Try]
         def Try(*exceptions, &f)
           catchable = exceptions.empty? ? Try::DEFAULT_EXCEPTIONS : exceptions.flatten
           Try.lift(catchable, f)
         end
 
+        # A constructor of Value
+        # @param value [Object]
+        # @param exceptions [Array<Exception>] list of exceptions to be rescued
+        # @return [Value]
         def Value(value = Undefined, exceptions = DEFAULT_EXCEPTIONS, &block)
           if value.equal?(Undefined)
             raise ArgumentError, 'No value given' if block.nil?
@@ -220,6 +229,10 @@ module Dry
           end
         end
 
+        # A constructor of Error
+        # @param error [Exception]
+        # @param block [Proc] block that may throw an error
+        # @return [Error]
         def Error(error = Undefined, &block)
           if error.equal?(Undefined)
             raise ArgumentError, 'No value given' if block.nil?

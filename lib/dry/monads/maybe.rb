@@ -151,7 +151,7 @@ module Dry
         end
         alias_method :==, :eql?
 
-        # @api private
+        # @private
         def hash
           None.instance.object_id
         end
@@ -159,19 +159,25 @@ module Dry
 
       # A module that can be included for easier access to Maybe monads.
       module Mixin
+        # @see Dry::Monads::Maybe
         Maybe = Maybe
+        # @see Maybe::Some
         Some = Some
+        # @see Maybe::None
         None = None
 
+        # @private
         module Constructors
           # @param value [Object] the value to be stored in the monad
           # @return [Maybe::Some, Maybe::None]
+          # @api public
           def Maybe(value)
             Maybe.lift(value)
           end
 
           # @param value [Object] the value to be stored in the monad
           # @return [Maybe::Some]
+          # @api public
           def Some(value = Dry::Core::Constants::Undefined, &block)
             if value.equal?(Dry::Core::Constants::Undefined)
               raise ArgumentError, 'No value given' if block.nil?

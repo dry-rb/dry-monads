@@ -9,8 +9,10 @@ RSpec.describe(Dry::Monads::Task) do
     describe 'custom executors' do
       before do
         module Test
+          # IO-bound tasks
           IO = Concurrent::ThreadPoolExecutor.new
-          Seq = Concurrent::SingleThreadExecutor.new
+          # CPU-bound tasks
+          CPU = Concurrent::SingleThreadExecutor.new
 
           class Operation
             include Dry::Monads::Result::Mixin
@@ -20,8 +22,8 @@ RSpec.describe(Dry::Monads::Task) do
             def call
               name, age = yield Task { 'Jane' }, Task { 20 }
               # Ruby 2.5 supports nicer syntax
-              # city = yield Task[Seq] { 'London' }
-              city = yield Task[Seq, &-> { 'London' }]
+              # city = yield Task[CPU] { 'London' }
+              city = yield Task[CPU, &-> { 'London' }]
 
               Success(name: name, age: age, city: city)
             end

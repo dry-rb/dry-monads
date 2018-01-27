@@ -8,22 +8,31 @@ require 'dry/monads/result/fixed'
 require 'dry/monads/do'
 
 module Dry
+  # Common, idiomatic monads for Ruby
+  #
   # @api public
   module Monads
+    # @private
     Undefined = Dry::Core::Constants::Undefined
 
+    # @private
     CONSTRUCTORS = [
       Maybe::Mixin::Constructors,
       Result::Mixin::Constructors
     ].freeze
 
+    # @see Maybe::Some
     Some = Maybe::Some
+    # @see Maybe::None
     None = Maybe::None
+    # @see Result::Success
     Success = Result::Success
+    # @see Result::Failure
     Failure = Result::Failure
 
     extend(*CONSTRUCTORS)
 
+    # @private
     def self.included(base)
       super
 

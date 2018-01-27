@@ -1,5 +1,6 @@
 module Dry
   module Monads
+    # Advanced tranformations.
     module Transformer
       # Lifts a block/proc over the 2-level nested structure.
       # This is essentially fmap . fmap (. is the function composition

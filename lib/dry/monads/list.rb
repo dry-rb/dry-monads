@@ -4,6 +4,7 @@ require 'dry/monads/transformer'
 
 module Dry
   module Monads
+    # The List monad.
     class List
       class << self
         # Builds a list.
@@ -273,10 +274,17 @@ module Dry
       # Empty list
       EMPTY = List.new([].freeze).freeze
 
+      # List contructors.
+      #
+      # @api public
       module Mixin
+        # @see Dry::Monads::List
         List = List
+        # @see Dry::Monads::List
         L = List
 
+        # List constructor.
+        # @return [List]
         def List(value)
           List.coerce(value)
         end

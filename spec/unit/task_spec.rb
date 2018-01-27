@@ -99,9 +99,9 @@ RSpec.describe(Dry::Monads::Task) do
       expect(t.inspect).to eql("Task(state=pending)")
     end
 
-    it 'inspects resolved' do
+    it 'inspects complete' do
       t = task { :something }.tap(&:value!)
-      expect(t.inspect).to eql("Task(state=resolved value=:something)")
+      expect(t.inspect).to eql("Task(state=complete value=:something)")
     end
 
     it 'inspects failed' do

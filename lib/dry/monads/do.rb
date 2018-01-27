@@ -1,7 +1,12 @@
 module Dry
   module Monads
+    # An implementation of do-notation.
+    #
+    # @see Do.for
     module Do
+      # @private
       class Halt < StandardError
+        # @private
         attr_reader :result
 
         def initialize(result)

@@ -6,7 +6,10 @@ require 'dry/monads/errors'
 
 module Dry
   module Monads
+    # A common module for right-biased monads, such as Result/Either, Maybe, and Try.
     module RightBiased
+      # Right part
+      #
       # @api public
       module Right
         include Dry::Core::Constants
@@ -136,6 +139,8 @@ module Dry
         end
       end
 
+      # Left/wrong/erroneous part
+      #
       # @api public
       module Left
         extend Dry::Core::Deprecations[:'dry-monads']

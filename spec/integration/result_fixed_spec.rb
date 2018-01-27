@@ -60,7 +60,7 @@ RSpec.describe(Dry::Monads::Result) do
       expect { subject.Failure("no_user") }.
         to raise_error(
              Dry::Monads::InvalidFailureTypeError,
-             %q[Cannot create Failure from "no_user", it doesn't meet constraints]
+             %q[Cannot create Failure from "no_user", it doesn't meet the constraints]
            )
     end
   end

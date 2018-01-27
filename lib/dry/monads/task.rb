@@ -71,7 +71,7 @@ module Dry
 
       # Retrieves the value of the computation.
       # Blocks current thread if the underlying promise
-      # hasn't been resolved yet.
+      # hasn't been complete yet.
       # Throws an error if the computation failed.
       #
       # @return [Object]
@@ -126,7 +126,7 @@ module Dry
       def to_s
         state = case promise.state
                 when :fulfilled
-                  "state=resolved value=#{ value!.inspect }"
+                  "state=complete value=#{ value!.inspect }"
                 when :rejected
                   "state=rejected error=#{ promise.reason.inspect }"
                 else
@@ -188,7 +188,7 @@ module Dry
       end
 
       # Compares two tasks. Note, it works
-      # good enough only for resolved tasks.
+      # good enough only for complete tasks.
       #
       # @return [Boolean]
       def ==(other)
@@ -198,7 +198,7 @@ module Dry
       end
 
       # Compares two tasks with hash equality. Note, it works
-      # good enough only for resolved tasks.
+      # good enough only for complete tasks.
       #
       # @return [Boolean]
       def eql?(other)
@@ -257,9 +257,11 @@ module Dry
           x.rejected? && y.rejected? && yield(x.reason, y.reason)
       end
 
+      # Task constructors.
+      #
       # @api public
       module Mixin
-        Task = Dry::Monads::Task
+        Task = Task # @private
 
         # Created a mixin with the given executor injected.
         #

@@ -13,7 +13,11 @@ module Dry
     class Result
       include Transformer
 
-      attr_reader :success, :failure
+      # @return [Object] Successful result
+      attr_reader :success
+
+      # @return [Object] Error
+      attr_reader :failure
 
       class << self
         # Wraps the given value with Success
@@ -114,7 +118,7 @@ module Dry
         include RightBiased::Left
         include Dry::Equalizer(:failure)
 
-        # @api private
+        # @private
         def failure
           @value
         end
@@ -192,7 +196,7 @@ module Dry
           Success.new(@value)
         end
 
-        # @see Dry::Monads::RightBiased::Left#value_or
+        # @see RightBiased::Left#value_or
         def value_or(val = nil)
           if block_given?
             yield(@value)
@@ -209,13 +213,19 @@ module Dry
       end
 
       # A module that can be included for easier access to Result monads.
+      #
+      # @api public
       module Mixin
-        Success = Dry::Monads::Result::Success
-        Failure = Dry::Monads::Result::Failure
+        # @see Result::Success
+        Success = Result::Success
+        # @see Result::Failure
+        Failure = Result::Failure
 
+        # Value constructors
         module Constructors
           # @param value [Object] the value to be stored in the monad
           # @return [Result::Success]
+          # @api public
           def Success(value = Dry::Core::Constants::Undefined, &block)
             if value.equal?(Dry::Core::Constants::Undefined)
               raise ArgumentError, 'No value given' if block.nil?
@@ -228,6 +238,7 @@ module Dry
 
           # @param value [Object] the value to be stored in the monad
           # @return [Result::Failure]
+          # @api public
           def Failure(value = Dry::Core::Constants::Undefined, &block)
             if value.equal?(Dry::Core::Constants::Undefined)
               raise ArgumentError, 'No value given' if block.nil?
@@ -243,8 +254,8 @@ module Dry
       end
     end
 
-    Either = Result
-    Result::Right = Result::Success
-    Result::Left = Result::Failure
+    Either = Result # @private
+    Result::Right = Result::Success # @private
+    Result::Left = Result::Failure # @private
   end
 end
