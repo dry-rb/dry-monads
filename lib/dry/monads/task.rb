@@ -96,6 +96,10 @@ module Dry
         compare_promises(promise, other.promise) { |x, y| x.eql?(y) }
       end
 
+      def complete?
+        promise.complete?
+      end
+
       private
 
       def compare_promises(x, y)

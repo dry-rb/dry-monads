@@ -133,4 +133,22 @@ RSpec.describe(Dry::Monads::Task) do
       expect(task { 1 / 0 }.value_or { 2 }).to be(2)
     end
   end
+
+  describe '#complete?' do
+    it 'checks whether the task is complete' do
+      expect(task { sleep 0.01 }.wait).to be_complete
+      expect(task { sleep 0.01 }).not_to be_complete
+    end
+  end
+
+  describe '#wait' do
+    it 'waits for resolution' do
+      expect(task { sleep 0.01 }.wait).to be_complete
+      expect(task { sleep 0.01 }).not_to be_complete
+    end
+
+    it 'accepts a timeout' do
+      expect(task { sleep 10 }.wait(0.01)).not_to be_complete
+    end
+  end
 end
