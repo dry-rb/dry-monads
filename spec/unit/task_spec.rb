@@ -160,10 +160,22 @@ RSpec.describe(Dry::Monads::Task) do
   end
 
   describe '.[]' do
-    let(:io) { Concurrent::ImmediateExecutor.new }
+    let(:immediate) { Concurrent::ImmediateExecutor.new }
 
     it 'allows to inject an underlying executor' do
-      expect(task[io, &-> { Thread.current }].to_result).to eql(success[Thread.main])
+      expect(task[immediate, &-> { Thread.current }].to_result).to eql(success[Thread.main])
+    end
+
+    it 'supports global pools' do
+      expect(task[:immediate, &-> { Thread.current }].to_result).to eql(success[Thread.main])
+      expect(task[:io, &-> { Thread.current }].to_result).not_to eql(success[Thread.main])
+      expect(task[:fast, &-> { Thread.current }].to_result).not_to eql(success[Thread.main])
+    end
+  end
+
+  describe '.pure' do
+    it 'creates a resolved task' do
+      expect(task.pure(1)).to eql(subject.wait)
     end
   end
 end

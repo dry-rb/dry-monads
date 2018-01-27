@@ -20,6 +20,10 @@ module Dry
         def [](executor, &block)
           new(Promise.execute(executor: executor, &block), &block)
         end
+
+        def pure(value)
+          new(Promise.fulfill(value))
+        end
       end
 
       attr_reader :promise
@@ -124,6 +128,10 @@ module Dry
 
       def complete?
         promise.complete?
+      end
+
+      def monad
+        Task
       end
 
       private

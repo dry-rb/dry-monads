@@ -2,6 +2,8 @@ require 'concurrent/executor/single_thread_executor'
 
 RSpec.describe(Dry::Monads::Task) do
   include Dry::Monads::Result::Mixin
+  include Dry::Monads::List::Mixin
+  include Dry::Monads::Task::Mixin
 
   describe Dry::Monads::Task::Mixin do
     describe 'custom executors' do
@@ -57,6 +59,29 @@ RSpec.describe(Dry::Monads::Task) do
 
     it 'executes tasks on the global thread pool' do
       expect(operation.call).to eql(Success(name: 'Jane', age: 20, city: 'London'))
+    end
+  end
+
+  describe 'list of tasks' do
+    before do
+      module Test
+        class Operation
+          include Dry::Monads::List::Mixin
+          include Dry::Monads::Task::Mixin
+
+          def call
+            tasks = List[Task { 1 }, Task { 2 }, Task { 3 }].typed
+
+            tasks.traverse.to_result
+          end
+        end
+      end
+    end
+
+    let(:operation) { Test::Operation.new }
+
+    it 'traverses the list' do
+      expect(operation.call).to eql(Success(List([1, 2, 3])))
     end
   end
 end
