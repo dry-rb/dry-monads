@@ -8,6 +8,8 @@ RSpec.describe(Dry::Monads::Task) do
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
 
+  task = described_class
+
   def task(&block)
     described_class.new(&block)
   end
@@ -115,6 +117,11 @@ RSpec.describe(Dry::Monads::Task) do
       m = task { 1 / 0 }.or { task { :success } }
       expect(m.wait).to eql(task { :success }.wait)
     end
+
+    it 'ignores blocks on success' do
+      m = subject.or { task { :success } }
+      expect(m.wait).to eql(task { 1 }.wait)
+    end
   end
 
   describe '#or_fmap' do
@@ -149,6 +156,14 @@ RSpec.describe(Dry::Monads::Task) do
 
     it 'accepts a timeout' do
       expect(task { sleep 10 }.wait(0.01)).not_to be_complete
+    end
+  end
+
+  describe '.[]' do
+    let(:io) { Concurrent::ImmediateExecutor.new }
+
+    it 'allows to inject an underlying executor' do
+      expect(task[io] { Thread.current }.to_result).to eql(success[Thread.main])
     end
   end
 end

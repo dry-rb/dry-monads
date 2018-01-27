@@ -3,19 +3,31 @@ require 'concurrent/promise'
 module Dry
   module Monads
     class Task
-      def self.new(promise = nil, &block)
-        if block
-          super(Concurrent::Promise.execute(&block))
-        else
-          super(promise)
+      class Promise < Concurrent::Promise
+        public :on_fulfill, :on_reject
+      end
+      private_constant :Promise
+
+      class << self
+        def new(promise = nil, &block)
+          if promise
+            super(promise, &block)
+          else
+            super(Promise.execute(&block), &block)
+          end
+        end
+
+        def [](executor, &block)
+          new(Promise.execute(executor: executor, &block), &block)
         end
       end
 
       attr_reader :promise
       protected :promise
 
-      def initialize(promise)
+      def initialize(promise, &block)
         @promise = promise
+        @block = block
       end
 
       def value!
@@ -29,11 +41,11 @@ module Dry
       end
 
       def fmap(&block)
-        self.class.new(promise.then(&block))
+        self.class.new(promise.then(&block), &block)
       end
 
       def bind(&block)
-        self.class.new(promise.flat_map { |value| block.(value).promise })
+        self.class.new(promise.flat_map { |value| block.(value).promise }, &block)
       end
 
       def to_result
@@ -69,10 +81,24 @@ module Dry
       end
 
       def or(&block)
-        child = Concurrent::Promise.new(executor: Concurrent::ImmediateExecutor.new)
-        promise.rescue(&child.method(:set))
+        child = Promise.new(
+          parent: promise,
+          executor: Concurrent::ImmediateExecutor.new
+        )
 
-        self.class.new(child).bind(&block)
+        promise.on_error do |v|
+          begin
+            inner = block.(v).promise
+            inner.execute
+            inner.on_success { |r| child.on_fulfill(r) }
+            inner.on_error { |e| child.on_reject(e) }
+          rescue => e
+            child.on_reject(e)
+          end
+        end
+        promise.on_success  { |v| child.on_fulfill(v) }
+
+        self.class.new(child)
       end
 
       def value_or(&block)
@@ -106,6 +132,24 @@ module Dry
         x.equal?(y) ||
           x.fulfilled? && y.fulfilled? && yield(x.value, y.value) ||
           x.rejected? && y.rejected? && yield(x.reason, y.reason)
+      end
+
+      module Mixin
+        Task = Dry::Monads::Task
+
+        def self.[](executor)
+          Module.new do
+            include Mixin
+
+            define_method(:Task) do |&block|
+              Task[executor, &block]
+            end
+          end
+        end
+
+        def Task(&block)
+          Task.new(&block)
+        end
       end
     end
   end
