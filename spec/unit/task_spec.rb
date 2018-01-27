@@ -163,7 +163,7 @@ RSpec.describe(Dry::Monads::Task) do
     let(:io) { Concurrent::ImmediateExecutor.new }
 
     it 'allows to inject an underlying executor' do
-      expect(task[io] { Thread.current }.to_result).to eql(success[Thread.main])
+      expect(task[io, &-> { Thread.current }].to_result).to eql(success[Thread.main])
     end
   end
 end

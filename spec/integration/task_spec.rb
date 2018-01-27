@@ -17,7 +17,9 @@ RSpec.describe(Dry::Monads::Task) do
 
             def call
               name, age = yield Task { 'Jane' }, Task { 20 }
-              city = yield Task[Seq] { 'London' }
+              # Ruby 2.5 supports nicer syntax
+              # city = yield Task[Seq] { 'London' }
+              city = yield Task[Seq, &-> { 'London' }]
 
               Success(name: name, age: age, city: city)
             end
