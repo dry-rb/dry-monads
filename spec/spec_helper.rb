@@ -45,6 +45,8 @@ module Test
   end
 end
 
+Dry::Core::Deprecations.set_logger!(Logger.new($stdout))
+
 RSpec.configure do |config|
   config.disable_monkey_patching!
 

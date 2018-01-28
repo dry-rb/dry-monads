@@ -56,7 +56,7 @@ RSpec.describe(Dry::Monads::List) do
     end
 
     it 'shows type' do
-      expect(list[success.(true)].typed.to_s).to eql('List<Result>[Success(true)]')
+      expect(list::Result[success.(true)].to_s).to eql('List<Result>[Success(true)]')
     end
   end
 
@@ -277,7 +277,7 @@ RSpec.describe(Dry::Monads::List) do
       end
 
       it 'works without a block' do
-        expect(list[success.(1), failure.(2), failure.(3)].typed.traverse).to eql(failure.(2))
+        expect(list::Result[success.(1), failure.(2), failure.(3)].traverse).to eql(failure.(2))
       end
     end
 
@@ -322,7 +322,7 @@ RSpec.describe(Dry::Monads::List) do
       expect(subject.typed(result).type).to be result
     end
 
-    it 'infers type for not empty list' do
+    it 'infers type for not empty list', :suppress_deprecations do
       expect(list[success.(1)].typed.type).to be result
       expect(list[failure.(1)].typed.type).to be result
       expect(list[some.(1)].typed.type).to be maybe
@@ -332,6 +332,30 @@ RSpec.describe(Dry::Monads::List) do
 
     it 'cannot guess a type of the empty list' do
       expect { list[].typed }.to raise_error(ArgumentError, /Cannot infer/)
+    end
+  end
+
+  describe described_class::Result do
+    it 'carries the result type' do
+      expect(described_class[].type).to be Dry::Monads::Result
+    end
+  end
+
+  describe described_class::Task do
+    it 'carries the task type' do
+      expect(described_class[].type).to be Dry::Monads::Task
+    end
+  end
+
+  describe described_class::Maybe do
+    it 'carries the task type' do
+      expect(described_class[].type).to be Dry::Monads::Maybe
+    end
+  end
+
+  describe described_class::Try do
+    it 'carries the task type' do
+      expect(described_class[].type).to be Dry::Monads::Try
     end
   end
 end

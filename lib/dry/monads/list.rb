@@ -1,5 +1,10 @@
+require 'dry/core/deprecations'
+
 require 'dry/equalizer'
 require 'dry/monads/maybe'
+require 'dry/monads/task'
+require 'dry/monads/result'
+require 'dry/monads/try'
 require 'dry/monads/transformer'
 
 module Dry
@@ -38,6 +43,8 @@ module Dry
           new([value], type)
         end
       end
+
+      extend Dry::Core::Deprecations[:'dry-monads']
 
       include Dry::Equalizer(:value, :type)
       include Transformer
@@ -201,7 +208,7 @@ module Dry
       #
       # @return [Maybe<Object>]
       def head
-        Maybe.coerce(value.first)
+        Monads::Maybe.coerce(value.first)
       end
 
       # Returns list's tail.
@@ -219,8 +226,13 @@ module Dry
       def typed(type = nil)
         if type.nil?
           if size.zero?
-            raise ArgumentError, "Cannot infer monad for an empty list"
+            raise ArgumentError, "Cannot infer a monad for an empty list"
           else
+            self.class.warn(
+              "Automatic monad inference is deprecated, pass a type explicitly "\
+              "or use a predefined constant, e.g. List::Result\n"\
+              "#{caller.find { |l| l !~ %r{(lib/dry/monads)|(gems)} }}"
+            )
             self.class.new(value, value[0].monad)
           end
         else
@@ -274,12 +286,47 @@ module Dry
       # Empty list
       EMPTY = List.new([].freeze).freeze
 
+      # @private
+      class ListBuilder
+        class << self
+          alias_method :[], :new
+        end
+
+        attr_reader :type
+
+        def initialize(type)
+          @type = type
+        end
+
+        def [](*args)
+          List.new(args, type)
+        end
+
+        def coerce(value)
+          List.coerce(value, type)
+        end
+      end
+
+      # List of tasks
+      Task = ListBuilder[Task]
+
+      # List of results
+      Result = ListBuilder[Result]
+
+      # List of results
+      Maybe = ListBuilder[Maybe]
+
+      # List of results
+      Try = ListBuilder[Try]
+
       # List contructors.
       #
       # @api public
       module Mixin
+
         # @see Dry::Monads::List
         List = List
+
         # @see Dry::Monads::List
         L = List
 

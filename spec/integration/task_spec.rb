@@ -72,7 +72,7 @@ RSpec.describe(Dry::Monads::Task) do
           include Dry::Monads::Task::Mixin
 
           def call
-            tasks = List[Task { 1 }, Task { 2 }, Task { 3 }].typed
+            tasks = List::Task[Task { 1 }, Task { 2 }, Task { 3 }]
 
             tasks.traverse.to_result
           end
