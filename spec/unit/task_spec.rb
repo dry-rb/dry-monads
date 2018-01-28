@@ -96,18 +96,18 @@ RSpec.describe(Dry::Monads::Task) do
   describe '#inspect' do
     it 'inspects pending' do
       t = task { sleep 0.01 }
-      expect(t.inspect).to eql("Task(state=pending)")
+      expect(t.inspect).to eql("Task(?)")
     end
 
     it 'inspects complete' do
       t = task { :something }.tap(&:value!)
-      expect(t.inspect).to eql("Task(state=complete value=:something)")
+      expect(t.inspect).to eql("Task(value=:something)")
     end
 
     it 'inspects failed' do
       1 / 0 rescue err = $!
       t = task { raise err }.tap(&:to_result)
-      expect(t.inspect).to eql("Task(state=rejected error=#{ err.inspect })")
+      expect(t.inspect).to eql("Task(error=#{ err.inspect })")
     end
   end
 

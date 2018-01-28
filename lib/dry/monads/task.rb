@@ -126,11 +126,11 @@ module Dry
       def to_s
         state = case promise.state
                 when :fulfilled
-                  "state=complete value=#{ value!.inspect }"
+                  "value=#{ value!.inspect }"
                 when :rejected
-                  "state=rejected error=#{ promise.reason.inspect }"
+                  "error=#{ promise.reason.inspect }"
                 else
-                  'state=pending'
+                  '?'
                 end
 
         "Task(#{ state })"
