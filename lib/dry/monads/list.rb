@@ -1,6 +1,6 @@
+require 'dry/equalizer'
 require 'dry/core/deprecations'
 
-require 'dry/equalizer'
 require 'dry/monads/maybe'
 require 'dry/monads/task'
 require 'dry/monads/result'
