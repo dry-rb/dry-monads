@@ -29,7 +29,13 @@ module Dry
           if value.nil?
             List.new([], type)
           elsif value.respond_to?(:to_ary)
-            List.new(value.to_ary, type)
+            values = value.to_ary
+
+            if !values.empty? && type.nil? && values[0].respond_to?(:monad)
+              List.new(values, values[0].monad)
+            else
+              List.new(values, type)
+            end
           else
             raise TypeError, "Can't coerce #{value.inspect} to List"
           end

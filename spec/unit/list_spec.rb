@@ -304,10 +304,10 @@ RSpec.describe(Dry::Monads::List) do
 
       it 'flips a list' do
         expect(subject.traverse { |x| list[x] }).
-          to eql(list[list[1, 2]])
+          to eql(list[list[1, 2]].typed(list))
 
         expect(subject.traverse { |x| list[x, x + 1] }).
-          to eql(list[list[1, 2], list[1, 3], list[2, 2], list[2, 3]])
+          to eql(list[list[1, 2], list[1, 3], list[2, 2], list[2, 3]].typed(list))
       end
     end
 

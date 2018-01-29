@@ -1,14 +1,20 @@
 RSpec.describe(Dry::Monads::Do) do
   include Dry::Monads
   include Dry::Monads::Try::Mixin
+  include Dry::Monads::List::Mixin
 
-  let(:klass) do
-    Class.new do
-      include Dry::Monads::Do.for(:call)
-      include Dry::Monads
-      include Dry::Monads::Try::Mixin
+  before do
+    module Test
+      class Operation
+        include Dry::Monads::Do.for(:call)
+        include Dry::Monads
+        include Dry::Monads::Try::Mixin
+        include Dry::Monads::List::Mixin
+      end
     end
   end
+
+  let(:klass) { Test::Operation }
 
   let(:instance) { klass.new }
 
@@ -212,6 +218,74 @@ RSpec.describe(Dry::Monads::Do) do
 
       it 'returns Error' do
         expect(instance.call).to be_error
+      end
+    end
+  end
+
+  context 'yielding arrays' do
+    context 'success' do
+      before do
+        klass.class_eval do
+          def call
+            result = yield [Success(1), Success(2)]
+
+            Success(result)
+          end
+        end
+      end
+
+      it 'casts the given array to a list, infers the monad instance and traverses the list' do
+        expect(instance.call).to eql(Success(List([1, 2])))
+      end
+    end
+
+    context 'failure' do
+      before do
+        klass.class_eval do
+          def call
+            result = yield [Success(0), Failure(1), Failure(2)]
+
+            Success(result)
+          end
+        end
+      end
+
+      it 'returns the first failure case' do
+        expect(instance.call).to eql(Failure(1))
+      end
+    end
+  end
+
+  context 'yielding lists' do
+    context 'success' do
+      before do
+        class Test::Operation
+          def call
+            result = yield List::Result[Success(1), Success(2)]
+
+            Success(result)
+          end
+        end
+      end
+
+      it 'casts the given array to a list, infers the monad instance and traverses the list' do
+        expect(instance.call).to eql(Success(List([1, 2])))
+      end
+    end
+
+    context 'failure' do
+      before do
+        class Test::Operation
+          def call
+            result = yield List::Result[Success(0), Failure(1), Failure(2)]
+
+            Success(result)
+          end
+        end
+      end
+
+      it 'returns the first failure case' do
+        expect(instance.call).to eql(Failure(1))
       end
     end
   end

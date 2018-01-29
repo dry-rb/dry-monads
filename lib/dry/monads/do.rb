@@ -78,6 +78,7 @@ module Dry
             class_eval(<<-RUBY, __FILE__, __LINE__ + 1)
               def #{ method }(*)
                 super do |*ms|
+                  ms = coerce_to_monad(ms)
                   unwrapped = ms.map { |m| m.or { halt(m) }.value! }
                   ms.size == 1 ? unwrapped[0] : unwrapped
                 end
@@ -95,6 +96,22 @@ module Dry
 
           def halt(result)
             raise Halt.new(result)
+          end
+
+          # @private
+          def coerce_to_monad(ms)
+            return ms if ms.size != 1
+
+            fst = ms[0]
+
+            case fst
+            when Array
+              [List.coerce(fst).traverse]
+            when List
+              [fst.traverse]
+            else
+              [fst]
+            end
           end
         end
       end
