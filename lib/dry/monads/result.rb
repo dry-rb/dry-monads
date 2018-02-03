@@ -35,7 +35,6 @@ module Dry
       def to_result
         self
       end
-      alias_method :to_either, :to_result
 
       # Returns the Result monad.
       # This is how we're doing polymorphism in Ruby 😕
@@ -234,7 +233,6 @@ module Dry
               Success.new(value)
             end
           end
-          alias_method :Right, :Success
 
           # @param value [Object] the value to be stored in the monad
           # @return [Result::Failure]
@@ -247,15 +245,10 @@ module Dry
               Failure.new(value)
             end
           end
-          alias_method :Left, :Failure
         end
 
         include Constructors
       end
     end
-
-    Either = Result # @private
-    Result::Right = Result::Success # @private
-    Result::Left = Result::Failure # @private
   end
 end
