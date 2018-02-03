@@ -149,6 +149,12 @@ module Dry
 
         deprecate :value, message: '.value is deprecated, use .value! instead'
 
+        # @private
+        # @return [String] Caller location
+        def self.trace_caller
+          caller_locations(2, 2)[0].to_s
+        end
+
         # Raises an error on accessing internal value
         def value!
           raise UnwrapError.new(self)

@@ -206,6 +206,12 @@ RSpec.describe(Dry::Monads::Maybe) do
       expect(subject.inspect).to eql('None')
     end
 
+    describe '#initialize' do
+      it 'traces the caller' do
+        expect(subject.trace).to include("spec/unit/maybe_spec.rb")
+      end
+    end
+
     describe '#value', :suppress_deprecations do
       it 'returns wrapped value' do
         expect(subject.value).to be nil
@@ -371,8 +377,8 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     describe '#None' do
-      example 'returns the singleton' do
-        expect(subject.None()).to be(maybe::None.instance)
+      example 'tracks the caller' do
+        expect(subject.None().trace).to include("spec/unit/maybe_spec.rb")
       end
     end
   end

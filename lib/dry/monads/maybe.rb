@@ -107,6 +107,12 @@ module Dry
         @instance = new.freeze
         singleton_class.send(:attr_reader, :instance)
 
+        attr_reader :trace
+
+        def initialize(trace = RightBiased::Left.trace_caller)
+          @trace = trace
+        end
+
         # If a block is given passes internal value to it and returns the result,
         # otherwise simply returns the parameter val.
         #
@@ -189,7 +195,7 @@ module Dry
 
           # @return [Maybe::None]
           def None
-            None.instance
+            None.new(RightBiased::Left.trace_caller)
           end
         end
 
