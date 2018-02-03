@@ -79,7 +79,7 @@ module Dry
               def #{ method }(*)
                 super do |*ms|
                   ms = coerce_to_monad(ms)
-                  unwrapped = ms.map { |m| m.or { halt(m) }.value! }
+                  unwrapped = ms.map { |m| m.to_monad.or { halt(m) }.value! }
                   ms.size == 1 ? unwrapped[0] : unwrapped
                 end
               rescue Halt => e

@@ -289,4 +289,27 @@ RSpec.describe(Dry::Monads::Do) do
       end
     end
   end
+
+  context 'implicit conversions' do
+    before do
+      class Test::ValidationResult
+        def to_monad
+          Dry::Monads::Success(:converted)
+        end
+      end
+
+      class Test::Operation
+        def call(obj)
+          result = yield(obj)
+
+          Success(result)
+        end
+      end
+    end
+
+    it 'implicitly converts an arbitrary object to a monad' do
+      result = Test::ValidationResult.new
+      expect(instance.(result)).to eql(Success(:converted))
+    end
+  end
 end
