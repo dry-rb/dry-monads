@@ -11,7 +11,7 @@ module Dry::Monads
         @mod = Module.new do
           define_method(:Failure) do |value|
             if error === value
-              Failure.new(value)
+              Failure.new(value, RightBiased::Left.trace_caller)
             else
               raise InvalidFailureTypeError.new(value)
             end

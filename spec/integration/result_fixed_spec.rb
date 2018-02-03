@@ -56,6 +56,11 @@ RSpec.describe(Dry::Monads::Result) do
       expect(subject.Failure(:no_user)).to eql(failure.(:no_user))
     end
 
+    it 'tracks the caller' do
+      error = subject.Failure(:no_user)
+      expect(error.trace).to include("spec/integration/result_fixed_spec.rb")
+    end
+
     it 'raises an error on invalid type' do
       expect { subject.Failure("no_user") }.
         to raise_error(

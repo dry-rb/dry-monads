@@ -111,7 +111,7 @@ module Dry
         if promise.wait.fulfilled?
           Result::Success.new(promise.value)
         else
-          Result::Failure.new(promise.reason)
+          Result::Failure.new(promise.reason, RightBiased::Left.trace_caller)
         end
       end
 
@@ -119,7 +119,11 @@ module Dry
       #
       # @return [Maybe]
       def to_maybe
-        Maybe.coerce(promise.wait.value)
+        if promise.wait.fulfilled?
+          Maybe::Some.new(promise.value)
+        else
+          Maybe::None.new(RightBiased::Left.trace_caller)
+        end
       end
 
       # @return [String]

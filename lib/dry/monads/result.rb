@@ -106,7 +106,7 @@ module Dry
         #
         # @return [Result::Failure]
         def flip
-          Failure.new(@value)
+          Failure.new(@value, RightBiased::Left.trace_caller)
         end
       end
 
@@ -193,7 +193,7 @@ module Dry
 
         # @return [Maybe::None]
         def to_maybe
-          Maybe::None.instance
+          Maybe::None.new(trace)
         end
 
         # Transform to a Success instance

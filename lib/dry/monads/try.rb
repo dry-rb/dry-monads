@@ -120,7 +120,7 @@ module Dry
 
         # @return [Result::Success]
         def to_result
-          Dry::Monads::Success(@value)
+          Dry::Monads::Result::Success.new(@value)
         end
 
         # @return [String]
@@ -144,12 +144,12 @@ module Dry
 
         # @return [Maybe::None]
         def to_maybe
-          Dry::Monads::None()
+          Maybe::None.new(RightBiased::Left.trace_caller)
         end
 
         # @return [Result::Failure]
         def to_result
-          Dry::Monads::Failure(exception)
+          Result::Failure.new(exception, RightBiased::Left.trace_caller)
         end
 
         # @return [String]

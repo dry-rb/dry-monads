@@ -229,6 +229,10 @@ RSpec.describe(Dry::Monads::Result) do
       it 'transforms Success to Failure' do
         expect(subject.flip).to eql(failure['foo'])
       end
+
+      it 'tracks the caller' do
+        expect(subject.flip.trace).to include("spec/unit/result_spec.rb")
+      end
     end
 
     describe '#apply' do
@@ -368,6 +372,10 @@ RSpec.describe(Dry::Monads::Result) do
 
       it { is_expected.to be_an_instance_of maybe::None }
       it { is_expected.to eql(maybe::None.new) }
+
+      it 'tracks the caller' do
+        expect(subject.to_maybe.trace).to include("spec/unit/result_spec.rb")
+      end
     end
 
     describe '#tee' do
@@ -424,7 +432,7 @@ RSpec.describe(Dry::Monads::Result) do
   end
 
   describe result::Mixin do
-    subject(:obj) { Object.new.tap { |o| o.extend(result::Mixin) } }
+    subject(:context) { Object.new.tap { |o| o.extend(result::Mixin) } }
 
     describe '#Success' do
       example 'with plain value' do

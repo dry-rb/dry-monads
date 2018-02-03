@@ -230,11 +230,19 @@ RSpec.describe(Dry::Monads::Try) do
       it 'transforms self to None' do
         expect(subject.to_maybe).to eql(maybe::None.new)
       end
+
+      it 'tracks the caller' do
+        expect(subject.to_maybe.trace).to include("spec/unit/try_spec.rb")
+      end
     end
 
     describe '#to_result' do
       it 'transforms self to Result::Failure' do
         expect(subject.to_result).to eql(failure[division_error])
+      end
+
+      it 'tracks the caller' do
+        expect(subject.to_result.trace).to include("spec/unit/try_spec.rb")
       end
     end
 

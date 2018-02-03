@@ -70,6 +70,11 @@ RSpec.describe(Dry::Monads::Task) do
       expect(error).to be_a_failure
       expect(error.failure).to be_a(ZeroDivisionError)
     end
+
+    it 'tracks the caller' do
+      error = task { 1 / 0 }.to_result
+      expect(error.trace).to include("spec/unit/task_spec.rb")
+    end
   end
 
   describe '#to_maybe' do
@@ -80,6 +85,11 @@ RSpec.describe(Dry::Monads::Task) do
     it 'transforms an unsuccessful result to None' do
       error = task { 1 / 0 }.to_maybe
       expect(error).to be_none
+    end
+
+    it 'tracks the caller' do
+      error = task { 1 / 0 }.to_maybe
+      expect(error.trace).to include("spec/unit/task_spec.rb")
     end
   end
 
