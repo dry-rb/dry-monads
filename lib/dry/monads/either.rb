@@ -31,6 +31,18 @@ module Dry
           deprecate :Left, :Failure
         end
       end
+
+      class Success
+        deprecate :left?, :failure?
+        deprecate :right?, :success?
+      end
+
+      class Failure
+        deprecate :left?, :failure?
+        deprecate :right?, :success?
+
+        deprecate :left, :failure
+      end
     end
 
     class Try
