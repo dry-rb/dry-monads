@@ -117,16 +117,24 @@ module Dry
         include RightBiased::Left
         include Dry::Equalizer(:failure)
 
+        # Line where the value was constructed
+        #
+        # @return [String]
+        # @api public
+        attr_reader :trace
+
+        # @param value [Object] failure value
+        # @param trace [String] caller line
+        def initialize(value, trace = RightBiased::Left.trace_caller)
+          @value = value
+          @trace = trace
+        end
+
         # @private
         def failure
           @value
         end
         alias_method :left, :failure
-
-        # @param value [Object] a value in an error state
-        def initialize(value)
-          @value = value
-        end
 
         # Apply the first function to value.
         #
@@ -240,9 +248,9 @@ module Dry
           def Failure(value = Dry::Core::Constants::Undefined, &block)
             if value.equal?(Dry::Core::Constants::Undefined)
               raise ArgumentError, 'No value given' if block.nil?
-              Failure.new(block)
+              Failure.new(block, RightBiased::Left.trace_caller)
             else
-              Failure.new(value)
+              Failure.new(value, RightBiased::Left.trace_caller)
             end
           end
         end

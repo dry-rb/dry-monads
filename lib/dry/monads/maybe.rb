@@ -107,6 +107,10 @@ module Dry
         @instance = new.freeze
         singleton_class.send(:attr_reader, :instance)
 
+        # Line where the value was constructed
+        #
+        # @return [String]
+        # @api public
         attr_reader :trace
 
         def initialize(trace = RightBiased::Left.trace_caller)

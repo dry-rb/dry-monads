@@ -454,6 +454,10 @@ RSpec.describe(Dry::Monads::Result) do
       it 'raises an ArgumentError on missing value' do
         expect { subject.Failure() }.to raise_error(ArgumentError, 'No value given')
       end
+
+      it 'tracks the caller' do
+        expect(subject.Failure('fail').trace).to include("spec/unit/result_spec.rb")
+      end
     end
   end
 end
