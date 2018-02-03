@@ -1,5 +1,4 @@
 require 'dry/core/constants'
-require 'dry/core/deprecations'
 
 require 'dry/monads/curry'
 require 'dry/monads/errors'
@@ -14,16 +13,12 @@ module Dry
       module Right
         include Dry::Core::Constants
 
-        extend Dry::Core::Deprecations[:'dry-monads']
-
         # Unwraps the underlying value
         #
         # @return [Object]
         def value!
           @value
         end
-
-        deprecate :value, :value!
 
         # Calls the passed in Proc object with value stored in self
         # and returns the result.
@@ -143,12 +138,6 @@ module Dry
       #
       # @api public
       module Left
-        extend Dry::Core::Deprecations[:'dry-monads']
-
-        attr_reader :value
-
-        deprecate :value, message: '.value is deprecated, use .value! instead'
-
         # @private
         # @return [String] Caller location
         def self.trace_caller

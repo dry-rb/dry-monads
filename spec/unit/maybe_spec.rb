@@ -56,12 +56,6 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
-    describe '#value' do
-      it 'returns wrapped value', :suppress_deprecations do
-        expect(subject.value).to eql('foo')
-      end
-    end
-
     describe '#value!' do
       it 'unwraps the value' do
         expect(subject.value!).to eql('foo')
@@ -209,12 +203,6 @@ RSpec.describe(Dry::Monads::Maybe) do
     describe '#initialize' do
       it 'traces the caller' do
         expect(subject.trace).to include("spec/unit/maybe_spec.rb")
-      end
-    end
-
-    describe '#value', :suppress_deprecations do
-      it 'returns wrapped value' do
-        expect(subject.value).to be nil
       end
     end
 

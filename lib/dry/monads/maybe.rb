@@ -1,5 +1,4 @@
 require 'dry/equalizer'
-require 'dry/core/deprecations'
 require 'dry/core/constants'
 
 require 'dry/monads/right_biased'
@@ -12,8 +11,6 @@ module Dry
     # @api public
     class Maybe
       include Transformer
-
-      extend Dry::Core::Deprecations[:'dry-monads']
 
       class << self
         # Wraps the given value with into a Maybe object.
