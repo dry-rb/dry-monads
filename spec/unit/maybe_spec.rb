@@ -8,6 +8,8 @@ RSpec.describe(Dry::Monads::Maybe) do
   describe maybe::Some do
     subject { described_class.new('foo') }
 
+    it_behaves_like 'a monad'
+
     let(:upcased_subject) { described_class.new('FOO') }
 
     it { is_expected.to be_some }
@@ -185,6 +187,8 @@ RSpec.describe(Dry::Monads::Maybe) do
 
   describe maybe::None do
     subject { described_class.new }
+
+    it_behaves_like 'a monad'
 
     it { is_expected.not_to be_some }
     it { is_expected.to be_none }

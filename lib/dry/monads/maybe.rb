@@ -54,6 +54,13 @@ module Dry
         self
       end
 
+      # Returns self.
+      #
+      # @return [Maybe::Some, Maybe::None]
+      def to_monad
+        self
+      end
+
       # Returns the Maybe monad.
       # This is how we're doing polymorphism in Ruby 😕
       #

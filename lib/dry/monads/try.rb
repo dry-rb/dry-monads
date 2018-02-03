@@ -53,6 +53,13 @@ module Dry
       end
       alias_method :failure?, :error?
 
+      # Returns self.
+      #
+      # @return [Maybe::Some, Maybe::None]
+      def to_monad
+        self
+      end
+
       # Represents a result of a successful execution.
       #
       # @api public

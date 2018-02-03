@@ -36,6 +36,13 @@ module Dry
         self
       end
 
+      # Returns self.
+      #
+      # @return [Result::Success, Result::Failure]
+      def to_monad
+        self
+      end
+
       # Returns the Result monad.
       # This is how we're doing polymorphism in Ruby 😕
       #

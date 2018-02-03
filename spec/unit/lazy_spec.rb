@@ -3,6 +3,8 @@ RSpec.describe(Dry::Monads::Lazy) do
 
   subject { Lazy { 1 + 2 } }
 
+  it_behaves_like 'a monad'
+
   describe '#value!' do
     it 'forces the computation' do
       run = false

@@ -10,6 +10,8 @@ RSpec.describe(Dry::Monads::Result) do
   describe result::Success do
     subject { success['foo'] }
 
+    it_behaves_like 'a monad'
+
     let(:upcased_subject) { success['FOO'] }
 
     it { is_expected.to be_success }
@@ -262,6 +264,8 @@ RSpec.describe(Dry::Monads::Result) do
 
   describe result::Failure do
     subject { result::Failure.new('bar') }
+
+    it_behaves_like 'a monad'
 
     it { is_expected.not_to be_success }
 

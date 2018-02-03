@@ -12,6 +12,8 @@ RSpec.describe(Dry::Monads::List) do
   subject { list[1, 2, 3] }
   let(:empty_list) { list[] }
 
+  it_behaves_like 'a monad'
+
   describe '.coerce' do
     let(:array_like) do
       Object.new.tap do |o|

@@ -24,6 +24,8 @@ RSpec.describe(Dry::Monads::Task) do
     task(&deferred { 1 })
   end
 
+  it_behaves_like 'a monad'
+
   describe '.new' do
     it 'delays the execution' do
       expect(subject.value!).to be 1

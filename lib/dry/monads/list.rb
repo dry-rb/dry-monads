@@ -283,6 +283,13 @@ module Dry
         List
       end
 
+      # Returns self.
+      #
+      # @return [Result::Success, Result::Failure]
+      def to_monad
+        self
+      end
+
       private
 
       def coerce(other)

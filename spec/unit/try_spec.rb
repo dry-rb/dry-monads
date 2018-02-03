@@ -20,6 +20,8 @@ RSpec.describe(Dry::Monads::Try) do
   describe(try::Value) do
     subject { div_value['foo'] }
 
+    it_behaves_like 'a monad'
+
     let(:upcase_value) { div_value['FOO'] }
     let(:upcase_error) { try::Error.new(division_error) }
 
@@ -172,6 +174,8 @@ RSpec.describe(Dry::Monads::Try) do
   describe(try::Error) do
     subject { described_class.new(division_error) }
     other_error = 1 / 0 rescue $ERROR_INFO
+
+    it_behaves_like 'a monad'
 
     let(:upcase_value) { described_class.new([ZeroDivisionError], 'FOO') }
     let(:upcase_error) { try::Error.new(division_error) }

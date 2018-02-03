@@ -213,6 +213,13 @@ module Dry
         Task
       end
 
+      # Returns self.
+      #
+      # @return [Maybe::Some, Maybe::None]
+      def to_monad
+        self
+      end
+
       # Applies the stored value to the given argument.
       #
       # @example
