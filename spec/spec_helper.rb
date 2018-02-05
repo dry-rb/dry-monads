@@ -28,6 +28,8 @@ $VERBOSE = true
 
 require 'dry-monads'
 
+Dir["./spec/shared/**/*.rb"].sort.each { |f| require f }
+
 module Kernel
   def suppress_warnings
     original_verbosity = $VERBOSE
