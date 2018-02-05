@@ -45,8 +45,14 @@ module Dry
         #
         # @param value [Object] any object
         # @return [List]
-        def pure(value, type = nil)
-          new([value], type)
+        def pure(value = Undefined, type = nil, &block)
+          if value.equal?(Undefined)
+            new([block])
+          elsif block
+            new([block], value)
+          else
+            new([value], type)
+          end
         end
       end
 
@@ -271,9 +277,19 @@ module Dry
         foldl(type.pure(EMPTY)) { |acc, el|
           acc.bind { |unwrapped|
             mapped = block_given? ? yield(el) : el
-            mapped.fmap { |i| unwrapped + List[i] }
+            type.pure { |x| unwrapped + List.pure(x) }.apply(mapped)
           }
         }
+      end
+
+      # Applies the stored functions to the elements of the given list.
+      #
+      # @param list [List]
+      # @return [List]
+      def apply(list)
+        list.bind do |el|
+          value.map { |f| f.(el) }
+        end
       end
 
       # Returns the List monad.
