@@ -7,6 +7,10 @@ RSpec.describe(Dry::Monads::Result) do
 
   let(:upcase) { :upcase.to_proc }
 
+  it_behaves_like 'an applicative' do
+    let(:pure_constructor) { success }
+  end
+
   describe result::Success do
     subject { success['foo'] }
 

@@ -31,13 +31,19 @@ module Dry
           Error.new(e)
         end
 
-        # Wraps the given value with `Value`.
+        # Wraps the given value with Value
         #
-        # @param value [Object] the value to be stored inside Value
-        # @param exceptions [Array<Exception>]
+        # @param value [Object] value to be wrapped with Value
+        # @param block [Object] block to be wrapped with Value
         # @return [Try::Value]
-        def pure(value, exceptions = DEFAULT_EXCEPTIONS)
-          Value.new(exceptions, value)
+        def pure(value = Undefined, exceptions = DEFAULT_EXCEPTIONS, &block)
+          if value.equal?(Undefined)
+            Value.new(DEFAULT_EXCEPTIONS, block)
+          elsif block.nil?
+            Value.new(exceptions, value)
+          else
+            Value.new(value, block)
+          end
         end
       end
 

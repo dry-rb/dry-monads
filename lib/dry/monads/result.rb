@@ -22,10 +22,15 @@ module Dry
       class << self
         # Wraps the given value with Success
         #
-        # @param value [Object] the value to be stored inside Success
+        # @param value [Object] value to be wrapped with Success
+        # @param block [Object] block to be wrapped with Success
         # @return [Result::Success]
-        def pure(value)
-          Success.new(value)
+        def pure(value = Undefined, &block)
+          if value.equal?(Undefined)
+            Success.new(block)
+          else
+            Success.new(value)
+          end
         end
       end
 

@@ -5,6 +5,10 @@ RSpec.describe(Dry::Monads::Maybe) do
 
   let(:upcase) { :upcase.to_proc }
 
+  it_behaves_like 'an applicative' do
+    let(:pure_constructor) { some }
+  end
+
   describe maybe::Some do
     subject { described_class.new('foo') }
 

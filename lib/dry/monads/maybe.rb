@@ -15,7 +15,7 @@ module Dry
       class << self
         # Wraps the given value with into a Maybe object.
         #
-        # @param value [Object] the value to be stored in the monad
+        # @param value [Object] value to be stored in the monad
         # @return [Maybe::Some, Maybe::None]
         def coerce(value)
           if value.nil?
@@ -28,10 +28,15 @@ module Dry
 
         # Wraps the given value with `Some`.
         #
-        # @param value [Object] the value to be stored inside Some
+        # @param value [Object] value to be wrapped with Some
+        # @param block [Object] block to be wrapped with Some
         # @return [Maybe::Some]
-        def pure(value)
-          Some.new(value)
+        def pure(value = Undefined, &block)
+          if value.equal?(Undefined)
+            Some.new(block)
+          else
+            Some.new(value)
+          end
         end
       end
 
