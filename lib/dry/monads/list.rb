@@ -6,6 +6,7 @@ require 'dry/monads/task'
 require 'dry/monads/result'
 require 'dry/monads/try'
 require 'dry/monads/transformer'
+require 'dry/monads/curry'
 
 module Dry
   module Monads
@@ -274,21 +275,23 @@ module Dry
           raise StandardError, "Cannot traverse an untyped list"
         end
 
-        foldl(type.pure(EMPTY)) { |acc, el|
-          acc.bind { |unwrapped|
-            mapped = block_given? ? yield(el) : el
-            type.pure { |x| unwrapped + List.pure(x) }.apply(mapped)
-          }
-        }
+        cons = type.pure { |list, i| list + List.pure(i) }
+
+        foldl(type.pure(EMPTY)) do |acc, el|
+          cons.
+            apply(acc).
+            apply { block_given? ? yield(el) : el }
+        end
       end
 
       # Applies the stored functions to the elements of the given list.
       #
       # @param list [List]
       # @return [List]
-      def apply(list)
-        list.bind do |el|
-          value.map { |f| f.(el) }
+      def apply(list = Undefined)
+        arg = list.equal?(Undefined) ? yield : list
+        bind do |f|
+          arg.fmap { |x| Curry.(f).(x) }
         end
       end
 

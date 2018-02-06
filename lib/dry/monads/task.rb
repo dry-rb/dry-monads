@@ -231,7 +231,8 @@ module Dry
       #
       # @param arg [Task]
       # @return [Task]
-      def apply(arg)
+      def apply(val = Undefined)
+        arg = val.equal?(Undefined) ? yield : val
         bind { |f| arg.fmap { |v| curry(f).(v) } }
       end
 
