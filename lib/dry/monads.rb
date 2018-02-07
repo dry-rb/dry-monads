@@ -7,6 +7,7 @@ require 'dry/monads/lazy'
 require 'dry/monads/result'
 require 'dry/monads/result/fixed'
 require 'dry/monads/do'
+require 'dry/monads/validated'
 
 module Dry
   # Common, idiomatic monads for Ruby

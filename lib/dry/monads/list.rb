@@ -5,6 +5,7 @@ require 'dry/monads/maybe'
 require 'dry/monads/task'
 require 'dry/monads/result'
 require 'dry/monads/try'
+require 'dry/monads/validated'
 require 'dry/monads/transformer'
 require 'dry/monads/curry'
 
@@ -337,6 +338,11 @@ module Dry
         def coerce(value)
           List.coerce(value, type)
         end
+
+        def pure(val = Undefined, &block)
+          value = val.equal?(Undefined) ? block : val
+          List.pure(value, type)
+        end
       end
 
       # List of tasks
@@ -350,6 +356,9 @@ module Dry
 
       # List of results
       Try = ListBuilder[Try]
+
+      # List of validation results
+      Validated = ListBuilder[Validated]
 
       # List contructors.
       #

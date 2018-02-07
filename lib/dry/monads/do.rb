@@ -1,3 +1,5 @@
+require 'dry/monads/traverse'
+
 module Dry
   module Monads
     # An implementation of do-notation.
@@ -105,12 +107,12 @@ module Dry
             fst = ms[0]
 
             case fst
-            when Array
-              [List.coerce(fst).traverse]
-            when List
-              [fst.traverse]
+            when Array, List
+              list = fst.is_a?(Array) ? List.coerce(fst) : fst
+              traverse_instance = Traverse[list.type]
+              [list.traverse(&traverse_instance)]
             else
-              [fst]
+              ms
             end
           end
         end

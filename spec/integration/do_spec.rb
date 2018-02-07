@@ -2,6 +2,7 @@ RSpec.describe(Dry::Monads::Do) do
   include Dry::Monads
   include Dry::Monads::Try::Mixin
   include Dry::Monads::List::Mixin
+  include Dry::Monads::Validated::Mixin
 
   before do
     module Test
@@ -10,6 +11,7 @@ RSpec.describe(Dry::Monads::Do) do
         include Dry::Monads
         include Dry::Monads::Try::Mixin
         include Dry::Monads::List::Mixin
+        include Dry::Monads::Validated::Mixin
       end
     end
   end
@@ -310,6 +312,46 @@ RSpec.describe(Dry::Monads::Do) do
     it 'implicitly converts an arbitrary object to a monad' do
       result = Test::ValidationResult.new
       expect(instance.(result)).to eql(Success(:converted))
+    end
+  end
+
+  context 'with validated' do
+    context 'with successes' do
+      before do
+        class Test::Operation
+          def call
+            result = yield List::Validated[
+                             Valid(1),
+                             Valid(2),
+                             Valid(3)
+                           ]
+
+            Success(result)
+          end
+        end
+      end
+
+      it "returns a concatenated list of results" do
+        expect(instance.call).to eql(Success(List([1, 2, 3])))
+      end
+    end
+
+    context 'with failures' do
+      before do
+        class Test::Operation
+          def call
+            result = yield List::Validated[
+                             Valid(1),
+                             Invalid(2),
+                             Invalid(3)
+                           ]
+          end
+        end
+      end
+
+      it "returns a concatenated list of failures" do
+        expect(instance.call).to eql(Invalid(List([2, 3])))
+      end
     end
   end
 end
