@@ -30,12 +30,11 @@ module Dry
         end
 
         def apply(val = Undefined)
-          arg = val.equal?(Undefined) ? yield : val
-          arg.fmap { |x| Curry.(value).(x) }
+          Undefined.default(val) { yield }.fmap(Curry.(value))
         end
 
-        def fmap(proc = nil, &block)
-          f = proc || block
+        def fmap(proc = Undefined, &block)
+          f = Undefined.default(proc, block)
           self.class.new(f.(value))
         end
 
@@ -46,6 +45,11 @@ module Dry
         def or(*)
           self
         end
+
+        def inspect
+          "Valid(#{ @value.inspect })"
+        end
+        alias_method :to_s, :inspect
       end
 
       class Invalid < Validated
@@ -74,6 +78,11 @@ module Dry
         def or
           yield
         end
+
+        def inspect
+          "Invalid(#{ @error.inspect })"
+        end
+        alias_method :to_s, :inspect
       end
 
       module Mixin
