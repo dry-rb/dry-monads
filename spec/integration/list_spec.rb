@@ -20,4 +20,24 @@ RSpec.describe(Dry::Monads::List) do
       expect(subject.new.List([1])).to eql(list[1])
     end
   end
+
+  describe list::Validated do
+    include Dry::Monads::Validated::Mixin
+
+    it 'traverses errors' do
+      errors = list::Validated[
+        Invalid(:no_email), Invalid(:no_name)
+      ]
+
+      expect(errors.traverse).to eql(Invalid(list[:no_email, :no_name]))
+    end
+
+    it 'traverses valids' do
+      errors = list::Validated[
+        Valid('john@doe.me'), Valid('John')
+      ]
+
+      expect(errors.traverse).to eql(Valid(list["john@doe.me", "John"]))
+    end
+  end
 end
