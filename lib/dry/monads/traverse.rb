@@ -1,5 +1,4 @@
 require 'dry/monads/validated'
-require 'dry/monads/list'
 
 module Dry
   module Monads

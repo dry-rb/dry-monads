@@ -3,6 +3,10 @@ RSpec.describe(Dry::Monads::Validated) do
   valid = described_class::Valid.method(:new)
   invalid = described_class::Invalid.method(:new)
 
+  it_behaves_like 'an applicative' do
+    let(:pure) { valid }
+  end
+
   describe '.pure' do
     it 'constructs a Valid value' do
       expect(validated.pure(1)).to eql(valid.(1))
@@ -39,6 +43,13 @@ RSpec.describe(Dry::Monads::Validated) do
         expect(subject.alt_map(-> { fail })).to be(subject)
       end
     end
+
+    describe '#or' do
+      it 'returns self back' do
+        expect(subject.or { fail }).to be(subject)
+        expect(subject.or(-> { fail })).to be(subject)
+      end
+    end
   end
 
   describe validated::Invalid do
@@ -69,6 +80,19 @@ RSpec.describe(Dry::Monads::Validated) do
     describe '#error' do
       it 'returns the stored value' do
         expect(subject.error).to eql(:missing_value)
+      end
+    end
+
+    describe '#or' do
+      it 'yields a block' do
+        expect(subject.or { :result }).to eql(:result)
+        expect(subject.or(-> { :result })).to eql(:result)
+      end
+    end
+
+    describe '#apply' do
+      it 'concatenates errors using +' do
+        expect(invalid.(1).apply(invalid.(2))).to eql(invalid.(3))
       end
     end
   end

@@ -18,7 +18,7 @@ RSpec.describe(Dry::Monads::Try) do
   let(:divide_by_zero) { -> _value { raise division_error } }
 
   it_behaves_like 'an applicative' do
-    let(:pure_constructor) { -> x { value.(try::DEFAULT_EXCEPTIONS, x) } }
+    let(:pure) { -> x { value.(try::DEFAULT_EXCEPTIONS, x) } }
   end
 
   describe(try::Value) do

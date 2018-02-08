@@ -345,6 +345,8 @@ RSpec.describe(Dry::Monads::Do) do
                              Invalid(2),
                              Invalid(3)
                            ]
+
+            Success(result)
           end
         end
       end

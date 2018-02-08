@@ -271,17 +271,18 @@ module Dry
       #   List<Maybe>[Some(1), None, Some(3)].traverse # => None
       #
       # @return [Monad] Result is a monadic value
-      def traverse
+      def traverse(proc = nil, &block)
         unless typed?
           raise StandardError, "Cannot traverse an untyped list"
         end
 
         cons = type.pure { |list, i| list + List.pure(i) }
+        with = proc || block || Traverse[type]
 
         foldl(type.pure(EMPTY)) do |acc, el|
           cons.
             apply(acc).
-            apply { block_given? ? yield(el) : el }
+            apply { with.(el) }
         end
       end
 
@@ -380,3 +381,5 @@ module Dry
     end
   end
 end
+
+require 'dry/monads/traverse'

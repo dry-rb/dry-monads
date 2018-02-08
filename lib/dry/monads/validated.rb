@@ -61,9 +61,8 @@ module Dry
           @error = error
         end
 
-        def apply(value = Undefined)
-          arg = value.equal?(Undefined) ? yield : value
-          arg.alt_map { |val| @error + val }
+        def apply(val = Undefined)
+          Undefined.default(val) { yield }.alt_map { |v| @error + v }
         end
 
         def alt_map(proc = nil, &block)
@@ -75,8 +74,8 @@ module Dry
           self
         end
 
-        def or
-          yield
+        def or(proc = Undefined, &block)
+          Undefined.default(proc, block).call
         end
 
         def inspect
