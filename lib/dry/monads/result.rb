@@ -112,11 +112,18 @@ module Dry
           Dry::Monads::Maybe(@value)
         end
 
-        # Transform to a Failure instance
+        # Transforms to a Failure instance
         #
         # @return [Result::Failure]
         def flip
           Failure.new(@value, RightBiased::Left.trace_caller)
+        end
+
+        # Transforms to Validated
+        #
+        # @return [Validated::Valid]
+        def to_validated
+          Validated::Valid.new(value!)
         end
       end
 
@@ -223,6 +230,13 @@ module Dry
         # @return [Boolean]
         def ===(other)
           Failure === other && failure === other.failure
+        end
+
+        # Transforms to Validated
+        #
+        # @return [Validated::Valid]
+        def to_validated
+          Validated::Invalid.new(failure, trace)
         end
       end
 

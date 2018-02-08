@@ -1,3 +1,6 @@
+require 'dry/monads/maybe'
+require 'dry/monads/result'
+
 module Dry
   module Monads
     class Validated
@@ -50,15 +53,26 @@ module Dry
           "Valid(#{ @value.inspect })"
         end
         alias_method :to_s, :inspect
+
+        def to_maybe
+          Maybe.pure(value!)
+        end
+
+        def to_result
+          Result.pure(value!)
+        end
       end
 
       class Invalid < Validated
         attr_reader :error
 
+        attr_reader :trace
+
         include Dry::Equalizer(:error)
 
-        def initialize(error)
+        def initialize(error, trace = RightBiased::Left.trace_caller)
           @error = error
+          @trace = trace
         end
 
         def apply(val = Undefined)
@@ -82,6 +96,14 @@ module Dry
           "Invalid(#{ @error.inspect })"
         end
         alias_method :to_s, :inspect
+
+        def to_maybe
+          Maybe::None.new(RightBiased::Left.trace_caller)
+        end
+
+        def to_result
+          Result::Failure.new(error, RightBiased::Left.trace_caller)
+        end
       end
 
       module Mixin

@@ -2,6 +2,13 @@ RSpec.describe(Dry::Monads::Validated) do
   validated = described_class
   valid = described_class::Valid.method(:new)
   invalid = described_class::Invalid.method(:new)
+  maybe = Dry::Monads::Maybe
+  some = maybe::Some.method(:new)
+  none = maybe::None.new
+
+  result = Dry::Monads::Result
+  success = result::Success.method(:new)
+  failure = result::Failure.method(:new)
 
   it_behaves_like 'an applicative' do
     let(:pure) { valid }
@@ -50,6 +57,18 @@ RSpec.describe(Dry::Monads::Validated) do
         expect(subject.or(-> { fail })).to be(subject)
       end
     end
+
+    describe '#to_maybe' do
+      it 'returns Some' do
+        expect(subject.to_maybe).to eql(some.(1))
+      end
+    end
+
+    describe '#to_result' do
+      it 'retuns Success' do
+        expect(subject.to_result).to eql(success.(1))
+      end
+    end
   end
 
   describe validated::Invalid do
@@ -93,6 +112,26 @@ RSpec.describe(Dry::Monads::Validated) do
     describe '#apply' do
       it 'concatenates errors using +' do
         expect(invalid.(1).apply(invalid.(2))).to eql(invalid.(3))
+      end
+    end
+
+    describe '#to_maybe' do
+      it 'returns None' do
+        expect(subject.to_maybe).to be_none
+      end
+
+      it 'traces the caller' do
+        expect(subject.to_maybe.trace).to include("spec/unit/validated_spec.rb")
+      end
+    end
+
+    describe '#to_result' do
+      it 'retuns Failure' do
+        expect(subject.to_result).to eql(failure.(:missing_value))
+      end
+
+      it 'traces the caller' do
+        expect(subject.to_result.trace).to include("spec/unit/validated_spec.rb")
       end
     end
   end

@@ -4,6 +4,9 @@ RSpec.describe(Dry::Monads::Result) do
   some = maybe::Some.method(:new)
   failure = result::Failure.method(:new)
   success = result::Success.method(:new)
+  validated = Dry::Monads::Validated
+  valid = validated::Valid.method(:new)
+  invalid = validated::Invalid.method(:new)
 
   let(:upcase) { :upcase.to_proc }
 
@@ -179,6 +182,12 @@ RSpec.describe(Dry::Monads::Result) do
 
       it 'ignores a block' do
         expect(subject.value_or { 'baz' }).to eql(subject.value!)
+      end
+    end
+
+    describe '#to_validated' do
+      it 'returns Valid' do
+        expect(subject.to_validated).to eql(valid.('foo'))
       end
     end
 
@@ -435,6 +444,12 @@ RSpec.describe(Dry::Monads::Result) do
         expect(failure[/\w+/]).to be === subject
         expect(failure[String]).to be === subject
         expect(failure['foo']).not_to be === subject
+      end
+    end
+
+    describe '#to_validated' do
+      it 'returns Invalid' do
+        expect(subject.to_validated).to eql(invalid.('bar'))
       end
     end
   end
