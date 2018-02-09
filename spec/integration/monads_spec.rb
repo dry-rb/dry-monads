@@ -121,6 +121,10 @@ RSpec.describe(Dry::Monads) do
       it 'raises an argument error if no value provided' do
         expect { m.Invalid() }.to raise_error(ArgumentError, 'No value given')
       end
+
+      it 'traces the caller' do
+        expect(m.Invalid(1).trace).to include("monads_spec.rb")
+      end
     end
   end
 end

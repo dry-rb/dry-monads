@@ -183,7 +183,7 @@ module Dry
         #
         def alt_map(proc = Undefined, &block)
           f = Undefined.default(proc, block)
-          self.class.new(f.(error))
+          self.class.new(f.(error), RightBiased::Left.trace_caller)
         end
 
         # Ignores the passed argument and returns self
@@ -228,6 +228,8 @@ module Dry
         end
       end
 
+      # Mixin with Validated constructors
+      #
       module Mixin
 
         # Successful validation result
@@ -238,6 +240,8 @@ module Dry
         # @see Dry::Monads::Validated::Invalid
         Invalid = Invalid
 
+        # Actual constructor methods
+        #
         module Constructors
           # Valid constructor
           #
@@ -268,7 +272,7 @@ module Dry
           def Invalid(value = Undefined, &block)
             v = Undefined.default(value, block)
             raise ArgumentError, 'No value given' if v.nil?
-            Invalid.new(v)
+            Invalid.new(v, RightBiased::Left.trace_caller)
           end
         end
 

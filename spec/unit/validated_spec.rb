@@ -98,6 +98,10 @@ RSpec.describe(Dry::Monads::Validated) do
         expect(subject.alt_map { |value| value.to_s }).to eql(invalid.("missing_value"))
         expect(subject.alt_map(-> value { value.to_s })).to eql(invalid.("missing_value"))
       end
+
+      it 'traces the caller' do
+        expect(subject.alt_map { |x| x }.trace).to include("validated_spec.rb")
+      end
     end
 
     describe '#error' do

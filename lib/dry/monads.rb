@@ -17,7 +17,7 @@ module Dry
     # @private
     Undefined = Dry::Core::Constants::Undefined
 
-    # @private
+    # List of monad constructors
     CONSTRUCTORS = [
       Maybe::Mixin::Constructors,
       Result::Mixin::Constructors,
