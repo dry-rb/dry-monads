@@ -22,6 +22,8 @@ module Dry
 
       module Mixin
         module Constructors
+          extend Dry::Core::Deprecations[:'dry-monads']
+
           Right = Success
           Left = Failure
           deprecate_constant :Right
