@@ -20,17 +20,18 @@ module Dry
       attr_reader :failure
 
       class << self
-        # Wraps the given value with Success
+        # Wraps the given value with Success.
         #
-        # @param value [Object] value to be wrapped with Success
-        # @param block [Object] block to be wrapped with Success
-        # @return [Result::Success]
+        # @overload pure(value)
+        #   @param value [Object]
+        #   @return [Result::Success]
+        #
+        # @overload pure(&block)
+        #   @param block [Proc] a block to be wrapped with Success
+        #   @return [Result::Success]
+        #
         def pure(value = Undefined, &block)
-          if value.equal?(Undefined)
-            Success.new(block)
-          else
-            Success.new(value)
-          end
+          Success.new(Undefined.default(value, block))
         end
       end
 
@@ -250,29 +251,39 @@ module Dry
         Failure = Result::Failure
 
         # Value constructors
+        #
         module Constructors
-          # @param value [Object] the value to be stored in the monad
-          # @return [Result::Success]
-          # @api public
-          def Success(value = Dry::Core::Constants::Undefined, &block)
-            if value.equal?(Dry::Core::Constants::Undefined)
-              raise ArgumentError, 'No value given' if block.nil?
-              Success.new(block)
-            else
-              Success.new(value)
-            end
+
+          # Success constructor
+          #
+          # @overload Success(value)
+          #   @param value [Object]
+          #   @return [Result::Success]
+          #
+          # @overload Success(&block)
+          #   @param block [Proc] a block to be wrapped with Success
+          #   @return [Result::Success]
+          #
+          def Success(value = Undefined, &block)
+            v = Undefined.default(value, block)
+            raise ArgumentError, 'No value given' if v.nil?
+            Success.new(v)
           end
 
-          # @param value [Object] the value to be stored in the monad
-          # @return [Result::Failure]
-          # @api public
-          def Failure(value = Dry::Core::Constants::Undefined, &block)
-            if value.equal?(Dry::Core::Constants::Undefined)
-              raise ArgumentError, 'No value given' if block.nil?
-              Failure.new(block, RightBiased::Left.trace_caller)
-            else
-              Failure.new(value, RightBiased::Left.trace_caller)
-            end
+          # Failure constructor
+          #
+          # @overload Success(value)
+          #   @param value [Object]
+          #   @return [Result::Failure]
+          #
+          # @overload Success(&block)
+          #   @param block [Proc] a block to be wrapped with Failure
+          #   @return [Result::Failure]
+          #
+          def Failure(value = Undefined, &block)
+            v = Undefined.default(value, block)
+            raise ArgumentError, 'No value given' if v.nil?
+            Failure.new(v, RightBiased::Left.trace_caller)
           end
         end
 

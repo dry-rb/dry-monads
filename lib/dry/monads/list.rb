@@ -291,10 +291,8 @@ module Dry
       # @param list [List]
       # @return [List]
       def apply(list = Undefined)
-        arg = list.equal?(Undefined) ? yield : list
-        bind do |f|
-          arg.fmap { |x| Curry.(f).(x) }
-        end
+        v = Undefined.default(list) { yield }
+        fmap(Curry).bind { |f| v.fmap { |x| f.(x) } }
       end
 
       # Returns the List monad.
@@ -341,7 +339,7 @@ module Dry
         end
 
         def pure(val = Undefined, &block)
-          value = val.equal?(Undefined) ? block : val
+          value = Undefined.default(val, block)
           List.pure(value, type)
         end
       end

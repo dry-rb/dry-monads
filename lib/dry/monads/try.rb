@@ -227,30 +227,36 @@ module Dry
           Try.lift(catchable, f)
         end
 
-        # A constructor of Value
-        # @param value [Object]
-        # @param exceptions [Array<Exception>] list of exceptions to be rescued
-        # @return [Value]
+        # Value constructor
+        #
+        # @overload Value(value)
+        #   @param value [Object]
+        #   @return [Try::Value]
+        #
+        # @overload Value(&block)
+        #   @param block [Proc] a block to be wrapped with Value
+        #   @return [Try::Value]
+        #
         def Value(value = Undefined, exceptions = DEFAULT_EXCEPTIONS, &block)
-          if value.equal?(Undefined)
-            raise ArgumentError, 'No value given' if block.nil?
-            Try::Value.new(exceptions, block)
-          else
-            Try::Value.new(exceptions, value)
-          end
+          v = Undefined.default(value, block)
+          raise ArgumentError, 'No value given' if v.nil?
+          Value.new(exceptions, v)
         end
 
-        # A constructor of Error
-        # @param error [Exception]
-        # @param block [Proc] block that may throw an error
-        # @return [Error]
+        # Error constructor
+        #
+        # @overload Error(value)
+        #   @param error [Exception]
+        #   @return [Try::Error]
+        #
+        # @overload Error(&block)
+        #   @param block [Proc] a block to be wrapped with Error
+        #   @return [Try::Error]
+        #
         def Error(error = Undefined, &block)
-          if error.equal?(Undefined)
-            raise ArgumentError, 'No value given' if block.nil?
-            Try::Error.new(block)
-          else
-            Try::Error.new(error)
-          end
+          v = Undefined.default(error, block)
+          raise ArgumentError, 'No value given' if v.nil?
+          Try::Error.new(v)
         end
       end
     end

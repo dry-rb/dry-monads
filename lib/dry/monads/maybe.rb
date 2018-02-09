@@ -199,12 +199,9 @@ module Dry
           #   @return [Maybe::Some]
           #
           def Some(value = Undefined, &block)
-            if value.equal?(Undefined)
-              raise ArgumentError, 'No value given' if block.nil?
-              Some.new(block)
-            else
-              Some.new(value)
-            end
+            v = Undefined.default(value, block)
+            raise ArgumentError, 'No value given' if v.nil?
+            Some.new(v)
           end
 
           # @return [Maybe::None]

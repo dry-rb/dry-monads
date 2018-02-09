@@ -19,8 +19,14 @@ module Dry
       class << self
         # Creates a Task from a block
         #
-        # @param block [Proc]
-        # @return [Task]
+        # @overload new(promise)
+        #   @param promise [Promise]
+        #   @return [Task]
+        #
+        # @overload new(&block)
+        #   @param block [Proc] a task to run
+        #   @return [Task]
+        #
         def new(promise = nil, &block)
           if promise
             super(promise)
@@ -48,15 +54,17 @@ module Dry
 
         # Returns a complete task from the given value
         #
-        # @param value [Object]
-        # @param block [Proc]
-        # @return [Task]
+        # @overload pure(value)
+        #   @param value [Object]
+        #   @return [Task]
+        #
+        # @overload pure(&block)
+        #   @param block [Proc]
+        #   @return [Task]
+        #
         def pure(value = Undefined, &block)
-          if value.equal?(Undefined)
-            new(Promise.fulfill(block))
-          else
-            new(Promise.fulfill(value))
-          end
+          v = Undefined.default(value, block)
+          new(Promise.fulfill(v))
         end
       end
 
@@ -232,7 +240,7 @@ module Dry
       # @param val [Task]
       # @return [Task]
       def apply(val = Undefined)
-        arg = val.equal?(Undefined) ? yield : val
+        arg = Undefined.default(val) { yield }
         bind { |f| arg.fmap { |v| curry(f).(v) } }
       end
 

@@ -113,8 +113,7 @@ module Dry
             raise TypeError, "Cannot apply #{ val.inspect } to #{ @value.inspect }"
           end
 
-          arg = val.equal?(Undefined) ? yield : val
-          arg.fmap { |unwrapped| curry.(unwrapped) }
+          Undefined.default(val) { yield }.fmap { |unwrapped| curry.(unwrapped) }
         end
 
         # @param other [RightBiased]
