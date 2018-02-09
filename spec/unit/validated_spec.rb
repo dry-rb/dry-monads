@@ -139,4 +139,15 @@ RSpec.describe(Dry::Monads::Validated) do
       end
     end
   end
+
+  describe '#bind' do
+    it 'tells that Validated has no monad instance' do
+      expect {
+        valid.(1).bind { fail }
+      }.to raise_error(
+             NotImplementedError,
+             "Validated is not a monad because it would violate the monad laws"
+           )
+    end
+  end
 end

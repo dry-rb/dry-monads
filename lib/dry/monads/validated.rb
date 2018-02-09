@@ -42,6 +42,13 @@ module Dry
         self
       end
 
+      # Bind/flat_map is not implemented
+      #
+      def bind(*)
+        # See https://typelevel.org/cats/datatypes/validated.html for details on why
+        raise NotImplementedError, "Validated is not a monad because it would violate the monad laws"
+      end
+
       # Valid result
       #
       class Valid < Validated
