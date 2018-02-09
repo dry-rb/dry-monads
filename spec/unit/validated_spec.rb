@@ -4,7 +4,6 @@ RSpec.describe(Dry::Monads::Validated) do
   invalid = described_class::Invalid.method(:new)
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
-  none = maybe::None.new
 
   result = Dry::Monads::Result
   success = result::Success.method(:new)

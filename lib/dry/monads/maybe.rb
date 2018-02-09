@@ -32,11 +32,7 @@ module Dry
         # @param block [Object] block to be wrapped with Some
         # @return [Maybe::Some]
         def pure(value = Undefined, &block)
-          if value.equal?(Undefined)
-            Some.new(block)
-          else
-            Some.new(value)
-          end
+          Some.new(Undefined.default(value, block))
         end
       end
 
@@ -119,7 +115,6 @@ module Dry
         # Line where the value was constructed
         #
         # @return [String]
-        # @api public
         attr_reader :trace
 
         def initialize(trace = RightBiased::Left.trace_caller)

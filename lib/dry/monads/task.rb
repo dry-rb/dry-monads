@@ -229,7 +229,7 @@ module Dry
       #     apply(Task { 3 }).
       #     to_maybe # => Some(8)
       #
-      # @param arg [Task]
+      # @param val [Task]
       # @return [Task]
       def apply(val = Undefined)
         arg = val.equal?(Undefined) ? yield : val
