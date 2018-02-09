@@ -17,6 +17,11 @@ RSpec.describe(Dry::Monads::Validated) do
     it 'constructs a Valid value' do
       expect(validated.pure(1)).to eql(valid.(1))
     end
+
+    it 'accepts a block' do
+      fn = -> x { x }
+      expect(validated.pure(&fn)).to eql(valid.(fn))
+    end
   end
 
   describe validated::Valid do

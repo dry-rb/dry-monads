@@ -20,7 +20,8 @@ module Dry
     # @private
     CONSTRUCTORS = [
       Maybe::Mixin::Constructors,
-      Result::Mixin::Constructors
+      Result::Mixin::Constructors,
+      Validated::Mixin::Constructors
     ].freeze
 
     # @see Maybe::Some
@@ -31,6 +32,10 @@ module Dry
     Success = Result::Success
     # @see Result::Failure
     Failure = Result::Failure
+    # @see Validated::Valid
+    Valid = Validated::Valid
+    # @see Validated::Invalid
+    Invalid = Validated::Invalid
 
     extend(*CONSTRUCTORS)
 

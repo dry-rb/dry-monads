@@ -224,26 +224,48 @@ module Dry
       module Mixin
 
         # Successful validation result
+        # @see Dry::Monads::Validated::Valid
         Valid = Valid
 
         # Unsuccessful validation result
+        # @see Dry::Monads::Validated::Invalid
         Invalid = Invalid
 
-        # Valid constructor
-        #
-        # @param arg [Object]
-        # @return [Valid]
-        def Valid(arg)
-          Valid.new(arg)
+        module Constructors
+          # Valid constructor
+          #
+          # @overload Valid(value)
+          #   @param value [Object]
+          #   @return [Valdated::Valid]
+          #
+          # @overload Valid(&block)
+          #   @param block [Proc]
+          #   @return [Valdated::Valid]
+          #
+          def Valid(value = Undefined, &block)
+            v = Undefined.default(value, block)
+            raise ArgumentError, 'No value given' if v.nil?
+            Valid.new(v)
+          end
+
+          # Invalid constructor
+          #
+          # @overload Invalid(value)
+          #   @param value [Object]
+          #   @return [Valdated::Invalid]
+          #
+          # @overload Invalid(&block)
+          #   @param block [Proc]
+          #   @return [Valdated::Invalid]
+          #
+          def Invalid(value = Undefined, &block)
+            v = Undefined.default(value, block)
+            raise ArgumentError, 'No value given' if v.nil?
+            Invalid.new(v)
+          end
         end
 
-        # Invalid constructor
-        #
-        # @param arg [Object]
-        # @return [Invalid]
-        def Invalid(arg)
-          Invalid.new(arg)
-        end
+        include Constructors
       end
     end
   end

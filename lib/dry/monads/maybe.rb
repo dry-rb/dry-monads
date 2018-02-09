@@ -184,16 +184,22 @@ module Dry
         module Constructors
           # @param value [Object] the value to be stored in the monad
           # @return [Maybe::Some, Maybe::None]
-          # @api public
           def Maybe(value)
             Maybe.lift(value)
           end
 
-          # @param value [Object] the value to be stored in the monad
-          # @return [Maybe::Some]
-          # @api public
-          def Some(value = Dry::Core::Constants::Undefined, &block)
-            if value.equal?(Dry::Core::Constants::Undefined)
+          # Some constructor
+          #
+          # @overload Some(value)
+          #   @param value [Object] any value except `nil`
+          #   @return [Maybe::Some]
+          #
+          # @overload Some(&block)
+          #   @param block [Proc] a block to be wrapped with Some
+          #   @return [Maybe::Some]
+          #
+          def Some(value = Undefined, &block)
+            if value.equal?(Undefined)
               raise ArgumentError, 'No value given' if block.nil?
               Some.new(block)
             else
