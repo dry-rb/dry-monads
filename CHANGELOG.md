@@ -2,7 +2,7 @@
 
 ## Added
 
-* `do`-like notation (the idea comes from Haskell of course). This is the biggest and most important addition in the release which greatly increases the ergonomics of using monads in Ruby. Basically, almost everything it does is passing a block to a given method. You call `yield` on monads to extract the values. If any operation fails i.e. no value can be extracted, the whole computation is halted and the failing step becomes a result. With `Do` you don't need to chain monadic values with `fmap/bind` and block, everything can be done on a single level of indentation. Here is a more or less real-life example:
+* `do`-like notation (the idea comes from Haskell of course). This is the biggest and most important addition to the release which greatly increases the ergonomics of using monads in Ruby. Basically, almost everything it does is passing a block to a given method. You call `yield` on monads to extract the values. If any operation fails i.e. no value can be extracted, the whole computation is halted and the failing step becomes a result. With `Do` you don't need to chain monadic values with `fmap/bind` and block, everything can be done on a single level of indentation. Here is a more or less real-life example:
 
   ```ruby
   class CreateUser
@@ -53,7 +53,7 @@
 
   In the code above any `yield` can potentially fail and return the failure reason as a result. In other words, `yield None` acts as `return None`. Internally, `Do` uses exceptions, not `return`, this is somewhat slower but allows to detect failed operations in DB-transactions and roll back the changes which far more useful than an unjustifiable speed boost (flash-gordon)
 
-* The `Task` monad based on `Promise` from the [`concurrent-ruby` gem](https://github.com/ruby-concurrency/concurrent-ruby/). `Task` represents an asynchrounos computation which _can be_ (doesn't have to!) run on a seperated thread. `Promise` already offers a good API and implemented in a safe manner so `dry-monads` just adds a monad-compatible interface for it. Out of the box, `concurrent-ruby` has three types of executors for running blocks: `:io`, `:fast`, `:immediate`, check out [the docs](http://ruby-concurrency.github.io/concurrent-ruby/root/Concurrent.html#executor-class_method) for details. You can provide your own executor if needed (flash-gordon)
+* The `Task` monad based on `Promise` from the [`concurrent-ruby` gem](https://github.com/ruby-concurrency/concurrent-ruby/). `Task` represents an asynchronous computation which _can be_ (doesn't have to!) run on a separated thread. `Promise` already offers a good API and implemented in a safe manner so `dry-monads` just adds a monad-compatible interface for it. Out of the box, `concurrent-ruby` has three types of executors for running blocks: `:io`, `:fast`, `:immediate`, check out [the docs](http://ruby-concurrency.github.io/concurrent-ruby/root/Concurrent.html#executor-class_method) for details. You can provide your own executor if needed (flash-gordon)
 
   ```ruby
   include Dry::Monads::Task::Mixin
@@ -120,9 +120,9 @@
     # * Invalid(List[:invalid_name, :invalid_email])    
   ```
   
-  In the example above an array of `Validated` values is implicitly casted to `List::Validated`. It's supported because it's useful but don't forget it's all about types and don't mix different types of monads in a single array, the consequences are unclear. You always can be explicit with `List::Validated[validate_name(...), ...]`, choose what you like (flash-gordon).
+  In the example above an array of `Validated` values is implicitly coerced to `List::Validated`. It's supported because it's useful but don't forget it's all about types so don't mix different types of monads in a single array, the consequences are unclear. You always can be explicit with `List::Validated[validate_name(...), ...]`, choose what you like (flash-gordon).
   
-* `Failure`, `None`, and `Invalid` values now store the line where they were created. On of the biggest downside of dealing wtih monadic code is lack of backtraces. If you have a long list of computations and one of them fails how do you know where did it actually happen? Say, you've got `None` and this tells you nothing about _what variable_ was assigned to `None`. It makes sense to use `Result` instead of `Maybe` and use distinct errors everywhere but it doesn't always look good and forces you to think more. TLDR; call `.trace` to get the line where a fail-case was constructed
+* `Failure`, `None`, and `Invalid` values now store the line where they were created. One of the biggest downsides of dealing with monadic code is lack of backtraces. If you have a long list of computations and one of them fails how do you know where did it actually happen? Say, you've got `None` and this tells you nothing about _what variable_ was assigned to `None`. It makes sense to use `Result` instead of `Maybe` and use distinct errors everywhere but it doesn't always look good and forces you to think more. TLDR; call `.trace` to get the line where a fail-case was constructed
 
   ```ruby
   Failure(:invalid_name).trace # => app/operations/create_user.rb:43
