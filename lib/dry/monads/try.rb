@@ -1,4 +1,5 @@
 require 'dry/equalizer'
+require 'dry/core/deprecations'
 
 require 'dry/monads/right_biased'
 require 'dry/monads/result'
@@ -18,24 +19,34 @@ module Dry
       attr_reader :exception
 
       class << self
-        # Calls the passed in proc object and if successful stores the result in a
-        # {Try::Value} monad, but if one of the specified exceptions was raised it stores
-        # it in a {Try::Error} monad.
+        extend Dry::Core::Deprecations[:'dry-monads']
+
+        # Invokes a callable and if successful stores the result in the
+        # {Try::Value} type, but if one of the specified exceptions was raised it stores
+        # it in a {Try::Error}.
         #
-        # @param exceptions [Array<Exception>] list of exceptions to be rescued
-        # @param f [Proc] the proc to be called
+        # @param exceptions [Array<Exception>] list of exceptions to rescue
+        # @param f [#call] callable object
         # @return [Try::Value, Try::Error]
-        def lift(exceptions, f)
+        def run(exceptions, f)
           Value.new(exceptions, f.call)
         rescue *exceptions => e
           Error.new(e)
         end
+        deprecate :lift, :run
 
-        # Wraps the given value with Value
+        # Wraps a value with Value
         #
-        # @param value [Object] value to be wrapped with Value
-        # @param block [Object] block to be wrapped with Value
-        # @return [Try::Value]
+        # @overload pure(value, exceptions = DEFAULT_EXCEPTIONS)
+        #   @param value [Object] value for wrapping
+        #   @param exceptions [Array<Exceptions>] list of exceptions to rescue
+        #   @return [Try::Value]
+        #
+        # @overload pure(exceptions = DEFAULT_EXCEPTIONS, &block)
+        #   @param exceptions [Array<Exceptions>] list of exceptions to rescue
+        #   @param block [Proc] value for wrapping
+        #   @return [Try::Value]
+        #
         def pure(value = Undefined, exceptions = DEFAULT_EXCEPTIONS, &block)
           if value.equal?(Undefined)
             Value.new(DEFAULT_EXCEPTIONS, block)
@@ -44,6 +55,22 @@ module Dry
           else
             Value.new(value, block)
           end
+        end
+
+        # Safely runs a block
+        #
+        # @example using Try with [] and a block (Ruby 2.5+)
+        #   include Dry::Monads::Try::Mixin
+        #
+        #   def safe_db_call
+        #     Try[DatabaseError] { db_call }
+        #   end
+        #
+        # @param exceptions [Array<Exception>]
+        # @return [Try::Value,Try::Error]
+        def [](*exceptions, &block)
+          raise ArgumentError, 'At least one exception type required' if exceptions.empty?
+          run(exceptions, block)
         end
       end
 
@@ -215,17 +242,21 @@ module Dry
         # @see Dry::Monads::Try
         Try = Try
 
-        # A convenience wrapper for {Monads::Try.lift}.
-        # If no exceptions are provided it falls back to StandardError.
-        # In general, relying on this behaviour is not recommended as it can lead to unnoticed
-        # bugs and it is always better to explicitly specify a list of exceptions if possible.
-        #
-        # @param exceptions [Array<Exception>]
-        # @return [Try]
-        def Try(*exceptions, &f)
-          catchable = exceptions.empty? ? Try::DEFAULT_EXCEPTIONS : exceptions.flatten
-          Try.lift(catchable, f)
+        module Constructors
+          # A convenience wrapper for {Monads::Try.run}.
+          # If no exceptions are provided it falls back to StandardError.
+          # In general, relying on this behaviour is not recommended as it can lead to unnoticed
+          # bugs and it is always better to explicitly specify a list of exceptions if possible.
+          #
+          # @param exceptions [Array<Exception>]
+          # @return [Try]
+          def Try(*exceptions, &f)
+            catchable = exceptions.empty? ? Try::DEFAULT_EXCEPTIONS : exceptions.flatten
+            Try.run(catchable, f)
+          end
         end
+
+        include Constructors
 
         # Value constructor
         #

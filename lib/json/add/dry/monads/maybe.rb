@@ -11,7 +11,7 @@ module Dry
     class Maybe
       # Deserializes JSON string by using Dry::Monads::Maybe#lift method
       def self.json_create(serialized)
-        lift(serialized.fetch('value'))
+        coerce(serialized.fetch('value'))
       end
 
       # Returns a hash, that will be turned into a JSON object and represent this

@@ -21,6 +21,21 @@ RSpec.describe(Dry::Monads::Try) do
     let(:pure) { -> x { value.(try::DEFAULT_EXCEPTIONS, x) } }
   end
 
+  describe '.[]' do
+    it 'uses passed args as rescuable exceptions and runs a block' do
+      expect(try[ZeroDivisionError, &-> { raise division_error }]).to eql(error.(division_error))
+    end
+
+    it 'requires at leas one exception type' do
+      expect {
+        try[&-> { raise division_error }]
+      }.to raise_error(
+             ArgumentError,
+             'At least one exception type required'
+           )
+    end
+  end
+
   describe(try::Value) do
     subject { div_value['foo'] }
 

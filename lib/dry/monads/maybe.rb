@@ -1,5 +1,6 @@
 require 'dry/equalizer'
 require 'dry/core/constants'
+require 'dry/core/deprecations'
 
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
@@ -13,6 +14,8 @@ module Dry
       include Transformer
 
       class << self
+        extend Dry::Core::Deprecations[:'dry-monads']
+
         # Wraps the given value with into a Maybe object.
         #
         # @param value [Object] value to be stored in the monad
@@ -24,7 +27,7 @@ module Dry
             Some.new(value)
           end
         end
-        alias_method :lift, :coerce
+        deprecate :lift, :coerce
 
         # Wraps the given value with `Some`.
         #
@@ -90,10 +93,10 @@ module Dry
         #   Dry::Monads.Some(4).fmap(&:succ).fmap(->(n) { n**2 }) # => Some(25)
         #
         # @param args [Array<Object>] arguments will be transparently passed through to #bind
-        # @return [Maybe::Some, Maybe::None] Lifted result, i.e. nil will be mapped to None,
+        # @return [Maybe::Some, Maybe::None] Wrapped result, i.e. nil will be mapped to None,
         #                                    other values will be wrapped with Some
         def fmap(*args, &block)
-          self.class.lift(bind(*args, &block))
+          self.class.coerce(bind(*args, &block))
         end
 
         # @return [String]
@@ -139,7 +142,7 @@ module Dry
           end
         end
 
-        # A lifted version of `#or`. Applies `Maybe.lift` to the passed value or
+        # A lifted version of `#or`. Applies `Maybe.coerce` to the passed value or
         # to the block result.
         #
         # @example
@@ -150,7 +153,7 @@ module Dry
         # @return [Maybe::Some, Maybe::None] Lifted `#or` result, i.e. nil will be mapped to None,
         #                                    other values will be wrapped with Some
         def or_fmap(*args, &block)
-          Maybe.lift(self.or(*args, &block))
+          Maybe.coerce(self.or(*args, &block))
         end
 
         # @return [String]
@@ -185,7 +188,7 @@ module Dry
           # @param value [Object] the value to be stored in the monad
           # @return [Maybe::Some, Maybe::None]
           def Maybe(value)
-            Maybe.lift(value)
+            Maybe.coerce(value)
           end
 
           # Some constructor

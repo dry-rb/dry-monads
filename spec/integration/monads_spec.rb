@@ -127,4 +127,12 @@ RSpec.describe(Dry::Monads) do
       end
     end
   end
+
+  describe 'Try' do
+    describe '.Try' do
+      it 'safely runs a block' do
+        expect(m.Try { fail }).to be_a_failure
+      end
+    end
+  end
 end

@@ -21,7 +21,8 @@ module Dry
     CONSTRUCTORS = [
       Maybe::Mixin::Constructors,
       Result::Mixin::Constructors,
-      Validated::Mixin::Constructors
+      Validated::Mixin::Constructors,
+      Try::Mixin::Constructors
     ].freeze
 
     # @see Maybe::Some
