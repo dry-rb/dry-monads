@@ -255,7 +255,7 @@ module Dry
           #
           def Valid(value = Undefined, &block)
             v = Undefined.default(value, block)
-            raise ArgumentError, 'No value given' if v.nil?
+            raise ArgumentError, 'No value given' if !value.nil? && v.nil?
             Valid.new(v)
           end
 
@@ -271,7 +271,7 @@ module Dry
           #
           def Invalid(value = Undefined, &block)
             v = Undefined.default(value, block)
-            raise ArgumentError, 'No value given' if v.nil?
+            raise ArgumentError, 'No value given' if !value.nil? && v.nil?
             Invalid.new(v, RightBiased::Left.trace_caller)
           end
         end

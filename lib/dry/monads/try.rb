@@ -270,7 +270,7 @@ module Dry
         #
         def Value(value = Undefined, exceptions = DEFAULT_EXCEPTIONS, &block)
           v = Undefined.default(value, block)
-          raise ArgumentError, 'No value given' if v.nil?
+          raise ArgumentError, 'No value given' if !value.nil? && v.nil?
           Value.new(exceptions, v)
         end
 

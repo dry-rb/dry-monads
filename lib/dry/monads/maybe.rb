@@ -203,7 +203,7 @@ module Dry
           #
           def Some(value = Undefined, &block)
             v = Undefined.default(value, block)
-            raise ArgumentError, 'No value given' if v.nil?
+            raise ArgumentError, 'No value given' if !value.nil? && v.nil?
             Some.new(v)
           end
 

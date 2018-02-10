@@ -266,7 +266,7 @@ module Dry
           #
           def Success(value = Undefined, &block)
             v = Undefined.default(value, block)
-            raise ArgumentError, 'No value given' if v.nil?
+            raise ArgumentError, 'No value given' if !value.nil? && v.nil?
             Success.new(v)
           end
 
@@ -282,7 +282,7 @@ module Dry
           #
           def Failure(value = Undefined, &block)
             v = Undefined.default(value, block)
-            raise ArgumentError, 'No value given' if v.nil?
+            raise ArgumentError, 'No value given' if !value.nil? && v.nil?
             Failure.new(v, RightBiased::Left.trace_caller)
           end
         end

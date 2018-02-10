@@ -83,6 +83,10 @@ RSpec.describe(Dry::Monads) do
       subject { m.Success('everything went right') }
 
       it { is_expected.to eql(success.('everything went right')) }
+
+      it 'accepts nil as a value' do
+        expect(m.Success(nil)).to eql(success.(nil))
+      end
     end
 
     describe '.Failure' do
