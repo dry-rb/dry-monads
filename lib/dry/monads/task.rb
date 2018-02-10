@@ -291,13 +291,18 @@ module Dry
           end
         end
 
-        # Builds a new Task instance.
-        #
-        # @param block [Proc]
-        # @return Task
-        def Task(&block)
-          Task.new(&block)
+        # Task constructors
+        module Constructors
+          # Builds a new Task instance.
+          #
+          # @param block [Proc]
+          # @return Task
+          def Task(&block)
+            Task.new(&block)
+          end
         end
+
+        include Constructors
       end
     end
   end

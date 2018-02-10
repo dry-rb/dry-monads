@@ -135,4 +135,20 @@ RSpec.describe(Dry::Monads) do
       end
     end
   end
+
+  describe 'Task' do
+    describe '.Task' do
+      it 'creates a task' do
+        expect(m.Task { 1 }.to_result).to eql(m.Success(1))
+      end
+    end
+  end
+
+  describe 'Lazy' do
+    describe '.Lazy' do
+      it 'creates a lazy instance' do
+        expect(m.Lazy { 1 }.value!).to eql(1)
+      end
+    end
+  end
 end

@@ -22,7 +22,9 @@ module Dry
       Maybe::Mixin::Constructors,
       Result::Mixin::Constructors,
       Validated::Mixin::Constructors,
-      Try::Mixin::Constructors
+      Try::Mixin::Constructors,
+      Task::Mixin::Constructors,
+      Lazy::Mixin::Constructors
     ].freeze
 
     # @see Maybe::Some

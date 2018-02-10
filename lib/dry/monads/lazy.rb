@@ -60,11 +60,18 @@ module Dry
         # @see Dry::Monads::Lazy
         Lazy = Lazy
 
-        # Lazy computation contructor
-        # @return [Lazy]
-        def Lazy(&block)
-          Lazy.new(&block)
+        # Lazy constructors
+        module Constructors
+          # Lazy computation contructor
+          #
+          # @param block [Proc]
+          # @return [Lazy]
+          def Lazy(&block)
+            Lazy.new(&block)
+          end
         end
+
+        include Constructors
       end
     end
   end
