@@ -121,6 +121,16 @@
   ```
   
   In the example above an array of `Validated` values is implicitly casted to `List::Validated`. It's supported because it's useful but don't forget it's all about types and don't mix different types of monads in a single array, the consequences are unclear. You always can be explicit with `List::Validated[validate_name(...), ...]`, choose what you like (flash-gordon).
+  
+* `Failure`, `None`, and `Invalid` values now store the line where they were created. On of the biggest downside of dealing wtih monadic code is lack of backtraces. If you have a long list of computations and one of them fails how do you know where did it actually happen? Say, you've got `None` and this tells you nothing about _what variable_ was assigned to `None`. It makes sense to use `Result` instead of `Maybe` and use distinct errors everywhere but it doesn't always look good and forces you to think more. TLDR; call `.trace` to get the line where a fail-case was constructed
+
+  ```ruby
+  Failure(:invalid_name).trace # => app/operations/create_user.rb:43
+  ```
+  
+## Deprecations
+
+* `Either`, the former name of `Result`, is now deprecated
 
 ## BREAKING CHANGES
 
