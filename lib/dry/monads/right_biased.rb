@@ -116,7 +116,7 @@ module Dry
           Undefined.default(val) { yield }.fmap { |unwrapped| curry.(unwrapped) }
         end
 
-        # @param other [RightBiased]
+        # @param other [Object]
         # @return [Boolean]
         def ===(other)
           self.class == other.class && value! === other.value!

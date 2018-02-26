@@ -135,7 +135,7 @@ module Dry
           Result.pure(value!)
         end
 
-        # @param other [RightBiased]
+        # @param other [Object]
         # @return [Boolean]
         def ===(other)
           self.class == other.class && value! === other.value!
@@ -233,8 +233,7 @@ module Dry
           Result::Failure.new(error, RightBiased::Left.trace_caller)
         end
 
-
-        # @param other [RightBiased]
+        # @param other [Object]
         # @return [Boolean]
         def ===(other)
           self.class == other.class && error === other.error
