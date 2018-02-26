@@ -73,6 +73,15 @@ RSpec.describe(Dry::Monads::Validated) do
         expect(subject.to_result).to eql(success.(1))
       end
     end
+
+    describe '#===' do
+      it 'matches on the wrapped value' do
+        expect(valid['foo']).to be === valid['foo']
+        expect(valid[/\w+/]).to be === valid['foo']
+        expect(valid[:bar]).not_to be === valid['foo']
+        expect(valid[10..50]).to be === valid[42]
+      end
+    end
   end
 
   describe validated::Invalid do
@@ -140,6 +149,15 @@ RSpec.describe(Dry::Monads::Validated) do
 
       it 'traces the caller' do
         expect(subject.to_result.trace).to include("spec/unit/validated_spec.rb")
+      end
+    end
+
+    describe '#===' do
+      it 'matches on the wrapped value' do
+        expect(invalid['foo']).to be === invalid['foo']
+        expect(invalid[/\w+/]).to be === invalid['foo']
+        expect(invalid[:bar]).not_to be === invalid['foo']
+        expect(invalid[10..50]).to be === invalid[42]
       end
     end
   end

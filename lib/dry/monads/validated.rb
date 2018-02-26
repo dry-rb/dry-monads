@@ -134,6 +134,12 @@ module Dry
         def to_result
           Result.pure(value!)
         end
+
+        # @param other [RightBiased]
+        # @return [Boolean]
+        def ===(other)
+          self.class == other.class && value! === other.value!
+        end
       end
 
       # Invalid result
@@ -225,6 +231,13 @@ module Dry
         # @return [Result::Failure]
         def to_result
           Result::Failure.new(error, RightBiased::Left.trace_caller)
+        end
+
+
+        # @param other [RightBiased]
+        # @return [Boolean]
+        def ===(other)
+          self.class == other.class && error === other.error
         end
       end
 
