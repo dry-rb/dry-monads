@@ -294,6 +294,22 @@ module Dry
       end
     end
 
+    class Try
+      class Value < Try
+        # @return [Result::Success]
+        def to_result
+          Dry::Monads::Result::Success.new(@value)
+        end
+      end
+
+      class Error < Try
+        # @return [Result::Failure]
+        def to_result
+          Result::Failure.new(exception, RightBiased::Left.trace_caller)
+        end
+      end
+    end
+
     class Validated
       class Valid < Validated
         # Converts to Result::Success

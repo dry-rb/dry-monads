@@ -2,7 +2,6 @@ require 'dry/equalizer'
 require 'dry/core/deprecations'
 
 require 'dry/monads/right_biased'
-require 'dry/monads/result'
 
 module Dry
   module Monads
@@ -156,10 +155,9 @@ module Dry
           raise "Load Maybe first with require 'dry/monads/maybe'"
         end unless method_defined?(:to_maybe)
 
-        # @return [Result::Success]
         def to_result
-          Dry::Monads::Result::Success.new(@value)
-        end
+          raise "Load Result first with require 'dry/monads/result'"
+        end unless method_defined?(:to_maybe)
 
         # @return [String]
         def to_s
@@ -184,10 +182,9 @@ module Dry
           raise "Load Maybe first with require 'dry/monads/maybe'"
         end unless method_defined?(:to_maybe)
 
-        # @return [Result::Failure]
         def to_result
-          Result::Failure.new(exception, RightBiased::Left.trace_caller)
-        end
+          raise "Load Result first with require 'dry/monads/result'"
+        end unless method_defined?(:to_maybe)
 
         # @return [String]
         def to_s
