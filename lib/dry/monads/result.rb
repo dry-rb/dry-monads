@@ -280,5 +280,25 @@ module Dry
         include Constructors
       end
     end
+
+    class Validated
+      class Valid < Validated
+        # Converts to Result::Success
+        #
+        # @return [Result::Success]
+        def to_result
+          Result.pure(value!)
+        end
+      end
+
+      class Invalid < Validated
+        # Concerts to Result::Failure
+        #
+        # @return [Result::Failure]
+        def to_result
+          Result::Failure.new(error, RightBiased::Left.trace_caller)
+        end
+      end
+    end
   end
 end

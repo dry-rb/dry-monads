@@ -1,5 +1,4 @@
 require 'dry/monads/maybe'
-require 'dry/monads/result'
 
 module Dry
   module Monads
@@ -128,12 +127,9 @@ module Dry
           Maybe.pure(value!)
         end
 
-        # Converts to Result::Success
-        #
-        # @return [Result::Success]
         def to_result
-          Result.pure(value!)
-        end
+          raise "Load Result first with require 'dry/monads/result'"
+        end unless method_defined?(:to_result)
 
         # @param other [Object]
         # @return [Boolean]
@@ -226,12 +222,9 @@ module Dry
           Maybe::None.new(RightBiased::Left.trace_caller)
         end
 
-        # Concerts to Result::Failure
-        #
-        # @return [Result::Failure]
         def to_result
-          Result::Failure.new(error, RightBiased::Left.trace_caller)
-        end
+          raise "Load Result first with require 'dry/monads/result'"
+        end unless method_defined?(:to_result)
 
         # @param other [Object]
         # @return [Boolean]
