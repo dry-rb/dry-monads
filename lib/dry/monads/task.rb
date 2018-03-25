@@ -116,16 +116,9 @@ module Dry
         raise "Load Result first with require 'dry/monads/result'"
       end unless method_defined?(:to_result)
 
-      # Converts to Maybe. Blocks the current thread if required.
-      #
-      # @return [Maybe]
       def to_maybe
-        if promise.wait.fulfilled?
-          Maybe::Some.new(promise.value)
-        else
-          Maybe::None.new(RightBiased::Left.trace_caller)
-        end
-      end
+        raise "Load Maybe first with require 'dry/monads/maybe'"
+      end unless method_defined?(:to_result)
 
       # @return [String]
       def to_s

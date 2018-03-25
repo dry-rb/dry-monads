@@ -234,6 +234,19 @@ module Dry
       end
     end
 
+    class Task
+      # Converts to Maybe. Blocks the current thread if required.
+      #
+      # @return [Maybe]
+      def to_maybe
+        if promise.wait.fulfilled?
+          Maybe::Some.new(promise.value)
+        else
+          Maybe::None.new(RightBiased::Left.trace_caller)
+        end
+      end
+    end
+
     class Validated
       class Valid < Validated
         # Converts to Maybe::Some
