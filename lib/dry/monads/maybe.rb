@@ -247,6 +247,22 @@ module Dry
       end
     end
 
+    class Try
+      class Value < Try
+        # @return [Maybe]
+        def to_maybe
+          Dry::Monads::Maybe(@value)
+        end
+      end
+
+      class Error < Try
+        # @return [Maybe::None]
+        def to_maybe
+          Maybe::None.new(RightBiased::Left.trace_caller)
+        end
+      end
+    end
+
     class Validated
       class Valid < Validated
         # Converts to Maybe::Some

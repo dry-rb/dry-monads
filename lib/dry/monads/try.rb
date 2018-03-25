@@ -3,7 +3,6 @@ require 'dry/core/deprecations'
 
 require 'dry/monads/right_biased'
 require 'dry/monads/result'
-require 'dry/monads/maybe'
 
 module Dry
   module Monads
@@ -153,10 +152,9 @@ module Dry
           Error.new(e)
         end
 
-        # @return [Maybe]
         def to_maybe
-          Dry::Monads::Maybe(@value)
-        end
+          raise "Load Maybe first with require 'dry/monads/maybe'"
+        end unless method_defined?(:to_maybe)
 
         # @return [Result::Success]
         def to_result
@@ -182,10 +180,9 @@ module Dry
           @exception = exception
         end
 
-        # @return [Maybe::None]
         def to_maybe
-          Maybe::None.new(RightBiased::Left.trace_caller)
-        end
+          raise "Load Maybe first with require 'dry/monads/maybe'"
+        end unless method_defined?(:to_maybe)
 
         # @return [Result::Failure]
         def to_result
