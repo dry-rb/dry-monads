@@ -117,12 +117,9 @@ module Dry
           Failure.new(@value, RightBiased::Left.trace_caller)
         end
 
-        # Transforms to Validated
-        #
-        # @return [Validated::Valid]
         def to_validated
-          Validated::Valid.new(value!)
-        end
+          raise "Load Validated first with require 'dry/monads/validated'"
+        end unless method_defined?(:to_validated)
       end
 
       # Represents a value of a failed operation.
@@ -229,12 +226,9 @@ module Dry
           Failure === other && failure === other.failure
         end
 
-        # Transforms to Validated
-        #
-        # @return [Validated::Valid]
         def to_validated
-          Validated::Invalid.new(failure, trace)
-        end
+          raise "Load Validated first with require 'dry/monads/validated'"
+        end unless method_defined?(:to_validated)
       end
 
       # A module that can be included for easier access to Result monads.

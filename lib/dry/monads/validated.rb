@@ -291,5 +291,25 @@ module Dry
         include Constructors
       end
     end
+
+    class Result
+      class Success < Result
+        # Transforms to Validated
+        #
+        # @return [Validated::Valid]
+        def to_validated
+          Validated::Valid.new(value!)
+        end
+      end
+
+      class Failure < Result
+        # Transforms to Validated
+        #
+        # @return [Validated::Valid]
+        def to_validated
+          Validated::Invalid.new(failure, trace)
+        end
+      end
+    end
   end
 end
