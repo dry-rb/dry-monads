@@ -112,16 +112,9 @@ module Dry
       end
       alias_method :then, :bind
 
-      # Converts to Result. Blocks the current thread if required.
-      #
-      # @return [Result]
       def to_result
-        if promise.wait.fulfilled?
-          Result::Success.new(promise.value)
-        else
-          Result::Failure.new(promise.reason, RightBiased::Left.trace_caller)
-        end
-      end
+        raise "Load Result first with require 'dry/monads/result'"
+      end unless method_defined?(:to_result)
 
       # Converts to Maybe. Blocks the current thread if required.
       #

@@ -281,6 +281,19 @@ module Dry
       end
     end
 
+    class Task
+      # Converts to Result. Blocks the current thread if required.
+      #
+      # @return [Result]
+      def to_result
+        if promise.wait.fulfilled?
+          Result::Success.new(promise.value)
+        else
+          Result::Failure.new(promise.reason, RightBiased::Left.trace_caller)
+        end
+      end
+    end
+
     class Validated
       class Valid < Validated
         # Converts to Result::Success
