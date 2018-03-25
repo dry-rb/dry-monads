@@ -219,6 +219,8 @@ module Dry
 
     class Result
       class Success < Result
+        undef_method :to_maybe if method_defined?(:to_maybe)
+
         # @return [Maybe::Some]
         def to_maybe
           Kernel.warn 'Success(nil) transformed to None' if @value.nil?
@@ -227,6 +229,8 @@ module Dry
       end
 
       class Failure < Result
+        undef_method :to_maybe if method_defined?(:to_maybe)
+
         # @return [Maybe::None]
         def to_maybe
           Maybe::None.new(trace)
@@ -235,6 +239,8 @@ module Dry
     end
 
     class Task
+      undef_method :to_maybe if method_defined?(:to_maybe)
+
       # Converts to Maybe. Blocks the current thread if required.
       #
       # @return [Maybe]
@@ -249,6 +255,8 @@ module Dry
 
     class Try
       class Value < Try
+        undef_method :to_maybe if method_defined?(:to_maybe)
+
         # @return [Maybe]
         def to_maybe
           Dry::Monads::Maybe(@value)
@@ -256,6 +264,8 @@ module Dry
       end
 
       class Error < Try
+        undef_method :to_maybe if method_defined?(:to_maybe)
+
         # @return [Maybe::None]
         def to_maybe
           Maybe::None.new(RightBiased::Left.trace_caller)
@@ -265,6 +275,8 @@ module Dry
 
     class Validated
       class Valid < Validated
+        undef_method :to_maybe if method_defined?(:to_maybe)
+
         # Converts to Maybe::Some
         #
         # @return [Maybe::Some]
@@ -274,6 +286,8 @@ module Dry
       end
 
       class Invalid < Validated
+        undef_method :to_maybe if method_defined?(:to_maybe)
+
         # Converts to Maybe::None
         #
         # @return [Maybe::None]
