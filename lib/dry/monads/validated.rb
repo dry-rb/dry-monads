@@ -120,12 +120,9 @@ module Dry
         end
         alias_method :to_s, :inspect
 
-        # Converts to Maybe::Some
-        #
-        # @return [Maybe::Some]
         def to_maybe
-          Maybe.pure(value!)
-        end
+          raise "Load Maybe first with require 'dry/monads/maybe'"
+        end unless method_defined?(:to_maybe)
 
         def to_result
           raise "Load Result first with require 'dry/monads/result'"
@@ -215,12 +212,9 @@ module Dry
         end
         alias_method :to_s, :inspect
 
-        # Converts to Maybe::None
-        #
-        # @return [Maybe::None]
         def to_maybe
-          Maybe::None.new(RightBiased::Left.trace_caller)
-        end
+          raise "Load Maybe first with require 'dry/monads/maybe'"
+        end unless method_defined?(:to_maybe)
 
         def to_result
           raise "Load Result first with require 'dry/monads/result'"

@@ -233,5 +233,24 @@ module Dry
         end
       end
     end
+
+    class Validated
+      class Valid < Validated
+        # Converts to Maybe::Some
+        #
+        # @return [Maybe::Some]
+        def to_maybe
+          Maybe.pure(value!)
+        end
+      end
+
+      class Invalid < Validated
+        # Converts to Maybe::None
+        #
+        # @return [Maybe::None]
+        def to_maybe
+          Maybe::None.new(RightBiased::Left.trace_caller)
+        end
+      end
   end
 end
