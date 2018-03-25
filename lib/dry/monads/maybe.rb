@@ -281,5 +281,6 @@ module Dry
           Maybe::None.new(RightBiased::Left.trace_caller)
         end
       end
+    end
   end
 end
