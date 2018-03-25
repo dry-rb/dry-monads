@@ -3,7 +3,6 @@ require 'dry/core/constants'
 
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
-require 'dry/monads/maybe'
 
 module Dry
   module Monads
@@ -107,11 +106,9 @@ module Dry
         end
         alias_method :inspect, :to_s
 
-        # @return [Maybe::Some]
         def to_maybe
-          Kernel.warn 'Success(nil) transformed to None' if @value.nil?
-          Dry::Monads::Maybe(@value)
-        end
+          raise "Load Maybe first with require 'dry/monads/maybe'"
+        end unless method_defined?(:to_maybe)
 
         # Transforms to a Failure instance
         #
@@ -206,10 +203,9 @@ module Dry
         end
         alias_method :inspect, :to_s
 
-        # @return [Maybe::None]
         def to_maybe
-          Maybe::None.new(trace)
-        end
+          raise "Load Maybe first with require 'dry/monads/maybe'"
+        end unless method_defined?(:to_maybe)
 
         # Transform to a Success instance
         #

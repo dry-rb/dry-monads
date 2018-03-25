@@ -216,5 +216,22 @@ module Dry
         include Constructors
       end
     end
+
+    class Result
+      class Success < Result
+        # @return [Maybe::Some]
+        def to_maybe
+          Kernel.warn 'Success(nil) transformed to None' if @value.nil?
+          Dry::Monads::Maybe(@value)
+        end
+      end
+
+      class Failure < Result
+        # @return [Maybe::None]
+        def to_maybe
+          Maybe::None.new(trace)
+        end
+      end
+    end
   end
 end
