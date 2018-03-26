@@ -1,4 +1,4 @@
-require 'dry/core/constants'
+require 'dry/monads/undefined'
 require 'dry/monads/maybe'
 require 'dry/monads/try'
 require 'dry/monads/list'
@@ -14,9 +14,6 @@ module Dry
   #
   # @api public
   module Monads
-    # @private
-    Undefined = Dry::Core::Constants::Undefined
-
     # List of monad constructors
     CONSTRUCTORS = [
       Maybe::Mixin::Constructors,
