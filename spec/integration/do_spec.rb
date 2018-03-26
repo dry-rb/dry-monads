@@ -1,5 +1,6 @@
 RSpec.describe(Dry::Monads::Do) do
-  include Dry::Monads
+  include Dry::Monads::Maybe::Mixin
+  include Dry::Monads::Result::Mixin
   include Dry::Monads::Try::Mixin
   include Dry::Monads::List::Mixin
   include Dry::Monads::Validated::Mixin
@@ -8,7 +9,8 @@ RSpec.describe(Dry::Monads::Do) do
     module Test
       class Operation
         include Dry::Monads::Do.for(:call)
-        include Dry::Monads
+        include Dry::Monads::Maybe::Mixin
+        include Dry::Monads::Result::Mixin
         include Dry::Monads::Try::Mixin
         include Dry::Monads::List::Mixin
         include Dry::Monads::Validated::Mixin
