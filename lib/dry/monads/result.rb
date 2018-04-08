@@ -3,6 +3,7 @@ require 'dry/equalizer'
 require 'dry/monads/undefined'
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
+require 'dry/monads/conversion_stubs'
 
 module Dry
   module Monads
@@ -11,6 +12,7 @@ module Dry
     # @api public
     class Result
       include Transformer
+      include Dry::Monads::ConversionStubs[:to_maybe, :to_validated]
 
       # @return [Object] Successful result
       attr_reader :success
@@ -106,20 +108,12 @@ module Dry
         end
         alias_method :inspect, :to_s
 
-        def to_maybe
-          raise "Load Maybe first with require 'dry/monads/maybe'"
-        end unless method_defined?(:to_maybe)
-
         # Transforms to a Failure instance
         #
         # @return [Result::Failure]
         def flip
           Failure.new(@value, RightBiased::Left.trace_caller)
         end
-
-        def to_validated
-          raise "Load Validated first with require 'dry/monads/validated'"
-        end unless method_defined?(:to_validated)
       end
 
       # Represents a value of a failed operation.
@@ -200,10 +194,6 @@ module Dry
         end
         alias_method :inspect, :to_s
 
-        def to_maybe
-          raise "Load Maybe first with require 'dry/monads/maybe'"
-        end unless method_defined?(:to_maybe)
-
         # Transform to a Success instance
         #
         # @return [Result::Success]
@@ -225,10 +215,6 @@ module Dry
         def ===(other)
           Failure === other && failure === other.failure
         end
-
-        def to_validated
-          raise "Load Validated first with require 'dry/monads/validated'"
-        end unless method_defined?(:to_validated)
       end
 
       # A module that can be included for easier access to Result monads.
