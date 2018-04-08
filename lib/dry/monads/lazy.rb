@@ -74,5 +74,7 @@ module Dry
         include Constructors
       end
     end
+
+    extend Lazy::Mixin::Constructors
   end
 end

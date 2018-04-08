@@ -12,7 +12,7 @@ module Dry
     # @api public
     class Result
       include Transformer
-      include Dry::Monads::ConversionStubs[:to_maybe, :to_validated]
+      include ConversionStubs[:to_maybe, :to_validated]
 
       # @return [Object] Successful result
       attr_reader :success

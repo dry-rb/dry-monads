@@ -1,4 +1,6 @@
-require 'dry/monads/maybe'
+require 'dry/monads/conversion_stubs'
+require 'dry/monads/undefined'
+require 'dry/monads/right_biased'
 
 module Dry
   module Monads
@@ -18,6 +20,8 @@ module Dry
     #   # => Valid(List['London', 'John'])
     #
     class Validated
+      include ConversionStubs[:to_maybe, :to_result]
+
       class << self
         # Wraps a value with `Valid`.
         #
@@ -120,14 +124,6 @@ module Dry
         end
         alias_method :to_s, :inspect
 
-        def to_maybe
-          raise "Load Maybe first with require 'dry/monads/maybe'"
-        end unless method_defined?(:to_maybe)
-
-        def to_result
-          raise "Load Result first with require 'dry/monads/result'"
-        end unless method_defined?(:to_result)
-
         # @param other [Object]
         # @return [Boolean]
         def ===(other)
@@ -212,14 +208,6 @@ module Dry
         end
         alias_method :to_s, :inspect
 
-        def to_maybe
-          raise "Load Maybe first with require 'dry/monads/maybe'"
-        end unless method_defined?(:to_maybe)
-
-        def to_result
-          raise "Load Result first with require 'dry/monads/result'"
-        end unless method_defined?(:to_result)
-
         # @param other [Object]
         # @return [Boolean]
         def ===(other)
@@ -278,6 +266,13 @@ module Dry
         include Constructors
       end
     end
+
+    extend Validated::Mixin::Constructors
+
+    # @see Validated::Valid
+    Valid = Validated::Valid
+    # @see Validated::Invalid
+    Invalid = Validated::Invalid
 
     class Result
       class Success < Result

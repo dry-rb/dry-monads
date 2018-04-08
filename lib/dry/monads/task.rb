@@ -1,6 +1,7 @@
 require 'concurrent/promise'
 
 require 'dry/monads/curry'
+require 'dry/monads/conversion_stubs'
 
 module Dry
   module Monads
@@ -68,6 +69,8 @@ module Dry
         end
       end
 
+      include ConversionStubs[:to_maybe, :to_result]
+
       # @api private
       attr_reader :promise
       protected :promise
@@ -111,14 +114,6 @@ module Dry
         self.class.new(promise.flat_map { |value| block.(value).promise })
       end
       alias_method :then, :bind
-
-      def to_result
-        raise "Load Result first with require 'dry/monads/result'"
-      end unless method_defined?(:to_result)
-
-      def to_maybe
-        raise "Load Maybe first with require 'dry/monads/maybe'"
-      end unless method_defined?(:to_result)
 
       # @return [String]
       def to_s
@@ -291,5 +286,7 @@ module Dry
         include Constructors
       end
     end
+
+    extend Task::Mixin::Constructors
   end
 end

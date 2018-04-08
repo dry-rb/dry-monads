@@ -5,7 +5,7 @@ module Dry
         Module.new do
           method_names.each do |name|
             define_method(name) do |*|
-              Methods.send(name)
+              Methods.public_send(name)
             end
           end
         end

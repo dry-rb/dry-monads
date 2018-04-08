@@ -15,22 +15,7 @@ module Dry
   # @api public
   module Monads
     # List of monad constructors
-    CONSTRUCTORS = [
-      Maybe::Mixin::Constructors,
-      Validated::Mixin::Constructors,
-      Try::Mixin::Constructors,
-      Task::Mixin::Constructors,
-      Lazy::Mixin::Constructors
-    ].freeze
-
-    # @see Maybe::Some
-    Some = Maybe::Some
-    # @see Maybe::None
-    None = Maybe::None
-    # @see Validated::Valid
-    Valid = Validated::Valid
-    # @see Validated::Invalid
-    Invalid = Validated::Invalid
+    CONSTRUCTORS = [].freeze
 
     extend(*CONSTRUCTORS)
 
@@ -38,6 +23,7 @@ module Dry
     def self.included(base)
       super
 
+      # TODO: Fix once CONSTRUCTORS is empty
       base.include(*CONSTRUCTORS)
     end
   end

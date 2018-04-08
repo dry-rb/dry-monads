@@ -217,6 +217,13 @@ module Dry
       end
     end
 
+    extend Maybe::Mixin::Constructors
+
+    # @see Maybe::Some
+    Some = Maybe::Some
+    # @see Maybe::None
+    None = Maybe::None
+
     class Result
       class Success < Result
         undef_method :to_maybe if method_defined?(:to_maybe)
