@@ -1,5 +1,4 @@
 require 'dry/equalizer'
-require 'dry/core/deprecations'
 
 require 'dry/monads/maybe'
 require 'dry/monads/task'
