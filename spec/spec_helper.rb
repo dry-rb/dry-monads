@@ -26,7 +26,7 @@ end
 
 $VERBOSE = true
 
-require 'dry-monads'
+require 'dry/monads/all'
 
 Dir["./spec/shared/**/*.rb"].sort.each { |f| require f }
 
