@@ -10,7 +10,7 @@ RSpec.describe "Conversion method stubs raising errors" do
   end
 
   after do
-    require "dry/monads"
+    require "dry/monads/all"
   end
 
   describe "Result" do
