@@ -274,7 +274,7 @@ module Dry
     # @see Result::Failure
     Failure = Result::Failure
 
-        # Creates a module that has two methods: `Success` and `Failure`.
+    # Creates a module that has two methods: `Success` and `Failure`.
     # `Success` is identical to {Result::Mixin::Constructors#Success} and Failure
     # rejects values that don't conform the value of the `error`
     # parameter. This is essentially a Result type with the `Failure` part
