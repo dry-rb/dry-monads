@@ -310,8 +310,6 @@ module Dry
     end
 
     class Task
-      undef_method :to_result if method_defined?(:to_result)
-
       # Converts to Result. Blocks the current thread if required.
       #
       # @return [Result]
@@ -326,8 +324,6 @@ module Dry
 
     class Try
       class Value < Try
-        undef_method :to_result if method_defined?(:to_result)
-
         # @return [Result::Success]
         def to_result
           Dry::Monads::Result::Success.new(@value)
@@ -335,8 +331,6 @@ module Dry
       end
 
       class Error < Try
-        undef_method :to_result if method_defined?(:to_result)
-
         # @return [Result::Failure]
         def to_result
           Result::Failure.new(exception, RightBiased::Left.trace_caller)
@@ -346,8 +340,6 @@ module Dry
 
     class Validated
       class Valid < Validated
-        undef_method :to_result if method_defined?(:to_result)
-
         # Converts to Result::Success
         #
         # @return [Result::Success]
@@ -357,8 +349,6 @@ module Dry
       end
 
       class Invalid < Validated
-        undef_method :to_result if method_defined?(:to_result)
-
         # Concerts to Result::Failure
         #
         # @return [Result::Failure]

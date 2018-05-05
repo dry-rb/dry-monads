@@ -276,8 +276,6 @@ module Dry
 
     class Result
       class Success < Result
-        undef_method :to_validated if method_defined?(:to_validated)
-
         # Transforms to Validated
         #
         # @return [Validated::Valid]
@@ -287,8 +285,6 @@ module Dry
       end
 
       class Failure < Result
-        undef_method :to_validated if method_defined?(:to_validated)
-
         # Transforms to Validated
         #
         # @return [Validated::Valid]
