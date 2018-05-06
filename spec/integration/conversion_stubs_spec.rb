@@ -129,16 +129,4 @@ RSpec.describe "Conversion method stubs raising errors" do
       end
     end
   end
-
-  def re_require(*paths)
-    $LOADED_FEATURES.delete_if { |feature|
-      paths.any? { |path| feature.include?("dry/monads/#{path}.rb") }
-    }
-
-    suppress_warnings do
-      paths.each do |path|
-        require "dry/monads/#{path}"
-      end
-    end
-  end
 end

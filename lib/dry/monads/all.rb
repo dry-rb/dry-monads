@@ -1,3 +1,4 @@
+require 'dry/monads'
 require 'dry/monads/do'
 require 'dry/monads/lazy'
 require 'dry/monads/list'
@@ -21,11 +22,5 @@ module Dry
     ].freeze
 
     extend(*CONSTRUCTORS)
-
-    # @private
-    def self.included(base)
-      super
-      base.include(*CONSTRUCTORS)
-    end
   end
 end
