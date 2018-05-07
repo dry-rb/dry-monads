@@ -10,8 +10,8 @@ RSpec.describe "Conversion method stubs raising errors" do
         # simply remove the methods they add, and then re-require the files
         # again afterwards to get the methods back in place (see the `after`
         # hooks)
-        Dry::Monads::Result::Success.remove_method :to_maybe
-        Dry::Monads::Result::Success.remove_method :to_validated
+        Dry::Monads::Result::Success.send :remove_method, :to_maybe
+        Dry::Monads::Result::Success.send :remove_method, :to_validated
       end
 
       specify "#to_maybe" do
@@ -25,8 +25,8 @@ RSpec.describe "Conversion method stubs raising errors" do
 
     describe "Failure" do
       before do
-        Dry::Monads::Result::Failure.remove_method :to_maybe
-        Dry::Monads::Result::Failure.remove_method :to_validated
+        Dry::Monads::Result::Failure.send :remove_method, :to_maybe
+        Dry::Monads::Result::Failure.send :remove_method, :to_validated
       end
 
       specify "#to_maybe" do
@@ -41,8 +41,8 @@ RSpec.describe "Conversion method stubs raising errors" do
 
   describe "Task" do
     before do
-      Dry::Monads::Task.remove_method :to_maybe
-      Dry::Monads::Task.remove_method :to_result
+      Dry::Monads::Task.send :remove_method, :to_maybe
+      Dry::Monads::Task.send :remove_method, :to_result
     end
 
     after do
@@ -65,8 +65,8 @@ RSpec.describe "Conversion method stubs raising errors" do
 
     describe "Value" do
       before do
-        Dry::Monads::Try::Value.remove_method(:to_maybe)
-        Dry::Monads::Try::Value.remove_method(:to_result)
+        Dry::Monads::Try::Value.send :remove_method, :to_maybe
+        Dry::Monads::Try::Value.send :remove_method, :to_result
       end
 
       specify "#to_maybe" do
@@ -80,8 +80,8 @@ RSpec.describe "Conversion method stubs raising errors" do
 
     describe "Error" do
       before do
-        Dry::Monads::Try::Error.remove_method(:to_maybe)
-        Dry::Monads::Try::Error.remove_method(:to_result)
+        Dry::Monads::Try::Error.send :remove_method, :to_maybe
+        Dry::Monads::Try::Error.send :remove_method, :to_result
       end
 
       specify "#to_maybe" do
@@ -101,8 +101,8 @@ RSpec.describe "Conversion method stubs raising errors" do
 
     describe "Valid" do
       before do
-        Dry::Monads::Validated::Valid.remove_method(:to_maybe)
-        Dry::Monads::Validated::Valid.remove_method(:to_result)
+        Dry::Monads::Validated::Valid.send :remove_method, :to_maybe
+        Dry::Monads::Validated::Valid.send :remove_method, :to_result
       end
 
       specify "#to_maybe" do
@@ -116,8 +116,8 @@ RSpec.describe "Conversion method stubs raising errors" do
 
     describe "Invalid" do
       before do
-        Dry::Monads::Validated::Invalid.remove_method(:to_maybe)
-        Dry::Monads::Validated::Invalid.remove_method(:to_result)
+        Dry::Monads::Validated::Invalid.send :remove_method, :to_maybe
+        Dry::Monads::Validated::Invalid.send :remove_method, :to_result
       end
 
       specify "#to_maybe" do
