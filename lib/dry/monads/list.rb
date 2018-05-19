@@ -1,5 +1,4 @@
 require 'dry/equalizer'
-require 'dry/core/deprecations'
 
 require 'dry/monads/maybe'
 require 'dry/monads/task'
@@ -232,7 +231,7 @@ module Dry
         coerce(value.drop(1))
       end
 
-      # Turns the list into a types one.
+      # Turns the list into a typed one.
       # Type is required for some operations like .traverse.
       #
       # @param type [Monad] Monad instance

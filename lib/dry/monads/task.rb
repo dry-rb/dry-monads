@@ -1,6 +1,7 @@
 require 'concurrent/promise'
 
 require 'dry/monads/curry'
+require 'dry/monads/conversion_stubs'
 
 module Dry
   module Monads
@@ -68,6 +69,8 @@ module Dry
         end
       end
 
+      include ConversionStubs[:to_maybe, :to_result]
+
       # @api private
       attr_reader :promise
       protected :promise
@@ -111,28 +114,6 @@ module Dry
         self.class.new(promise.flat_map { |value| block.(value).promise })
       end
       alias_method :then, :bind
-
-      # Converts to Result. Blocks the current thread if required.
-      #
-      # @return [Result]
-      def to_result
-        if promise.wait.fulfilled?
-          Result::Success.new(promise.value)
-        else
-          Result::Failure.new(promise.reason, RightBiased::Left.trace_caller)
-        end
-      end
-
-      # Converts to Maybe. Blocks the current thread if required.
-      #
-      # @return [Maybe]
-      def to_maybe
-        if promise.wait.fulfilled?
-          Maybe::Some.new(promise.value)
-        else
-          Maybe::None.new(RightBiased::Left.trace_caller)
-        end
-      end
 
       # @return [String]
       def to_s
@@ -305,5 +286,7 @@ module Dry
         include Constructors
       end
     end
+
+    extend Task::Mixin::Constructors
   end
 end

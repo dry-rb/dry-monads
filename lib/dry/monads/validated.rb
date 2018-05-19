@@ -1,5 +1,6 @@
-require 'dry/monads/maybe'
-require 'dry/monads/result'
+require 'dry/monads/conversion_stubs'
+require 'dry/monads/undefined'
+require 'dry/monads/right_biased'
 
 module Dry
   module Monads
@@ -19,6 +20,8 @@ module Dry
     #   # => Valid(List['London', 'John'])
     #
     class Validated
+      include ConversionStubs[:to_maybe, :to_result]
+
       class << self
         # Wraps a value with `Valid`.
         #
@@ -121,20 +124,6 @@ module Dry
         end
         alias_method :to_s, :inspect
 
-        # Converts to Maybe::Some
-        #
-        # @return [Maybe::Some]
-        def to_maybe
-          Maybe.pure(value!)
-        end
-
-        # Converts to Result::Success
-        #
-        # @return [Result::Success]
-        def to_result
-          Result.pure(value!)
-        end
-
         # @param other [Object]
         # @return [Boolean]
         def ===(other)
@@ -219,20 +208,6 @@ module Dry
         end
         alias_method :to_s, :inspect
 
-        # Converts to Maybe::None
-        #
-        # @return [Maybe::None]
-        def to_maybe
-          Maybe::None.new(RightBiased::Left.trace_caller)
-        end
-
-        # Concerts to Result::Failure
-        #
-        # @return [Result::Failure]
-        def to_result
-          Result::Failure.new(error, RightBiased::Left.trace_caller)
-        end
-
         # @param other [Object]
         # @return [Boolean]
         def ===(other)
@@ -289,6 +264,33 @@ module Dry
         end
 
         include Constructors
+      end
+    end
+
+    extend Validated::Mixin::Constructors
+
+    # @see Validated::Valid
+    Valid = Validated::Valid
+    # @see Validated::Invalid
+    Invalid = Validated::Invalid
+
+    class Result
+      class Success < Result
+        # Transforms to Validated
+        #
+        # @return [Validated::Valid]
+        def to_validated
+          Validated::Valid.new(value!)
+        end
+      end
+
+      class Failure < Result
+        # Transforms to Validated
+        #
+        # @return [Validated::Valid]
+        def to_validated
+          Validated::Invalid.new(failure, trace)
+        end
       end
     end
   end

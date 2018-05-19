@@ -216,5 +216,78 @@ module Dry
         include Constructors
       end
     end
+
+    extend Maybe::Mixin::Constructors
+
+    # @see Maybe::Some
+    Some = Maybe::Some
+    # @see Maybe::None
+    None = Maybe::None
+
+    class Result
+      class Success < Result
+        # @return [Maybe::Some]
+        def to_maybe
+          Kernel.warn 'Success(nil) transformed to None' if @value.nil?
+          Dry::Monads::Maybe(@value)
+        end
+      end
+
+      class Failure < Result
+        # @return [Maybe::None]
+        def to_maybe
+          Maybe::None.new(trace)
+        end
+      end
+    end
+
+    class Task
+      # Converts to Maybe. Blocks the current thread if required.
+      #
+      # @return [Maybe]
+      def to_maybe
+        if promise.wait.fulfilled?
+          Maybe::Some.new(promise.value)
+        else
+          Maybe::None.new(RightBiased::Left.trace_caller)
+        end
+      end
+    end
+
+    class Try
+      class Value < Try
+        # @return [Maybe]
+        def to_maybe
+          Dry::Monads::Maybe(@value)
+        end
+      end
+
+      class Error < Try
+        # @return [Maybe::None]
+        def to_maybe
+          Maybe::None.new(RightBiased::Left.trace_caller)
+        end
+      end
+    end
+
+    class Validated
+      class Valid < Validated
+        # Converts to Maybe::Some
+        #
+        # @return [Maybe::Some]
+        def to_maybe
+          Maybe.pure(value!)
+        end
+      end
+
+      class Invalid < Validated
+        # Converts to Maybe::None
+        #
+        # @return [Maybe::None]
+        def to_maybe
+          Maybe::None.new(RightBiased::Left.trace_caller)
+        end
+      end
+    end
   end
 end

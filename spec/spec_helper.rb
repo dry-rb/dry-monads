@@ -26,17 +26,29 @@ end
 
 $VERBOSE = true
 
-require 'dry-monads'
+require 'dry/monads/all'
 
 Dir["./spec/shared/**/*.rb"].sort.each { |f| require f }
 
-module Kernel
+module TestHelpers
   def suppress_warnings
     original_verbosity = $VERBOSE
     $VERBOSE = nil
     result = yield
     $VERBOSE = original_verbosity
     return result
+  end
+
+  def re_require(*paths)
+    $LOADED_FEATURES.delete_if { |feature|
+      paths.any? { |path| feature.include?("dry/monads/#{path}.rb") }
+    }
+
+    suppress_warnings do
+      paths.each do |path|
+        require "dry/monads/#{path}"
+      end
+    end
   end
 end
 
@@ -51,6 +63,8 @@ Dry::Core::Deprecations.set_logger!(Logger.new($stdout))
 
 RSpec.configure do |config|
   config.disable_monkey_patching!
+
+  config.include TestHelpers
 
   config.after do
     Test.remove_constants

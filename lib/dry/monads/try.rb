@@ -2,8 +2,7 @@ require 'dry/equalizer'
 require 'dry/core/deprecations'
 
 require 'dry/monads/right_biased'
-require 'dry/monads/result'
-require 'dry/monads/maybe'
+require 'dry/monads/conversion_stubs'
 
 module Dry
   module Monads
@@ -14,6 +13,8 @@ module Dry
     class Try
       # @private
       DEFAULT_EXCEPTIONS = [StandardError].freeze
+
+      include ConversionStubs[:to_maybe, :to_result]
 
       # @return [Exception] Caught exception
       attr_reader :exception
@@ -153,16 +154,6 @@ module Dry
           Error.new(e)
         end
 
-        # @return [Maybe]
-        def to_maybe
-          Dry::Monads::Maybe(@value)
-        end
-
-        # @return [Result::Success]
-        def to_result
-          Dry::Monads::Result::Success.new(@value)
-        end
-
         # @return [String]
         def to_s
           "Try::Value(#{ @value.inspect })"
@@ -180,16 +171,6 @@ module Dry
         # @param exception [Exception]
         def initialize(exception)
           @exception = exception
-        end
-
-        # @return [Maybe::None]
-        def to_maybe
-          Maybe::None.new(RightBiased::Left.trace_caller)
-        end
-
-        # @return [Result::Failure]
-        def to_result
-          Result::Failure.new(exception, RightBiased::Left.trace_caller)
         end
 
         # @return [String]
@@ -291,5 +272,7 @@ module Dry
         end
       end
     end
+
+    extend Try::Mixin::Constructors
   end
 end

@@ -1,9 +1,9 @@
 require 'dry/equalizer'
-require 'dry/core/constants'
 
+require 'dry/monads/undefined'
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
-require 'dry/monads/maybe'
+require 'dry/monads/conversion_stubs'
 
 module Dry
   module Monads
@@ -12,6 +12,7 @@ module Dry
     # @api public
     class Result
       include Transformer
+      include ConversionStubs[:to_maybe, :to_validated]
 
       # @return [Object] Successful result
       attr_reader :success
@@ -107,24 +108,11 @@ module Dry
         end
         alias_method :inspect, :to_s
 
-        # @return [Maybe::Some]
-        def to_maybe
-          Kernel.warn 'Success(nil) transformed to None' if @value.nil?
-          Dry::Monads::Maybe(@value)
-        end
-
         # Transforms to a Failure instance
         #
         # @return [Result::Failure]
         def flip
           Failure.new(@value, RightBiased::Left.trace_caller)
-        end
-
-        # Transforms to Validated
-        #
-        # @return [Validated::Valid]
-        def to_validated
-          Validated::Valid.new(value!)
         end
       end
 
@@ -206,11 +194,6 @@ module Dry
         end
         alias_method :inspect, :to_s
 
-        # @return [Maybe::None]
-        def to_maybe
-          Maybe::None.new(trace)
-        end
-
         # Transform to a Success instance
         #
         # @return [Result::Success]
@@ -231,13 +214,6 @@ module Dry
         # @return [Boolean]
         def ===(other)
           Failure === other && failure === other.failure
-        end
-
-        # Transforms to Validated
-        #
-        # @return [Validated::Valid]
-        def to_validated
-          Validated::Invalid.new(failure, trace)
         end
       end
 
@@ -288,6 +264,97 @@ module Dry
         end
 
         include Constructors
+      end
+    end
+
+    extend Result::Mixin::Constructors
+
+    # @see Result::Success
+    Success = Result::Success
+    # @see Result::Failure
+    Failure = Result::Failure
+
+    # Creates a module that has two methods: `Success` and `Failure`.
+    # `Success` is identical to {Result::Mixin::Constructors#Success} and Failure
+    # rejects values that don't conform the value of the `error`
+    # parameter. This is essentially a Result type with the `Failure` part
+    # fixed.
+    #
+    # @example using dry-types
+    #   module Types
+    #     include Dry::Types.module
+    #   end
+    #
+    #   class Operation
+    #     # :user_not_found and :account_not_found are the only
+    #     # values allowed as failure results
+    #     Error =
+    #       Types.Value(:user_not_found) |
+    #       Types.Value(:account_not_found)
+    #
+    #     def find_account(id)
+    #       account = acount_repo.find(id)
+    #
+    #       account ? Success(account) : Failure(:account_not_found)
+    #     end
+    #
+    #     def find_user(id)
+    #       # ...
+    #     end
+    #   end
+    #
+    # @param error [#===] the type of allowed failures
+    # @return [Module]
+    def self.Result(error, **options)
+      Result::Fixed[error, **options]
+    end
+
+    class Task
+      # Converts to Result. Blocks the current thread if required.
+      #
+      # @return [Result]
+      def to_result
+        if promise.wait.fulfilled?
+          Result::Success.new(promise.value)
+        else
+          Result::Failure.new(promise.reason, RightBiased::Left.trace_caller)
+        end
+      end
+    end
+
+    class Try
+      class Value < Try
+        # @return [Result::Success]
+        def to_result
+          Dry::Monads::Result::Success.new(@value)
+        end
+      end
+
+      class Error < Try
+        # @return [Result::Failure]
+        def to_result
+          Result::Failure.new(exception, RightBiased::Left.trace_caller)
+        end
+      end
+    end
+
+    class Validated
+      class Valid < Validated
+        # Converts to Result::Success
+        #
+        # @return [Result::Success]
+        def to_result
+          Result.pure(value!)
+        end
+      end
+
+      class Invalid < Validated
+        # Concerts to Result::Failure
+        #
+        # @return [Result::Failure]
+        def to_result
+          Result::Failure.new(error, RightBiased::Left.trace_caller)
+        end
       end
     end
   end
