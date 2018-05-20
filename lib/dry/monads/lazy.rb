@@ -60,6 +60,9 @@ module Dry
         # @see Dry::Monads::Lazy
         Lazy = Lazy
 
+        # @see Dry::Monads::Unit
+        Unit = Unit
+
         # Lazy constructors
         module Constructors
           # Lazy computation contructor

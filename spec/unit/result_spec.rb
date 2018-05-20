@@ -7,6 +7,7 @@ RSpec.describe(Dry::Monads::Result) do
   validated = Dry::Monads::Validated
   valid = validated::Valid.method(:new)
   invalid = validated::Invalid.method(:new)
+  unit = Dry::Monads::Unit
 
   let(:upcase) { :upcase.to_proc }
 
@@ -273,6 +274,12 @@ RSpec.describe(Dry::Monads::Result) do
         expect(success[10..50]).to be === success[42]
       end
     end
+
+    describe '#discard' do
+      it 'nullifies the value' do
+        expect(success['foo'].discard).to eql(success[unit])
+      end
+    end
   end
 
   describe result::Failure do
@@ -450,6 +457,13 @@ RSpec.describe(Dry::Monads::Result) do
     describe '#to_validated' do
       it 'returns Invalid' do
         expect(subject.to_validated).to eql(invalid.('bar'))
+      end
+    end
+
+    describe '#discard' do
+      it 'returns self back' do
+        m = failure[1]
+        expect(m.discard).to be m
       end
     end
   end

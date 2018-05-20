@@ -1,5 +1,6 @@
 require 'concurrent/promise'
 
+require 'dry/monads/unit'
 require 'dry/monads/curry'
 require 'dry/monads/conversion_stubs'
 
@@ -225,6 +226,13 @@ module Dry
         bind { |f| arg.fmap { |v| curry(f).(v) } }
       end
 
+      # Maps a successful result to Unit, effectively discards it
+      #
+      # @return [Task]
+      def discard
+        fmap { Unit }
+      end
+
       private
 
       # @api private
@@ -252,7 +260,11 @@ module Dry
       #
       # @api public
       module Mixin
-        Task = Task # @private
+        # @private
+        Task = Task
+
+        # @see Dry::Monads::Unit
+        Unit = Unit # @private
 
         # Created a mixin with the given executor injected.
         #

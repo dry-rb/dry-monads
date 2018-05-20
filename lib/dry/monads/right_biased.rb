@@ -1,5 +1,6 @@
 require 'dry/core/constants'
 
+require 'dry/monads/unit'
 require 'dry/monads/curry'
 require 'dry/monads/errors'
 
@@ -99,13 +100,13 @@ module Dry
         # otherwise returns the argument.
         #
         # @example happy path
-        #   create_user = Dry::Monads::Right(CreateUser.new)
-        #   name = Right("John")
+        #   create_user = Dry::Monads::Success(CreateUser.new)
+        #   name = Success("John")
         #   create_user.apply(name) # equivalent to CreateUser.new.call("John")
         #
         # @example unhappy path
-        #   name = Left(:name_missing)
-        #   create_user.apply(name) # => Left(:name_missing)
+        #   name = Failure(:name_missing)
+        #   create_user.apply(name) # => Failure(:name_missing)
         #
         # @return [RightBiased::Left,RightBiased::Right]
         def apply(val = Undefined)
@@ -120,6 +121,18 @@ module Dry
         # @return [Boolean]
         def ===(other)
           self.class == other.class && value! === other.value!
+        end
+
+        # Maps the value to Dry::Monads::Unit, useful when you don't care
+        # about the actual value.
+        #
+        # @example
+        #   Dry::Monads::Success(:success).discard
+        #   # => Success(Unit)
+        #
+        # @return [RightBiased::Right]
+        def discard
+          fmap { Unit }
         end
 
         private
@@ -214,6 +227,14 @@ module Dry
         # @return [RightBiased::Left]
         def apply(*)
           self
+        end
+
+        # Returns self back. It exists to keep the interface
+        # identical to that of {RightBiased::Right}.
+        #
+        # @return [RightBiased::Left]
+        def discard
+          fmap { Unit }
         end
       end
     end

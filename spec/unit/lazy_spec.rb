@@ -1,5 +1,6 @@
 RSpec.describe(Dry::Monads::Lazy) do
-  include Dry::Monads::Lazy::Mixin
+  mixin = Dry::Monads::Lazy::Mixin
+  include mixin
 
   subject { Lazy { 1 + 2 } }
 
@@ -72,6 +73,12 @@ RSpec.describe(Dry::Monads::Lazy) do
       expect(subject.to_s).to eql("Lazy(3)")
 
       expect(Lazy { 1 / 0 }.force.to_s).to eql("Lazy(!#<ZeroDivisionError: divided by 0>)")
+    end
+  end
+
+  describe '#discard' do
+    it 'nullifies the value' do
+      expect(Lazy { 1 }.discard.value!).to be mixin::Unit
     end
   end
 end

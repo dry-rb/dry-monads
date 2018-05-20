@@ -2,6 +2,7 @@ RSpec.describe(Dry::Monads::Maybe) do
   maybe = described_class
   some = maybe::Some.method(:new)
   none = maybe::None.new
+  unit = Dry::Monads::Unit
 
   let(:upcase) { :upcase.to_proc }
 
@@ -187,6 +188,12 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(some[10..50]).to be === some[42]
       end
     end
+
+    describe '#discard' do
+      it 'nullifies the value' do
+        expect(some['foo'].discard).to eql(some[unit])
+      end
+    end
   end
 
   describe maybe::None do
@@ -350,6 +357,12 @@ RSpec.describe(Dry::Monads::Maybe) do
 
       it "doesn't match a Some" do
         expect(none).not_to be === some['foo']
+      end
+    end
+
+    describe '#discard' do
+      it 'returns self back' do
+        expect(none.discard).to be none
       end
     end
   end
