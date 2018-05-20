@@ -297,8 +297,16 @@ RSpec.describe(Dry::Monads::Do) do
   context 'implicit conversions' do
     before do
       class Test::ValidationResult
+        def initialize(success)
+          @success = success
+        end
+
         def to_monad
-          Dry::Monads::Success(:converted)
+          if @success
+            Dry::Monads::Success(:converted)
+          else
+            Dry::Monads::Failure(:converted)
+          end
         end
       end
 
@@ -312,8 +320,11 @@ RSpec.describe(Dry::Monads::Do) do
     end
 
     it 'implicitly converts an arbitrary object to a monad' do
-      result = Test::ValidationResult.new
-      expect(instance.(result)).to eql(Success(:converted))
+      success = Test::ValidationResult.new(true)
+      expect(instance.(success)).to eql(Success(:converted))
+
+      failure = Test::ValidationResult.new(false)
+      expect(instance.(failure)).to eql(Failure(:converted))
     end
   end
 
