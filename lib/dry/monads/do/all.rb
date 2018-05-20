@@ -37,7 +37,9 @@ module Dry
         def self.included(base)
           super
 
-          base.extend(MethodTracker.new(Module.new))
+          tracker = MethodTracker.new(Module.new)
+          base.extend(tracker)
+          base.instance_methods(false).each { |m| tracker.wrap_method(m) }
         end
       end
     end

@@ -23,4 +23,21 @@ RSpec.describe(Dry::Monads::Do::All) do
     expect(adder.sum(Success(1), Failure(2))).to eql(Failure(2))
     expect(adder.sum(Failure(1), Success(2))).to eql(Failure(1))
   end
+
+  it 'wraps already defined method' do
+    klass = Class.new {
+      def sum(a, b)
+        c = yield(a) + yield(b)
+        Success(c)
+      end
+    }.tap { |c|
+      c.include mixin
+      c.include(result_mixin)
+    }
+
+    adder = klass.new
+
+    expect(adder.sum(Success(1), Success(2))).to eql(Success(3))
+
+  end
 end
