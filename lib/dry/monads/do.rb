@@ -110,13 +110,17 @@ module Dry
       def self.wrap_method(target, method)
         target.module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
           def #{ method }(*)
-            super do |*ms|
-              ms = Do.coerce_to_monad(ms)
-              unwrapped = ms.map { |r|
-                m = r.to_monad
-                m.or { Do.halt(m) }.value!
-              }
-              ms.size == 1 ? unwrapped[0] : unwrapped
+            if block_given?
+              super
+            else
+              super do |*ms|
+                ms = Do.coerce_to_monad(ms)
+                unwrapped = ms.map { |r|
+                  m = r.to_monad
+                  m.or { Do.halt(m) }.value!
+                }
+                ms.size == 1 ? unwrapped[0] : unwrapped
+              end
             end
           rescue Halt => e
             e.result

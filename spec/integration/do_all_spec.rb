@@ -6,22 +6,28 @@ RSpec.describe(Dry::Monads::Do::All) do
   result_mixin = Dry::Monads::Result::Mixin
   include result_mixin
 
-  it 'wraps arbitrary methods defined _after_ mixing in' do
-    spec = self
-    klass = Class.new {
-      include spec.mixin
+  context 'include first' do
+    let(:adder) do
+      spec = self
+      klass = Class.new {
+        include spec.mixin
 
-      def sum(a, b)
-        c = yield(a) + yield(b)
-        Success(c)
-      end
-    }.tap { |c| c.include(result_mixin) }
+        def sum(a, b)
+          c = yield(a) + yield(b)
+          Success(c)
+        end
+      }.tap { |c| c.include(result_mixin) }.new
+    end
 
-    adder = klass.new
+    it 'wraps arbitrary methods defined _after_ mixing in' do
+      expect(adder.sum(Success(1), Success(2))).to eql(Success(3))
+      expect(adder.sum(Success(1), Failure(2))).to eql(Failure(2))
+      expect(adder.sum(Failure(1), Success(2))).to eql(Failure(1))
+    end
 
-    expect(adder.sum(Success(1), Success(2))).to eql(Success(3))
-    expect(adder.sum(Success(1), Failure(2))).to eql(Failure(2))
-    expect(adder.sum(Failure(1), Success(2))).to eql(Failure(1))
+    it 'removes uses a given block' do
+      expect(adder.sum(1, 2) { |x| x }).to eql(Success(3))
+    end
   end
 
   it 'wraps already defined method' do
@@ -38,6 +44,5 @@ RSpec.describe(Dry::Monads::Do::All) do
     adder = klass.new
 
     expect(adder.sum(Success(1), Success(2))).to eql(Success(3))
-
   end
 end
