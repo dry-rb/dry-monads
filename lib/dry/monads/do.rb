@@ -74,48 +74,54 @@ module Dry
       # @return [Module]
       def self.for(*methods)
         mod = Module.new do
-          methods.each do |method|
-            class_eval(<<-RUBY, __FILE__, __LINE__ + 1)
-              def #{ method }(*)
-                super do |*ms|
-                  ms = coerce_to_monad(ms)
-                  unwrapped = ms.map { |r|
-                    m = r.to_monad
-                    m.or { halt(m) }.value!
-                  }
-                  ms.size == 1 ? unwrapped[0] : unwrapped
-                end
-              rescue Halt => e
-                e.result
-              end
-            RUBY
-          end
+          methods.each { |m| Do.wrap_method(self, m) }
         end
 
         Module.new do
           singleton_class.send(:define_method, :included) do |base|
             base.prepend(mod)
           end
-
-          def halt(result)
-            raise Halt.new(result)
-          end
-
-          # @private
-          def coerce_to_monad(ms)
-            return ms if ms.size != 1
-
-            fst = ms[0]
-
-            case fst
-            when Array, List
-              list = fst.is_a?(Array) ? List.coerce(fst) : fst
-              [list.traverse]
-            else
-              ms
-            end
-          end
         end
+      end
+
+      protected
+
+      # @private
+      def self.halt(result)
+        raise Halt.new(result)
+      end
+
+      # @private
+      def self.coerce_to_monad(ms)
+        return ms if ms.size != 1
+
+        fst = ms[0]
+
+        case fst
+        when Array, List
+          list = fst.is_a?(Array) ? List.coerce(fst) : fst
+          [list.traverse]
+        else
+          ms
+        end
+      end
+
+      # @private
+      def self.wrap_method(target, method)
+        target.module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
+          def #{ method }(*)
+            super do |*ms|
+              ms = Do.coerce_to_monad(ms)
+              unwrapped = ms.map { |r|
+                m = r.to_monad
+                m.or { Do.halt(m) }.value!
+              }
+              ms.size == 1 ? unwrapped[0] : unwrapped
+            end
+          rescue Halt => e
+            e.result
+          end
+        RUBY
       end
     end
   end

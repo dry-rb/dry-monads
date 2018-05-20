@@ -63,6 +63,7 @@ Dry::Core::Deprecations.set_logger!(Logger.new($stdout))
 
 RSpec.configure do |config|
   config.disable_monkey_patching!
+  config.filter_run_when_matching :focus
 
   config.include TestHelpers
 
