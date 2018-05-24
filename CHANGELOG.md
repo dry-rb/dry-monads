@@ -42,7 +42,7 @@
     def create_user(user_data)
       Try[Sequel::Error] { user_repo.create(user_data) }.to_result
     end
- 
+
     def create_profile(user, profile_data)
       Try[Sequel::Error] {
         user_repo.create_profile(user, profile_data)
@@ -61,7 +61,7 @@
   def call
     name = Task { get_name_via_http }    # runs a request in the background
     email = Task { get_email_via_http }  # runs another one request in the background
-  
+
     # to_result forces both computations/requests to complete by pausing current thread
     # returns `Result::Success/Result::Failure`
     name.bind { |n| email.fmap { |e| create(e, n) } }.to_result
@@ -87,15 +87,15 @@
   list = List::Task[Task { get_name }, Task { get_email }]
   list.traverse # => Task(List['John', 'john@doe.org'])
   ```
-  
+
   The code above runs two tasks in parallel and automatically combines their results with `traverse` (flash-gordon)
-  
+
 * `Try` got a new call syntax supported in Ruby 2.5+
 
   ```ruby
-    Try[ArgumentError, TypeError] { unsafe_operation } 
+    Try[ArgumentError, TypeError] { unsafe_operation }
   ```
-  
+
   Prior to 2.5, it wasn't possible to pass a block to `[]`.
 
 * The `Validated` “monad” that represents a result of a validation. Suppose, you want to collect all the errors and return them at once. You can't have it with `Result` because when you `traverse` a `List` of `Result`s it returns the first value and this is the correct behavior from the theoretical point of view. `Validated`, in fact, doesn't have a monad instance but provides a useful variant of applicative which concatenates the errors.
@@ -103,31 +103,41 @@
   ```ruby
     include Dry::Monads
     include Dry::Monads::Do.for(:call)
-    
+
     def call(input)
       name, email = yield [
         validate_name(input[:name]),
         validate_email(input[:email])
       ]
-      
+
       Success(create(name, email))
     end
-    
-    # can return 
+
+    # can return
     # * Success(User(...))
     # * Invalid(List[:invalid_name])
-    # * Invalid(List[:invalid_email])    
-    # * Invalid(List[:invalid_name, :invalid_email])    
+    # * Invalid(List[:invalid_email])
+    # * Invalid(List[:invalid_name, :invalid_email])
   ```
-  
+
   In the example above an array of `Validated` values is implicitly coerced to `List::Validated`. It's supported because it's useful but don't forget it's all about types so don't mix different types of monads in a single array, the consequences are unclear. You always can be explicit with `List::Validated[validate_name(...), ...]`, choose what you like (flash-gordon).
-  
+
 * `Failure`, `None`, and `Invalid` values now store the line where they were created. One of the biggest downsides of dealing with monadic code is lack of backtraces. If you have a long list of computations and one of them fails how do you know where did it actually happen? Say, you've got `None` and this tells you nothing about _what variable_ was assigned to `None`. It makes sense to use `Result` instead of `Maybe` and use distinct errors everywhere but it doesn't always look good and forces you to think more. TLDR; call `.trace` to get the line where a fail-case was constructed
 
   ```ruby
   Failure(:invalid_name).trace # => app/operations/create_user.rb:43
   ```
-  
+
+* `Dry::Monads::Unit` which can be used as a replacement for `Success(nil)` and in similar situations when you have side effects yet doesn't return anything meningful as a result. There's also the `.discard` method for mapping any successful result (i.e. `Success(?)`, `Some(?)`, `Value(?)`, etc) to `Unit`.
+
+  ```ruby
+    # we're making an HTTP request but "forget" any successful result,
+    # we only care if the task was complete without an error
+    Task { do_http_request }.discard
+    # ... wait for the task to finish ...
+    # => Task(valut=Unit)
+  ```
+
 ## Deprecations
 
 * `Either`, the former name of `Result`, is now deprecated
@@ -135,6 +145,7 @@
 ## BREAKING CHANGES
 
 * `Either#value` and `Maybe#value` were both droped, use `value_or` or `value!` when you :100: sure it's safe
+* `require 'dry/monads'` doesn't load all monads anymore, use `require 'dry/monads/all'` instead or cherry pick them with `require 'dry/monads/maybe'` etc (timriley)
 
 [Compare v0.4.0...v1.0.0](https://github.com/dry-rb/dry-monads/compare/v0.4.0...master)
 
