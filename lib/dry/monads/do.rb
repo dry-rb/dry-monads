@@ -1,3 +1,5 @@
+require 'dry/monads/list'
+
 module Dry
   module Monads
     # An implementation of do-notation.
