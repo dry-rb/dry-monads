@@ -86,6 +86,15 @@ module Dry
         end
       end
 
+      # @api private
+      def self.included(base)
+        super
+
+        # Actually mixes in Do::All
+        require 'dry/monads/do/all'
+        base.include All
+      end
+
       protected
 
       # @private
