@@ -128,7 +128,7 @@
   Failure(:invalid_name).trace # => app/operations/create_user.rb:43
   ```
 
-* `Dry::Monads::Unit` which can be used as a replacement for `Success(nil)` and in similar situations when you have side effects yet doesn't return anything meningful as a result. There's also the `.discard` method for mapping any successful result (i.e. `Success(?)`, `Some(?)`, `Value(?)`, etc) to `Unit`.
+* `Dry::Monads::Unit` which can be used as a replacement for `Success(nil)` and in similar situations when you have side effects yet doesn't return anything meaningful as a result. There's also the `.discard` method for mapping any successful result (i.e. `Success(?)`, `Some(?)`, `Value(?)`, etc) to `Unit`.
 
   ```ruby
     # we're making an HTTP request but "forget" any successful result,
