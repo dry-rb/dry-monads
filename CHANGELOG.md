@@ -147,7 +147,7 @@
 * `Either#value` and `Maybe#value` were both droped, use `value_or` or `value!` when you :100: sure it's safe
 * `require 'dry/monads'` doesn't load all monads anymore, use `require 'dry/monads/all'` instead or cherry pick them with `require 'dry/monads/maybe'` etc (timriley)
 
-[Compare v0.4.0...v1.0.0](https://github.com/dry-rb/dry-monads/compare/v0.4.0...master)
+[Compare v0.4.0...v1.0.0](https://github.com/dry-rb/dry-monads/compare/v0.4.0...v1.0.0)
 
 # v0.4.0 2017-11-11
 
