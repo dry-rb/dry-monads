@@ -6,17 +6,8 @@ module Dry
     #
     # @see Do.for
     module Do
-      # @private
-      class Halt < StandardError
-        # @private
-        attr_reader :result
-
-        def initialize(result)
-          super()
-
-          @result = result
-        end
-      end
+      HALT = Object.new
+      private_constant :HALT
 
       # Generates a module that passes a block to methods
       # that either unwraps a single-valued monadic value or halts
@@ -99,7 +90,7 @@ module Dry
 
       # @private
       def self.halt(result)
-        raise Halt.new(result)
+        throw HALT, result
       end
 
       # @private
@@ -121,20 +112,20 @@ module Dry
       def self.wrap_method(target, method)
         target.module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
           def #{ method }(*)
-            if block_given?
-              super
-            else
-              super do |*ms|
-                ms = Do.coerce_to_monad(ms)
-                unwrapped = ms.map { |r|
-                  m = r.to_monad
-                  m.or { Do.halt(m) }.value!
-                }
-                ms.size == 1 ? unwrapped[0] : unwrapped
+            catch(HALT) do
+              if block_given?
+                super
+              else
+                super do |*ms|
+                  ms = Do.coerce_to_monad(ms)
+                  unwrapped = ms.map { |r|
+                    m = r.to_monad
+                    m.or { Do.halt(m) }.value!
+                  }
+                  ms.size == 1 ? unwrapped[0] : unwrapped
+                end
               end
             end
-          rescue Halt => e
-            e.result
           end
         RUBY
       end
