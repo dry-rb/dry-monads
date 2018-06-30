@@ -83,7 +83,7 @@ RSpec.describe(Dry::Monads::Do) do
       end
     end
 
-    context 'with stateful blocks' do
+    xcontext 'with stateful blocks' do
       before do
         klass.class_eval do
           attr_reader :rolled_back
