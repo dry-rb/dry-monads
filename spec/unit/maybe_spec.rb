@@ -10,6 +10,15 @@ RSpec.describe(Dry::Monads::Maybe) do
     let(:pure) { some }
   end
 
+  describe maybe do
+    describe '.to_proc' do
+      it 'returns a block for coerce' do
+        expect(maybe.to_proc.('foo')).to eql(some['foo'])
+        expect(maybe.to_proc.(nil)).to eql(none)
+      end
+    end
+  end
+
   describe maybe::Some do
     subject { described_class.new('foo') }
 
@@ -29,6 +38,12 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     it 'has custom inspection' do
       expect(subject.inspect).to eql('Some("foo")')
+    end
+
+    describe '.to_proc' do
+      it 'returns a constructor block' do
+        expect(maybe::Some.to_proc.('foo')).to eql(subject)
+      end
     end
 
     describe '#bind' do

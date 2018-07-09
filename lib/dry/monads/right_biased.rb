@@ -14,6 +14,15 @@ module Dry
       module Right
         include Dry::Core::Constants
 
+        # @private
+        def self.included(m)
+          super
+
+          def m.to_proc
+            @to_proc ||= method(:new).to_proc
+          end
+        end
+
         # Unwraps the underlying value
         #
         # @return [Object]

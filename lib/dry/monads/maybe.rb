@@ -37,6 +37,13 @@ module Dry
         def pure(value = Undefined, &block)
           Some.new(Undefined.default(value, block))
         end
+
+        # Reutrns a Some wrapper converted to a block
+        #
+        # @return [Proc]
+        def to_proc
+          @to_proc ||= method(:coerce).to_proc
+        end
       end
 
       # Returns true for an instance of a {Maybe::None} monad.

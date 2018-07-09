@@ -123,6 +123,13 @@ module Dry
         include RightBiased::Left
         include Dry::Equalizer(:failure)
 
+        # Returns a constructor proc
+        #
+        # @return [Proc]
+        def self.to_proc
+          @to_proc ||= method(:new).to_proc
+        end
+
         # Line where the value was constructed
         #
         # @return [String]

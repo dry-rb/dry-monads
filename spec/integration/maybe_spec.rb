@@ -152,6 +152,27 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
   end
 
+  context '.to_proc' do
+    let(:operation) do
+      class Test::Operation
+        include Dry::Monads::Maybe::Mixin
+
+        def call(value)
+          [
+            value.yield_self(&Maybe),
+            value.yield_self(&Some),
+          ]
+        end
+      end
+
+      Test::Operation.new
+    end
+
+    it 'can be used for constants' do
+      expect(operation.('foo')).to eql([Some('foo'), Some('foo')])
+    end
+  end
+
   describe 'matching' do
     let(:match) do
       -> value do

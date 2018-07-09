@@ -41,4 +41,25 @@ RSpec.describe(Dry::Monads::Result) do
       expect(Success(Some(Integer))).not_to be === Success(None())
     end
   end
+
+  context '.to_proc' do
+    let(:operation) do
+      class Test::Operation
+        include Dry::Monads::Success::Mixin
+
+        def call(value)
+          [
+            value.yield_self(&Success),
+            value.yield_self(&Failure)
+          ]
+        end
+      end
+
+      Test::Operation.new
+    end
+
+    it 'can be used for constants' do
+      expect(operation.('foo')).to eql([Success('foo'), Failure('foo')])
+    end
+  end
 end
