@@ -49,8 +49,8 @@ RSpec.describe(Dry::Monads::Result) do
 
         def call(value)
           [
-            value.yield_self(&Success),
-            value.yield_self(&Failure)
+            value.map(&Success),
+            value.map(&Failure)
           ]
         end
       end
@@ -59,7 +59,7 @@ RSpec.describe(Dry::Monads::Result) do
     end
 
     it 'can be used for constants' do
-      expect(operation.('foo')).to eql([Success('foo'), Failure('foo')])
+      expect(operation.(['foo'])).to eql([[Success('foo')], [Failure('foo')]])
     end
   end
 end

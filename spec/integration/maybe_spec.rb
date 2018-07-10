@@ -159,8 +159,8 @@ RSpec.describe(Dry::Monads::Maybe) do
 
         def call(value)
           [
-            value.yield_self(&Maybe),
-            value.yield_self(&Some),
+            value.map(&Maybe),
+            value.map(&Some),
           ]
         end
       end
@@ -169,7 +169,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     it 'can be used for constants' do
-      expect(operation.('foo')).to eql([Some('foo'), Some('foo')])
+      expect(operation.(['foo'])).to eql([[Some('foo')], [Some('foo')]])
     end
   end
 
