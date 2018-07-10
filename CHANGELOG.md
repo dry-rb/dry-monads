@@ -1,3 +1,14 @@
+# next-release
+
+## Added
+
+* `to_proc` was added to value constructors (flash-gordon)
+  ```ruby
+  [1, 2, 3].map(&Some) # => [Some(1), Some(2), Some(3)]
+  ```
+
+[Compare v1.0.0...master](https://github.com/dry-rb/dry-monads/compare/v1.0.0...master)
+
 # v1.0.0 2018-06-26
 
 ## Added
