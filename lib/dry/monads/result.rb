@@ -108,6 +108,16 @@ module Dry
         end
         alias_method :inspect, :to_s
 
+        # Checks to see if the other value is of type Success, and the value
+        # inside case matches our value
+        #
+        # @param other [Any]
+        #
+        # @return [Boolean]
+        def ===(other)
+          other.is_a?(Success) && @value === other.value!
+        end
+
         # Transforms to a Failure instance
         #
         # @return [Result::Failure]
