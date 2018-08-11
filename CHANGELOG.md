@@ -1,4 +1,8 @@
-# next-release
+# v1.0.1 2018-08-11
+
+## Fixed
+
+* Fixed behavior of `List<Validated>#traverse` in presence of `Valid` values (flash-gordon + SunnyMagadan)
 
 ## Added
 
@@ -7,7 +11,7 @@
   [1, 2, 3].map(&Some) # => [Some(1), Some(2), Some(3)]
   ```
 
-[Compare v1.0.0...master](https://github.com/dry-rb/dry-monads/compare/v1.0.0...master)
+[Compare v1.0.0...v1.0.1](https://github.com/dry-rb/dry-monads/compare/v1.0.0...v1.0.1)
 
 # v1.0.0 2018-06-26
 
