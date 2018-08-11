@@ -74,6 +74,18 @@ RSpec.describe(Dry::Monads::Validated) do
       end
     end
 
+    describe '#apply' do
+      subject { valid.(-> x { x + 1 }) }
+
+      it 'applies the function to a valid value' do
+        expect(subject.apply(valid.(2))).to eql(valid.(3))
+      end
+
+      it 'returns invalid back' do
+        expect(subject.apply(invalid.(2))).to eql(invalid.(2))
+      end
+    end
+
     describe '#===' do
       it 'matches on the wrapped value' do
         expect(valid['foo']).to be === valid['foo']

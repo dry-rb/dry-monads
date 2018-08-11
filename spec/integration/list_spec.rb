@@ -26,7 +26,7 @@ RSpec.describe(Dry::Monads::List) do
 
     it 'traverses errors' do
       errors = list::Validated[
-        Invalid(:no_email), Invalid(:no_name)
+        Invalid(:no_email), Invalid(:no_name), Valid(age: 29)
       ]
 
       expect(errors.traverse).to eql(Invalid(list[:no_email, :no_name]))

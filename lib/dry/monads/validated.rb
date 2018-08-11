@@ -163,7 +163,10 @@ module Dry
         #   @return [Validated::Invalid]
         #
         def apply(val = Undefined)
-          Undefined.default(val) { yield }.alt_map { |v| @error + v }
+          Undefined.
+            default(val) { yield }.
+            alt_map { |v| @error + v }.
+            fmap { return self }
         end
 
         # Lifts a block/proc over Invalid
