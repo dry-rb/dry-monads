@@ -118,9 +118,9 @@ module Dry
       end
 
       # @private
-      def self.wrap_method(target, method)
+      def self.wrap_method(target, method_name)
         target.module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
-          def #{ method }(*)
+          def #{ method_name }(*)
             if block_given?
               super
             else
