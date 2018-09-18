@@ -226,7 +226,7 @@ RSpec.describe(Dry::Monads::Do) do
     end
   end
 
-  context 'yielding multiple values' do
+  context 'yielding multiple arguments' do
     context 'success' do
       before do
         klass.class_eval do
@@ -291,6 +291,24 @@ RSpec.describe(Dry::Monads::Do) do
       it 'returns the first failure case' do
         expect(instance.call).to eql(Failure(1))
       end
+    end
+  end
+
+  context 'passing procs' do
+    before do
+      class Test::Operation
+        def call(&block)
+          result = yield Success(:heya)
+
+          Success(result)
+        end
+      end
+    end
+
+    it 'just calls the passed block, ignoring the do notation' do
+      expect(
+        instance.call { Failure(:foo) }
+      ).to eql(Success(Failure(:foo)))
     end
   end
 
