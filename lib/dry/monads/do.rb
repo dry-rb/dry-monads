@@ -76,7 +76,7 @@ module Dry
       # @return [Module]
       def self.for(*methods)
         mod = Module.new do
-          methods.each { |m| Do.wrap_method(self, m) }
+          methods.each { |method_name| Do.wrap_method(self, method_name) }
         end
 
         Module.new do
@@ -103,34 +103,35 @@ module Dry
       end
 
       # @private
-      def self.coerce_to_monad(ms)
-        return ms if ms.size != 1
+      def self.coerce_to_monad(monads)
+        return monads if monads.size != 1
 
-        fst = ms[0]
+        first = monads[0]
 
-        case fst
-        when Array, List
-          list = fst.is_a?(Array) ? List.coerce(fst) : fst
-          [list.traverse]
+        case first
+        when Array
+          [List.coerce(first).traverse]
+        when List
+          [first.traverse]
         else
-          ms
+          monads
         end
       end
 
       # @private
-      def self.wrap_method(target, method)
+      def self.wrap_method(target, method_name)
         target.module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
-          def #{ method }(*)
+          def #{ method_name }(*)
             if block_given?
               super
             else
-              super do |*ms|
-                ms = Do.coerce_to_monad(ms)
-                unwrapped = ms.map { |r|
-                  m = r.to_monad
-                  m.or { Do.halt(m) }.value!
+              super do |*monads|
+                monads = Do.coerce_to_monad(monads)
+                unwrapped = monads.map { |result|
+                  monad = result.to_monad
+                  monad.or { Do.halt(monad) }.value!
                 }
-                ms.size == 1 ? unwrapped[0] : unwrapped
+                monads.size == 1 ? unwrapped[0] : unwrapped
               end
             end
           rescue Halt => e

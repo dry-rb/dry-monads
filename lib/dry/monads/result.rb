@@ -299,6 +299,8 @@ module Dry
     #       Types.Value(:user_not_found) |
     #       Types.Value(:account_not_found)
     #
+    #     include Dry::Monads::Result(Error)
+    #
     #     def find_account(id)
     #       account = acount_repo.find(id)
     #
