@@ -106,6 +106,16 @@ module Dry
           self.class.coerce(bind(*args, &block))
         end
 
+        # Checks to see if the other value is of type Some, and the value
+        # inside case matches our value
+        #
+        # @param other [Any]
+        #
+        # @return [Boolean]
+        def ===(other)
+          other.is_a?(Some) && @value === other.value!
+        end
+
         # @return [String]
         def to_s
           "Some(#{ @value.inspect })"
@@ -168,6 +178,16 @@ module Dry
           'None'
         end
         alias_method :inspect, :to_s
+
+        # Checks to see if the other value is of type None, and the value
+        # inside case matches our value
+        #
+        # @param other [Any]
+        #
+        # @return [Boolean]
+        def ===(other)
+          other.is_a?(None)
+        end
 
         # @api private
         def eql?(other)
