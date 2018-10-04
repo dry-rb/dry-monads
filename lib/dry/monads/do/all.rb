@@ -69,18 +69,24 @@ module Dry
               define_method(:method_added) do |method|
                 super(method)
 
-                tracker.wrap_method(method)
+                tracker.wrap_method(self, method)
+              end
+
+              define_method(:inherited) do |base|
+                super(base)
+
+                base.prepend(wrappers[base])
               end
             end
           end
 
           def extend_object(target)
             super
-            target.prepend(wrappers)
+            target.prepend(wrappers[target])
           end
 
-          def wrap_method(method)
-            Do.wrap_method(wrappers, method)
+          def wrap_method(target, method)
+            Do.wrap_method(wrappers[target], method)
           end
         end
 
@@ -88,9 +94,10 @@ module Dry
         def self.included(base)
           super
 
-          tracker = MethodTracker.new(Module.new)
+          wrappers = Hash.new { |h, k| h[k] = Module.new }
+          tracker = MethodTracker.new(wrappers)
           base.extend(tracker)
-          base.instance_methods(false).each { |m| tracker.wrap_method(m) }
+          base.instance_methods(false).each { |m| tracker.wrap_method(base, m) }
         end
       end
     end

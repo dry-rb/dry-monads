@@ -43,13 +43,40 @@ RSpec.describe(Dry::Monads::Do::All) do
           Success(c)
         end
       }.tap { |c|
-        c.include mixin
-        c.include(result_mixin)
+        c.include(mixin, result_mixin)
       }
 
       adder = klass.new
 
       expect(adder.sum(Success(1), Success(2))).to eql(Success(3))
+    end
+
+    context 'inheritance' do
+      it 'works with inheritance' do
+        base = Class.new.tap { |c| c.include(mixin, result_mixin) }
+        child = Class.new(base) {
+          def call
+            result = yield Success(:success)
+            Success(result.to_s)
+          end
+        }
+
+        expect(child.new.call).to eql(Success('success'))
+      end
+
+      it "doesn't care about the order" do
+        base = Class.new.tap { |c| c.include(mixin, result_mixin) }
+        child = Class.new(base)
+        base.class_eval {
+          def call
+            result = yield Success(:success)
+            Success(result.to_s)
+          end
+        }
+
+        expect(base.new.call).to eql(Success('success'))
+        expect(child.new.call).to eql(Success('success'))
+      end
     end
   end
 
