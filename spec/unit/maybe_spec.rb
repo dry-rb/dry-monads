@@ -396,7 +396,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it 'raises an ArgumentError on missing value' do
-        expect { subject.Some() }.to raise_error(ArgumentError, 'No value given')
+        expect(subject.Some()).to eql(some[unit])
       end
     end
 

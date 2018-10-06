@@ -4,6 +4,7 @@ require 'dry/core/deprecations'
 
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
+require 'dry/monads/unit'
 
 module Dry
   module Monads
@@ -87,9 +88,9 @@ module Dry
         include Dry::Equalizer(:value!)
         include RightBiased::Right
 
-        def initialize(value)
+        def initialize(value = Undefined)
           raise ArgumentError, 'nil cannot be some' if value.nil?
-          @value = value
+          @value = Undefined.default(value, Unit)
         end
 
         # Does the same thing as #bind except it also wraps the value
@@ -209,8 +210,7 @@ module Dry
           #   @return [Maybe::Some]
           #
           def Some(value = Undefined, &block)
-            v = Undefined.default(value, block)
-            raise ArgumentError, 'No value given' if !value.nil? && v.nil?
+            v = Undefined.default(value, block || Unit)
             Some.new(v)
           end
 

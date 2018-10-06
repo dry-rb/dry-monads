@@ -4,6 +4,7 @@ require 'dry/monads/undefined'
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
 require 'dry/monads/conversion_stubs'
+require 'dry/monads/unit'
 
 module Dry
   module Monads
@@ -248,8 +249,7 @@ module Dry
           #   @return [Result::Success]
           #
           def Success(value = Undefined, &block)
-            v = Undefined.default(value, block)
-            raise ArgumentError, 'No value given' if !value.nil? && v.nil?
+            v = Undefined.default(value, block || Unit)
             Success.new(v)
           end
 
@@ -264,8 +264,7 @@ module Dry
           #   @return [Result::Failure]
           #
           def Failure(value = Undefined, &block)
-            v = Undefined.default(value, block)
-            raise ArgumentError, 'No value given' if !value.nil? && v.nil?
+            v = Undefined.default(value, block || Unit)
             Failure.new(v, RightBiased::Left.trace_caller)
           end
         end

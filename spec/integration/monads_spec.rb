@@ -13,6 +13,8 @@ RSpec.describe(Dry::Monads) do
   valid = validated::Valid.method(:new)
   invalid = validated::Invalid.method(:new)
 
+  unit = Dry::Monads::Unit
+
   describe 'Maybe' do
     describe '.Maybe' do
       describe 'mapping to Some' do
@@ -47,7 +49,7 @@ RSpec.describe(Dry::Monads) do
       end
 
       example 'using without values produces an error' do
-        expect { m.Some() }.to raise_error(ArgumentError, 'No value given')
+        expect(m.Some()).to eql(some[unit])
       end
     end
 

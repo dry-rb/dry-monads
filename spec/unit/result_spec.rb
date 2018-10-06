@@ -481,8 +481,8 @@ RSpec.describe(Dry::Monads::Result) do
         expect(subject.Success(&block)).to eql(success[block])
       end
 
-      it 'raises an ArgumentError on missing value' do
-        expect { subject.Success() }.to raise_error(ArgumentError, 'No value given')
+      it 'returns Unit when no value given' do
+        expect(subject.Success()).to eql(success[unit])
       end
     end
 
@@ -497,7 +497,7 @@ RSpec.describe(Dry::Monads::Result) do
       end
 
       it 'raises an ArgumentError on missing value' do
-        expect { subject.Failure() }.to raise_error(ArgumentError, 'No value given')
+        expect(subject.Failure()).to eql(failure[unit])
       end
 
       it 'tracks the caller' do
