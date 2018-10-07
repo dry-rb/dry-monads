@@ -1,3 +1,20 @@
+# v1.1.0 to-be-released
+
+## Added
+
+* `Success()`, `Failure()`, and `Some()` now have `Unit` as a default argument:
+  ```ruby
+  include Dry::Monads::Result::Mixin
+  include Dry::Monads::Do
+
+  def call
+    yield do_1
+    yield do_2
+
+    Success() # returns Success(Unit)
+  end
+  ```
+
 # v1.0.1 2018-08-11
 
 ## Fixed
