@@ -17,8 +17,9 @@ module Dry::Monads
             end
           end
 
-          def Success(value)
-            Success.new(value)
+          def Success(value = Undefined, &block)
+            v = Undefined.default(value, block || Unit)
+            Success.new(v)
           end
         end
       end

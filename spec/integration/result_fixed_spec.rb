@@ -2,6 +2,7 @@ require 'dry-types'
 
 RSpec.describe(Dry::Monads::Result) do
   result = Dry::Monads::Result
+  success = result::Success.method(:new)
   failure = result::Failure.method(:new)
 
   subject { Test::Operation.new }
@@ -67,6 +68,15 @@ RSpec.describe(Dry::Monads::Result) do
              Dry::Monads::InvalidFailureTypeError,
              %q[Cannot create Failure from "no_user", it doesn't meet the constraints]
            )
+    end
+
+    it 'uses unit as a default value' do
+      expect(subject.Success()).to eql(success[Dry::Monads::Unit])
+    end
+
+    it 'captures a block' do
+      proc = proc { |x| x * 2 }
+      expect(subject.Success(&proc)).to eql(success[proc])
     end
   end
 end

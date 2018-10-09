@@ -9,7 +9,7 @@ RSpec.describe(Dry::Monads::Do::All) do
     context 'include first' do
       let(:adder) do
         spec = self
-        klass = Class.new {
+        Class.new {
           include spec.mixin
 
           def sum(a, b)
