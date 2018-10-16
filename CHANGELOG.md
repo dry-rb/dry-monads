@@ -1,4 +1,8 @@
-# v1.1.0 to-be-released
+# v1.1.0 2018-10-16
+
+## Fixed
+
+* Do notation was made to work nicely with inheritance. This shouldn't break any existing code but if it does please report (flash-gordon)
 
 ## Added
 
@@ -14,6 +18,8 @@
     Success() # returns Success(Unit)
   end
   ```
+
+[Compare v1.0.1...v1.1.0](https://github.com/dry-rb/dry-monads/compare/v1.0.1...v1.1.0)
 
 # v1.0.1 2018-08-11
 
