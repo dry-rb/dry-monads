@@ -11,11 +11,12 @@ after_success:
   - '[ -d coverage ] && bundle exec codeclimate-test-reporter'
 rvm:
   - 2.2.10
-  - 2.3.7
-  - 2.4.4
-  - 2.5.1
-  - jruby-9.2.0.0
+  - 2.3.8
+  - 2.4.5
+  - 2.5.3
+  - 2.6
   - ruby-head
+  - jruby-9.2.0.0
 env:
   global:
     - JRUBY_OPTS='--dev -J-Xmx1024M'
