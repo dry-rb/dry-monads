@@ -1,3 +1,31 @@
+# v1.2.0 to-be-released
+
+## Added
+
+* `List#collect` gathers `Some` values from the list (flash-gordon)
+  ```ruby
+  include Dry::Monads::List::Mixin
+  include Dry::Monads::Maybe::Mixin
+  # ...
+  List[10, 5, 0].collect do |divisor|
+    if divisor.zero?
+      None()
+    else
+      Some(n / divisor)
+    end
+  end
+  # => List[4, 2]
+  ```
+
+  Without block:
+
+  ```ruby
+  List[Some(5), None(), Some(3)].collect.map { |x| x * 2 }
+  # => [10, 6]
+  ```
+  
+[Compare v1.1.0...master](https://github.com/dry-rb/dry-monads/compare/v1.1.0...master)
+
 # v1.1.0 2018-10-16
 
 ## Fixed
