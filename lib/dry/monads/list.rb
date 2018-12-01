@@ -308,6 +308,39 @@ module Dry
         self
       end
 
+      # Iterates over the list and collects Some values.
+      #
+      # @example with block syntax
+      #   n = 20
+      #   List[10, 5, 0].collect do |divisor|
+      #     if divisor.zero?
+      #       None()
+      #     else
+      #       Some(n / divisor)
+      #     end
+      #   end
+      #   # => List[4, 2]
+      #
+      # @example without block
+      #   List[Some(5), None(), Some(3)].collect.map { |x| x * 2 }
+      #   # => [10, 6]
+      #
+      # @return [List]
+      def collect
+        if block_given?
+          collected = value.each_with_object([]) do |x, ys|
+            y = yield(x)
+            ys << y.value! if y.some?
+          end
+
+          List.new(collected)
+        else
+          Enumerator.new do |g|
+            value.each { |x| g << x.value! if x.some? }
+          end
+        end
+      end
+
       private
 
       def coerce(other)

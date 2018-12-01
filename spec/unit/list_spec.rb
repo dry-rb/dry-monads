@@ -360,4 +360,14 @@ RSpec.describe(Dry::Monads::List) do
       expect(described_class[].type).to be Dry::Monads::Try
     end
   end
+
+  describe '#collect' do
+    it 'gathers Somes' do
+      expect(list[some[1], none, some[3]].collect(&:itself)).to eql(list[1, 3])
+    end
+
+    it 'returns enumerator' do
+      expect(list[some[1], none, some[3]].collect.map { |x| x * 2 }).to eql([2, 6])
+    end
+  end
 end
