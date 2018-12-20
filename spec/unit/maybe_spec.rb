@@ -209,6 +209,16 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(some['foo'].discard).to eql(some[unit])
       end
     end
+
+    describe '#flatten' do
+      it 'removes one level of monad' do
+        expect(some[some['foo']].flatten).to eql(some['foo'])
+      end
+
+      it 'returns None for Some(None)' do
+        expect(some[none].flatten).to eql(none)
+      end
+    end
   end
 
   describe maybe::None do
@@ -378,6 +388,12 @@ RSpec.describe(Dry::Monads::Maybe) do
     describe '#discard' do
       it 'returns self back' do
         expect(none.discard).to be none
+      end
+    end
+
+    describe '#flatten' do
+      it 'always return None' do
+        expect(none.flatten).to eql(none)
       end
     end
   end

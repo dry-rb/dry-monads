@@ -144,6 +144,19 @@ module Dry
           fmap { Unit }
         end
 
+        # Removes one level of monad structure by joining two values.
+        #
+        # @example
+        #   include Dry::Monads::Result::Mixin
+        #   Success(Success(5)).flatten # => Success(5)
+        #   Success(Failure(:not_a_number)).flatten # => Failure(:not_a_number)
+        #   Failure(:not_a_number).flatten # => Failure(:not_a_number)
+        #
+        # @return [RightBiased::Right,RightBiased::Left]
+        def flatten
+          bind(&:itself)
+        end
+
         private
 
         # @api private
@@ -244,6 +257,19 @@ module Dry
         # @return [RightBiased::Left]
         def discard
           fmap { Unit }
+        end
+
+        # Removes one level of monad structure by joining two values.
+        #
+        # @example
+        #   include Dry::Monads::Result::Mixin
+        #   Success(Success(5)).flatten # => Success(5)
+        #   Success(Failure(:not_a_number)).flatten # => Failure(:not_a_number)
+        #   Failure(:not_a_number).flatten # => Failure(:not_a_number)
+        #
+        # @return [RightBiased::Right,RightBiased::Left]
+        def flatten
+          self
         end
       end
     end

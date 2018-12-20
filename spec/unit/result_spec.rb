@@ -280,6 +280,16 @@ RSpec.describe(Dry::Monads::Result) do
         expect(success['foo'].discard).to eql(success[unit])
       end
     end
+
+    describe '#flatten' do
+      it 'removes one level of monad' do
+        expect(success[success['foo']].flatten).to eql(success['foo'])
+      end
+
+      it 'returns Failure for Success(Failure(_))' do
+        expect(success[failure['foo']].flatten).to eql(failure['foo'])
+      end
+    end
   end
 
   describe result::Failure do
@@ -464,6 +474,12 @@ RSpec.describe(Dry::Monads::Result) do
       it 'returns self back' do
         m = failure[1]
         expect(m.discard).to be m
+      end
+    end
+
+    describe '#flatten' do
+      it 'always return itself' do
+        expect(failure['foo'].flatten).to eql(failure['foo'])
       end
     end
   end
