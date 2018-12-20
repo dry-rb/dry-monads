@@ -219,6 +219,21 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(some[none].flatten).to eql(none)
       end
     end
+
+    describe '#and' do
+      it 'joins two maybe values with a block' do
+        expect(some['foo'].and(some['bar']) { |foo, bar| [foo, bar] }).to eql(some[['foo', 'bar']])
+      end
+
+      it 'returns none if argument is none' do
+        expect(some['foo'].and(none) { |foo, bar| fail }).to eql(none)
+      end
+
+      it 'returns a tuple if no block given' do
+        expect(some['foo'].and(some['bar'])).to eql(some[['foo', 'bar']])
+        expect(some['foo'].and(none)).to eql(none)
+      end
+    end
   end
 
   describe maybe::None do
@@ -394,6 +409,14 @@ RSpec.describe(Dry::Monads::Maybe) do
     describe '#flatten' do
       it 'always return None' do
         expect(none.flatten).to eql(none)
+      end
+    end
+
+    describe '#and' do
+      it 'always return None' do
+        expect(none.and(some['foo']) { fail }).to eql(none)
+        expect(none.and(some['foo'])).to eql(none)
+        expect(none.and(none)).to eql(none)
       end
     end
   end

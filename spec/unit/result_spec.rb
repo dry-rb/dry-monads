@@ -290,6 +290,22 @@ RSpec.describe(Dry::Monads::Result) do
         expect(success[failure['foo']].flatten).to eql(failure['foo'])
       end
     end
+
+    describe '#and' do
+      it 'joins two success values with a block' do
+        expect(success['foo'].and(success['bar']) { |foo, bar| [foo, bar] }).
+          to eql(success[['foo', 'bar']])
+      end
+
+      it 'returns failure if argument is failure' do
+        expect(success['foo'].and(failure[123]) { |foo, bar| fail }).to eql(failure[123])
+      end
+
+      it 'returns a tuple if no block given' do
+        expect(success['foo'].and(success['bar'])).to eql(success[['foo', 'bar']])
+        expect(some['foo'].and(failure[123])).to eql(failure[123])
+      end
+    end
   end
 
   describe result::Failure do
@@ -480,6 +496,14 @@ RSpec.describe(Dry::Monads::Result) do
     describe '#flatten' do
       it 'always return itself' do
         expect(failure['foo'].flatten).to eql(failure['foo'])
+      end
+    end
+
+    describe '#and' do
+      it 'always return itself' do
+        expect(failure[123].and(success['foo']) { fail }).to eql(failure[123])
+        expect(failure[123].and(success['foo'])).to eql(failure[123])
+        expect(failure[123].and(failure['foo'])).to eql(failure[123])
       end
     end
   end

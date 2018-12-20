@@ -157,6 +157,34 @@ module Dry
           bind(&:itself)
         end
 
+        # Combines the wrapped value with another monadic value.
+        # If both values are right-sided, yields a block and passes a tuple
+        # of values there. If no block given, returns a tuple of values wrapped with
+        # a monadic structure.
+        #
+        # @example
+        #   include Dry::Monads::Result::Mixin
+        #
+        #   Success(3).and(Success(5)) # => Success([3, 5])
+        #   Success(3).and(Failure(:not_a_number)) # => Failure(:not_a_number)
+        #   Failure(:not_a_number).and(Success(5)) # => Failure(:not_a_number)
+        #   Success(3).and(Success(5)) { |a, b| a + b } # => Success(8)
+        #
+        # @param mb [RightBiased::Left,RightBiased::Right]
+        #
+        # @return [RightBiased::Left,RightBiased::Right]
+        def and(mb)
+          bind do |a|
+            mb.fmap do |b|
+              if block_given?
+                yield([a, b])
+              else
+                [a, b]
+              end
+            end
+          end
+        end
+
         private
 
         # @api private
@@ -256,19 +284,22 @@ module Dry
         #
         # @return [RightBiased::Left]
         def discard
-          fmap { Unit }
+          self
         end
 
-        # Removes one level of monad structure by joining two values.
+        # Returns self back. It exists to keep the interface
+        # identical to that of {RightBiased::Right}.
         #
-        # @example
-        #   include Dry::Monads::Result::Mixin
-        #   Success(Success(5)).flatten # => Success(5)
-        #   Success(Failure(:not_a_number)).flatten # => Failure(:not_a_number)
-        #   Failure(:not_a_number).flatten # => Failure(:not_a_number)
-        #
-        # @return [RightBiased::Right,RightBiased::Left]
+        # @return [RightBiased::Left]
         def flatten
+          self
+        end
+
+        # Returns self back. It exists to keep the interface
+        # identical to that of {RightBiased::Right}.
+        #
+        # @return [RightBiased::Left]
+        def and(_)
           self
         end
       end
