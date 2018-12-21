@@ -1,5 +1,9 @@
 # v1.2.0 to-be-released
 
+## BREAKING CHANGES
+
+* Support for Ruby 2.2 was dropped. Ruby 2.2 reached its EOL on March 31, 2018.
+
 ## Added
 
 * `List#collect` gathers `Some` values from the list (flash-gordon)
