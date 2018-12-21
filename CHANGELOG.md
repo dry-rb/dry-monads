@@ -23,7 +23,34 @@
   List[Some(5), None(), Some(3)].collect.map { |x| x * 2 }
   # => [10, 6]
   ```
-  
+
+* Right-biased monads got `#flatten` and `#and` (falsh-gordon)
+
+  `#flatten` removes one level of monadic structure, it's useful when you're dealing with things like `Maybe` of `Maybe` of something:
+  ```ruby
+  include Dry::Monads::Maybe::Mixin
+
+  Some(Some(1)).flatten # => Some(1)
+  Some(None()).flatten # => None
+  None().flatten # => None
+  ```
+  In contrast to `Array#flatten`, dry-monads' version removes only 1 level of nesting, that is always acts as `Array#flatten(1)`:
+  ```ruby
+  Some(Some(Some(1))).flatten # => Some(Some(1))
+  ```
+  `#and` is handy for combining two monadic values and working with them at once:
+  ```ruby
+  include Dry::Monads::Maybe::Mixin
+
+  # using block
+  Some(5).and(Some(3)) { |x, y| x + y } # => Some(8)
+  # without block
+  Some(5).and(Some(3)) # => Some([5, 3])
+  # other cases
+  Some(5).and(None()) # => None()
+  None().and(Some(5)) # => None()
+  ```
+
 [Compare v1.1.0...master](https://github.com/dry-rb/dry-monads/compare/v1.1.0...master)
 
 # v1.1.0 2018-10-16
