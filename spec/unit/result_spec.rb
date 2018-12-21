@@ -228,16 +228,6 @@ RSpec.describe(Dry::Monads::Result) do
 
           expect(expr_result).to be true
         end
-
-        example 'keywords from value takes precedence' do
-          expr_result = subject.bind(foo: 'bar', bar: 'bar') do |foo:, bar: |
-            expect(foo).to eql('foo')
-            expect(bar).to eql('bar')
-            true
-          end
-
-          expect(expr_result).to be true
-        end
       end
     end
 
