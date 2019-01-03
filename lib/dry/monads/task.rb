@@ -54,7 +54,7 @@ module Dry
           new(Promise.execute(executor: executor, &block))
         end
 
-        # Returns a complete task from the given value
+        # Returns a completed task from the given value
         #
         # @overload pure(value)
         #   @param value [Object]
@@ -67,6 +67,14 @@ module Dry
         def pure(value = Undefined, &block)
           v = Undefined.default(value, block)
           new(Promise.fulfill(v))
+        end
+
+        # Returns a failed task from the given exception
+        #
+        # @param exc [Exception]
+        # @return [Task]
+        def failed(exc)
+          new(Promise.reject(exc))
         end
       end
 

@@ -3,6 +3,7 @@ require 'thread'
 RSpec.describe(Dry::Monads::Task) do
   result = Dry::Monads::Result
   success = result::Success.method(:new)
+  failure = result::Failure.method(:new)
 
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
@@ -198,6 +199,13 @@ RSpec.describe(Dry::Monads::Task) do
     it 'accepts a block too' do
       one = -> { 1 }
       expect(task.pure(&one)).to be == task { one }.wait
+    end
+  end
+
+  describe '.failed' do
+    it 'creates a failed task' do
+      error = (1 / 0 rescue $!)
+      expect(task.failed(error).to_result).to eql(failure[error])
     end
   end
 
