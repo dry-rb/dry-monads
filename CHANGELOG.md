@@ -55,6 +55,8 @@
   None().and(Some(5)) # => None()
   ```
 
+* `Task.failed` is a counterpart of `Task.pure`, accepts an exception and returns a failed task immediately (flash-gordon)
+
 [Compare v1.1.0...master](https://github.com/dry-rb/dry-monads/compare/v1.1.0...master)
 
 # v1.1.0 2018-10-16
