@@ -13,9 +13,8 @@ rvm:
   - 2.3.8
   - 2.4.5
   - 2.5.3
-  - 2.6
-  - ruby-head
-  - jruby-9.2.0.0
+  - 2.6.0
+  - jruby-9.2.4.0
 env:
   global:
     - JRUBY_OPTS='--dev -J-Xmx1024M'
