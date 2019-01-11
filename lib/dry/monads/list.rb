@@ -326,18 +326,11 @@ module Dry
       #   # => [10, 6]
       #
       # @return [List]
-      def collect
-        if block_given?
-          collected = value.each_with_object([]) do |x, ys|
-            y = yield(x)
-            ys << y.value! if y.some?
-          end
+      def collect(&block)
+        bind do |e|
+          m = block.nil? ? e : block.call(e)
 
-          List.new(collected)
-        else
-          Enumerator.new do |g|
-            value.each { |x| g << x.value! if x.some? }
-          end
+          m.fmap { |v| [v] }.value_or([])
         end
       end
 

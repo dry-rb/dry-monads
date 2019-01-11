@@ -363,11 +363,11 @@ RSpec.describe(Dry::Monads::List) do
 
   describe '#collect' do
     it 'gathers Somes' do
-      expect(list[some[1], none, some[3]].collect(&:itself)).to eql(list[1, 3])
+      expect(list[some[1], none, some[3]].collect).to eql(list[1, 3])
     end
 
-    it 'returns enumerator' do
-      expect(list[some[1], none, some[3]].collect.map { |x| x * 2 }).to eql([2, 6])
+    it 'allows a block' do
+      expect(list[1, 2, 3].collect { |i| i < 3 ? some[i] : none }).to eql(list[1, 2])
     end
   end
 end
