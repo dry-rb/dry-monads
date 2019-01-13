@@ -301,6 +301,16 @@ RSpec.describe(Dry::Monads::Result) do
   describe result::Failure do
     subject { result::Failure.new('bar') }
 
+    describe '.call' do
+      it 'is an alias for new' do
+        expect(result::Failure.('bar')).to eql(subject)
+
+        if RUBY_VERSION > '2.6'
+          expect((-> x { x.downcase } >> result::Failure).('BAR')).to eql(subject)
+        end
+      end
+    end
+
     it_behaves_like 'a monad'
 
     it { is_expected.not_to be_success }

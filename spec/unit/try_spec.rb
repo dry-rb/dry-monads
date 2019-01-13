@@ -199,6 +199,16 @@ RSpec.describe(Dry::Monads::Try) do
     let(:upcase_value) { described_class.new([ZeroDivisionError], 'FOO') }
     let(:upcase_error) { try::Error.new(division_error) }
 
+    describe '.call' do
+      it 'is an alias for new' do
+        expect(try::Error.(division_error)).to eql(subject)
+
+        if RUBY_VERSION > '2.6'
+          expect((-> x { x } >> try::Error).(division_error)).to eql(subject)
+        end
+      end
+    end
+
     it { is_expected.not_to be_value }
     it { is_expected.to be_error }
     it { is_expected.not_to be_success }

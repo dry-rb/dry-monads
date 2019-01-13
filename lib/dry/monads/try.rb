@@ -168,6 +168,8 @@ module Dry
         include Dry::Equalizer(:exception)
         include RightBiased::Left
 
+        singleton_class.alias_method(:call, :new)
+
         # @param exception [Exception]
         def initialize(exception)
           @exception = exception

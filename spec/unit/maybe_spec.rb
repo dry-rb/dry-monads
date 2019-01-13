@@ -46,6 +46,16 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
+    describe '.call' do
+      it 'is an alias for new' do
+        expect(maybe::Some.('foo')).to eql(subject)
+
+        if RUBY_VERSION > '2.6'
+          expect((-> x { x.downcase } >> maybe::Some).('FOO')).to eql(subject)
+        end
+      end
+    end
+
     describe '#bind' do
       it 'accepts a proc and does not lift the result' do
         expect(subject.bind(upcase)).to eql('FOO')
