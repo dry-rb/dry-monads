@@ -30,7 +30,7 @@ require 'dry/monads/all'
 
 Dir["./spec/shared/**/*.rb"].sort.each { |f| require f }
 
-module TestHelpers
+module Kernel
   def suppress_warnings
     original_verbosity = $VERBOSE
     $VERBOSE = nil
@@ -38,7 +38,9 @@ module TestHelpers
     $VERBOSE = original_verbosity
     return result
   end
+end
 
+module TestHelpers
   def re_require(*paths)
     $LOADED_FEATURES.delete_if { |feature|
       paths.any? { |path| feature.include?("dry/monads/#{path}.rb") }
