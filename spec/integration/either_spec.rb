@@ -1,8 +1,10 @@
-require 'dry/monads/either'
-
 RSpec.describe 'Dry::Monads::Either', :suppress_deprecations do
-  suppress_warnings do
-    include Dry::Monads::Either::Mixin
+  before { require 'dry/monads/either' }
+
+  before do
+    suppress_warnings do
+      self.class.include Dry::Monads::Either::Mixin
+    end
   end
 
   specify do

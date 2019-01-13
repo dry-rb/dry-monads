@@ -42,12 +42,15 @@ end
 
 module TestHelpers
   def re_require(*paths)
+    paths.each { |p| Dry::Monads.send(:unload_monad, p) }
+    all_paths = paths + %w(all)
+
     $LOADED_FEATURES.delete_if { |feature|
-      paths.any? { |path| feature.include?("dry/monads/#{path}.rb") }
+      all_paths.any? { |path| feature.include?("dry/monads/#{path}.rb") }
     }
 
     suppress_warnings do
-      paths.each do |path|
+      all_paths.each do |path|
         require "dry/monads/#{path}"
       end
     end

@@ -1,6 +1,6 @@
 RSpec.describe "Dry::Monads module mixin" do
   it "raises an error when all monads are not loaded" do
-    Dry::Monads.send :remove_const, :CONSTRUCTORS
+    Dry::Monads.instance_exec { @registry = @registry.dup }
 
     expect {
       class Test::MyClass
@@ -8,7 +8,7 @@ RSpec.describe "Dry::Monads module mixin" do
       end
     }.to raise_error RuntimeError, %r{Load all monads first}
 
-    re_require "all"
+    re_require
   end
 
   it "raises no error when all monads are loaded" do

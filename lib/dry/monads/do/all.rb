@@ -77,6 +77,11 @@ module Dry
 
                 base.prepend(wrappers[base])
               end
+
+              def included(base)
+                super
+                Dry::Monads::Do::All.included(base)
+              end
             end
           end
 
@@ -101,5 +106,8 @@ module Dry
         end
       end
     end
+
+    require 'dry/monads/registry'
+    register_mixin(:do, Do::All)
   end
 end

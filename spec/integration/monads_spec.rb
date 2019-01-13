@@ -157,4 +157,46 @@ RSpec.describe(Dry::Monads) do
       end
     end
   end
+
+  describe '[]' do
+    it 'creates a module with cherry-picked monad' do
+      maybe_only = Class.new { include Dry::Monads[:maybe] }
+
+      expect(maybe_only.new.Some(1)).to eql(m.Some(1))
+    end
+
+    it 'works with multiple monads' do
+      ctx = Class.new do
+        include Dry::Monads[:maybe, :result]
+
+        def call
+          [Some(:foo), Success(:bar), Failure(:baz)]
+        end
+      end
+
+      expect(ctx.new.()).to eql([m.Some(:foo), m.Success(:bar), m.Failure(:baz)])
+    end
+
+    it 'caches modules' do
+      expect(Dry::Monads[:maybe, :result]).to be(Dry::Monads[:result, :maybe])
+    end
+
+    it 'freezes mixins' do
+      expect(Dry::Monads[:maybe]).to be_frozen
+    end
+
+    it 'workds with do' do
+      ctx = Class.new do
+        include Dry::Monads[:maybe, :do]
+
+        def call(x, y)
+          a = yield x
+          b = yield y
+          Some(a + b)
+        end
+      end
+
+      expect(ctx.new.(m.Some(1), m.Some(2))).to eql(m.Some(3))
+    end
+  end
 end
