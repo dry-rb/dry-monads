@@ -6,6 +6,11 @@
 
 ## Added
 
+* Most of constructors now have `call` alias so you can compose them with Procs nicely if you've switched to Ruby 2.6 (flash-gordon)
+  ```ruby
+  pipe = -> x { x.upcase } >> Success
+  pipe.('foo') # => Success('FOO')
+  ```
 * `List#collect` gathers `Some` values from the list (flash-gordon)
   ```ruby
   include Dry::Monads::List::Mixin
