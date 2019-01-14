@@ -6,8 +6,8 @@ module Dry
   # @api public
   module Monads
     def self.included(base)
-      if @registry.frozen?
-        base.include(*monad_constructors)
+      if all_loaded?
+        base.include(*constructors)
       else
         raise "Load all monads first with require 'dry/monads/all'"
       end
@@ -43,9 +43,10 @@ module Dry
     # @return [Module]
     # @api public
     def self.[](*monads)
-      @mixins.fetch_or_store(monads.sort.hash) do
+      monads.sort!
+      @mixins.fetch_or_store(monads.hash) do
         monads.each { |m| load_monad(m) }
-        mixins = monads.map { |m| @registry.fetch(m) }
+        mixins = monads.map { |m| registry.fetch(m) }
         Module.new { include(*mixins) }.freeze
       end
     end

@@ -6,6 +6,7 @@ module Dry
   # @api private
   module Monads
     @registry = {}
+    @constructors = nil
     @paths = {
       do: 'dry/monads/do/all',
       lazy: 'dry/monads/lazy',
@@ -24,12 +25,20 @@ module Dry
     class << self
       private
 
+      attr_reader :registry
+
+      def registry=(registry)
+        @constructors = nil
+        @registry = registry.dup.freeze
+      end
+      protected :registry=
+
       # @private
       def register_mixin(name, mod)
-        if @registry.key?(name)
+        if registry.key?(name)
           raise ArgumentError, "#{ name.inspect } is already registered"
         end
-        @registry[name] = mod
+        self.registry = registry.merge(name => mod)
       end
 
       # @private
@@ -46,18 +55,15 @@ module Dry
       end
 
       # @private
-      def unload_monad(name)
-        if @registry.key?(name.to_sym)
-          @registry = @registry.dup
-          @registry.delete(name.to_sym)
-        end
+      def constructors
+        @constructors ||= registry.values.map { |m|
+          m::Constructors if m.const_defined?(:Constructors)
+        }.compact
       end
 
       # @private
-      def monad_constructors
-        @registry.values.map { |m|
-          m::Constructors if m.const_defined?(:Constructors)
-        }.compact
+      def all_loaded?
+        registry.size == @paths.size
       end
     end
   end
