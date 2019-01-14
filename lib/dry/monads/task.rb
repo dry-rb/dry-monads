@@ -307,6 +307,7 @@ module Dry
       end
     end
 
-    extend Task::Mixin::Constructors
+    require 'dry/monads/registry'
+    register_mixin(:task, Task::Mixin)
   end
 end

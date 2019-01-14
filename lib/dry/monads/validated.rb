@@ -296,5 +296,8 @@ module Dry
         end
       end
     end
+
+    require 'dry/monads/registry'
+    register_mixin(:validated, Validated::Mixin)
   end
 end

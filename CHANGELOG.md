@@ -60,6 +60,30 @@
   None().and(Some(5)) # => None()
   ```
 
+* Concise imports with `Dry::Monads.[]`. You're no longer required to require all desired monads and include them one-by-one, the `[]` method handles it for you (flash-gordon)
+
+  ```ruby
+  require 'dry/monads'
+
+  class CreateUser
+    include Dry::Monads[:result, :do]
+
+    def initialize(repo, send_email)
+      @repo = repo
+      @send_email = send_email
+    end
+
+    def call(name)
+      if @repo.user_exist?(name)
+        Failure(:user_exists)
+      else
+        user = yield @repo.add_user(name)
+        yield @send_email.(user)
+        Success(user)
+      end
+    end
+  end
+  ```
 * `Task.failed` is a counterpart of `Task.pure`, accepts an exception and returns a failed task immediately (flash-gordon)
 
 [Compare v1.1.0...master](https://github.com/dry-rb/dry-monads/compare/v1.1.0...master)

@@ -78,6 +78,7 @@ module Dry
       end
     end
 
-    extend Lazy::Mixin::Constructors
+    require 'dry/monads/registry'
+    register_mixin(:lazy, Lazy::Mixin)
   end
 end

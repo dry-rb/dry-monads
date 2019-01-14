@@ -275,6 +275,7 @@ module Dry
       end
     end
 
-    extend Try::Mixin::Constructors
+    require 'dry/monads/registry'
+    register_mixin(:try, Try::Mixin)
   end
 end

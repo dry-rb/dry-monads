@@ -42,12 +42,15 @@ end
 
 module TestHelpers
   def re_require(*paths)
+    paths.each { |p| Dry::Monads.unload_monad(p) }
+    all_paths = paths + %w(all)
+
     $LOADED_FEATURES.delete_if { |feature|
-      paths.any? { |path| feature.include?("dry/monads/#{path}.rb") }
+      all_paths.any? { |path| feature.include?("dry/monads/#{path}.rb") }
     }
 
     suppress_warnings do
-      paths.each do |path|
+      all_paths.each do |path|
         require "dry/monads/#{path}"
       end
     end
@@ -58,6 +61,14 @@ end
 module Test
   def self.remove_constants
     constants.each(&method(:remove_const))
+  end
+end
+
+module Dry::Monads
+  def self.unload_monad(name)
+    if registry.key?(name.to_sym)
+      self.registry = registry.reject { |k, _| k == name.to_sym }
+    end
   end
 end
 
