@@ -1,4 +1,4 @@
-# v1.2.0 to-be-released
+# v1.2.0 2019-01-12
 
 ## BREAKING CHANGES
 
@@ -86,7 +86,7 @@
   ```
 * `Task.failed` is a counterpart of `Task.pure`, accepts an exception and returns a failed task immediately (flash-gordon)
 
-[Compare v1.1.0...master](https://github.com/dry-rb/dry-monads/compare/v1.1.0...master)
+[Compare v1.1.0...v1.2.0](https://github.com/dry-rb/dry-monads/compare/v1.1.0...v1.2.0)
 
 # v1.1.0 2018-10-16
 
