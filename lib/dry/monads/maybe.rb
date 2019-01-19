@@ -5,6 +5,7 @@ require 'dry/core/deprecations'
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
 require 'dry/monads/unit'
+require 'dry/monads/undefined'
 
 module Dry
   module Monads
