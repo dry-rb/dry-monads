@@ -296,6 +296,12 @@ RSpec.describe(Dry::Monads::Result) do
         expect(some['foo'].and(failure[123])).to eql(failure[123])
       end
     end
+
+    describe '#either' do
+      it 'returns first function applied to the value' do
+        expect(success['foo'].either(-> x { x + 'foo' }, -> x { x + 'bar' })).to eq('foofoo')
+      end
+    end
   end
 
   describe result::Failure do
@@ -504,6 +510,12 @@ RSpec.describe(Dry::Monads::Result) do
         expect(failure[123].and(success['foo']) { fail }).to eql(failure[123])
         expect(failure[123].and(success['foo'])).to eql(failure[123])
         expect(failure[123].and(failure['foo'])).to eql(failure[123])
+      end
+    end
+
+    describe '#either' do
+      it 'returns second function applied to the value' do
+        expect(failure['bar'].either(-> x { x + 'foo' }, -> x { x + 'bar' })).to eq('barbar')
       end
     end
   end
