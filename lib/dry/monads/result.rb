@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'dry/equalizer'
 
 require 'dry/monads/undefined'
