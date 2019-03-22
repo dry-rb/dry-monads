@@ -1,6 +1,5 @@
 language: ruby
 dist: trusty
-sudo: false
 cache: bundler
 bundler_args: --without benchmarks docs
 script:
@@ -13,9 +12,9 @@ after_success:
 rvm:
   - 2.3.8
   - 2.4.5
-  - 2.5.3
-  - 2.6.0
-  - jruby-9.2.4.0
+  - 2.5.5
+  - 2.6.2
+  - jruby-9.2.6.0
 env:
   global:
     - JRUBY_OPTS='--dev -J-Xmx1024M'
