@@ -86,6 +86,15 @@ module Dry
         end
       end
 
+      def self.bind(*monads)
+        monads = Do.coerce_to_monad(monads)
+        unwrapped = monads.map { |result|
+          monad = result.to_monad
+          monad.or { Do.halt(monad) }.value!
+        }
+        monads.size == 1 ? unwrapped[0] : unwrapped
+      end
+
       # @api private
       def self.included(base)
         super
@@ -126,12 +135,7 @@ module Dry
               super
             else
               super do |*monads|
-                monads = Do.coerce_to_monad(monads)
-                unwrapped = monads.map { |result|
-                  monad = result.to_monad
-                  monad.or { Do.halt(monad) }.value!
-                }
-                monads.size == 1 ? unwrapped[0] : unwrapped
+                Do.bind(*monads)
               end
             end
           rescue Halt => e
