@@ -11,7 +11,7 @@ after_success:
   - '[ -d coverage ] && bundle exec codeclimate-test-reporter'
 rvm:
   - 2.3.8
-  - 2.4.5
+  - 2.4.6
   - 2.5.5
   - 2.6.2
   - jruby-9.2.6.0
