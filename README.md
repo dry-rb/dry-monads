@@ -3,6 +3,7 @@
 [travis]: https://travis-ci.org/dry-rb/dry-monads
 [code_climate]: https://codeclimate.com/github/dry-rb/dry-monads
 [inch]: http://inch-ci.org/github/dry-rb/dry-monads
+[chat]: https://dry-rb.zulipchat.com
 
 # dry-monads [![Join the chat at https://dry-rb.zulipchat.com](https://img.shields.io/badge/dry--rb-join%20chat-%23346b7a.svg)][chat]
 
