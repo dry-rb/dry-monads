@@ -118,6 +118,21 @@ module Dry
         end
       end
 
+      def self.bind(*monads)
+        monads = Do.coerce_to_monad(monads)
+        unwrapped = monads.map { |result|
+          monad = result.to_monad
+          monad.or { Do.halt(monad) }.value!
+        }
+        monads.size == 1 ? unwrapped[0] : unwrapped
+      end
+
+      def self.wrap
+        yield
+      rescue Halt => e
+        e.result
+      end
+
       # @private
       def self.wrap_method(target, method_name)
         target.module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
@@ -125,17 +140,10 @@ module Dry
             if block_given?
               super
             else
-              super do |*monads|
-                monads = Do.coerce_to_monad(monads)
-                unwrapped = monads.map { |result|
-                  monad = result.to_monad
-                  monad.or { Do.halt(monad) }.value!
-                }
-                monads.size == 1 ? unwrapped[0] : unwrapped
+              Do.wrap do
+                super { |*monads| Do.bind(*monads) } 
               end
             end
-          rescue Halt => e
-            e.result
           end
         RUBY
       end
