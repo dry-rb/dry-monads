@@ -106,7 +106,7 @@ RSpec.describe(Dry::Monads::Do) do
 
           def transaction
             yield
-          rescue => e
+          rescue Exception => e
             @rolled_back = true
             raise e
           end
@@ -116,6 +116,27 @@ RSpec.describe(Dry::Monads::Do) do
       it 'halts the executing with an exception' do
         expect(instance.call).to eql(Failure(:no_two))
         expect(instance.rolled_back).to be(true)
+      end
+    end
+
+    context 'with rescue block in method' do
+      before do
+        klass.class_eval do
+          def call(m1)
+            yield m1
+            raise "oops"
+          rescue => e
+            Failure("handled exception: #{e}")
+          end
+        end
+      end
+
+      it 'catches standard exception' do
+        expect(instance.call(Success(1))).to eql(Failure("handled exception: oops"))
+      end
+
+      it 'does not catch Halt exception' do
+        expect(instance.call(Failure(5))).to eql(Failure(5))
       end
     end
   end

@@ -10,7 +10,7 @@ module Dry
       extend Mixin
 
       # @api private
-      class Halt < StandardError
+      class Halt < Exception
         # @api private
         attr_reader :result
 
