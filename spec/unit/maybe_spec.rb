@@ -2,6 +2,9 @@ RSpec.describe(Dry::Monads::Maybe) do
   maybe = described_class
   some = maybe::Some.method(:new)
   none = maybe::None.new
+  result = Dry::Monads::Result
+  success = result::Success.method(:new)
+  failure = result::Failure.method(:new)
   unit = Dry::Monads::Unit
 
   let(:upcase) { :upcase.to_proc }
@@ -170,6 +173,12 @@ RSpec.describe(Dry::Monads::Maybe) do
       let(:subject) { some['foo'].to_maybe }
 
       it { is_expected.to eql some['foo'] }
+    end
+
+    describe '#to_result' do
+      it 'transforms self to Result::Success' do
+        expect(subject.to_result('baz')).to eql(success['foo'])
+      end
     end
 
     describe '#tee' do
@@ -363,6 +372,12 @@ RSpec.describe(Dry::Monads::Maybe) do
       let(:subject) { none.to_maybe }
 
       it { is_expected.to eql maybe::None.new }
+    end
+
+    describe '#to_result' do
+      it 'transforms self to Result::Failure' do
+        expect(subject.to_result('bar')).to eql(failure['bar'])
+      end
     end
 
     describe '#tee' do
