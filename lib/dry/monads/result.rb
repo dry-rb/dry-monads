@@ -103,6 +103,18 @@ module Dry
           Success.new(bind(*args, &block))
         end
 
+        # Returns result of applying first function to the internal value.
+        #
+        # @example
+        #   Dry::Monads.Success(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 2
+        #
+        # @param f [#call] Function to apply
+        # @param g [#call] Ignored
+        # @return [Any] Return value of `f`
+        def either(f, _g)
+          f.(success)
+        end
+
         # @return [String]
         def to_s
           "Success(#{ @value.inspect })"
@@ -224,6 +236,18 @@ module Dry
         # @return [Boolean]
         def ===(other)
           Failure === other && failure === other.failure
+        end
+
+        # Returns result of applying second function to the internal value.
+        #
+        # @example
+        #   Dry::Monads.Failure(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 3
+        #
+        # @param f [#call] Ignored
+        # @param g [#call] Function to call
+        # @return [Any] Return value of `g`
+        def either(_f, g)
+          g.(failure)
         end
       end
 
