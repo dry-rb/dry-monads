@@ -319,6 +319,20 @@ module Dry
       Result::Fixed[error, **options]
     end
 
+    class Maybe
+      class Some < Maybe
+        def to_result(_fail)
+          Result::Success.new(@value)
+        end
+      end
+
+      class None < Maybe
+        def to_result(fail)
+          Result::Failure.new(fail)
+        end
+      end
+    end
+
     class Task
       # Converts to Result. Blocks the current thread if required.
       #
