@@ -11,7 +11,7 @@ RSpec.describe(Dry::Monads::Result) do
     before do
       module Test
         module Types
-          include Dry::Types.module
+          include Dry.Types()
         end
       end
     end
