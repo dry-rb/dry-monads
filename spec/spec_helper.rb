@@ -4,7 +4,6 @@ require 'pathname'
 
 SPEC_ROOT = Pathname(__FILE__).dirname
 
-
 if RUBY_ENGINE == 'ruby' && ENV['COVERAGE'] == 'true'
   require 'yaml'
   rubies = YAML.load(File.read(File.join(__dir__, '..', '.travis.yml')))['rvm']
@@ -17,6 +16,9 @@ if RUBY_ENGINE == 'ruby' && ENV['COVERAGE'] == 'true'
     end
   end
 end
+
+require 'warning'
+Warning.ignore(/rspec\/core/)
 
 begin
   require 'pry'
