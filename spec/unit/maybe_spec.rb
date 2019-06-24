@@ -178,6 +178,11 @@ RSpec.describe(Dry::Monads::Maybe) do
     describe '#to_result' do
       it 'transforms self to Result::Success' do
         expect(subject.to_result('baz')).to eql(success['foo'])
+        expect(subject.to_result { 'baz' }).to eql(success['foo'])
+      end
+
+      it 'requires fallback argument' do
+        expect { subject.to_result }.to raise_error(ArgumentError)
       end
     end
 
@@ -377,6 +382,11 @@ RSpec.describe(Dry::Monads::Maybe) do
     describe '#to_result' do
       it 'transforms self to Result::Failure' do
         expect(subject.to_result('bar')).to eql(failure['bar'])
+        expect(subject.to_result { 'bar' }).to eql(failure['bar'])
+      end
+
+      it 'requires fallback argument' do
+        expect { subject.to_result }.to raise_error(ArgumentError)
       end
     end
 

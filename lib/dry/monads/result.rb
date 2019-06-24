@@ -345,14 +345,20 @@ module Dry
 
     class Maybe
       class Some < Maybe
-        def to_result(_fail)
+        def to_result(fail = Undefined)
+          if Undefined.equal?(fail) && !block_given?
+            raise ArgumentError, 'Maybe#to_result must be called with a failure case'
+          end
           Result::Success.new(@value)
         end
       end
 
       class None < Maybe
-        def to_result(fail)
-          Result::Failure.new(fail)
+        def to_result(fail = Undefined, &block)
+          if Undefined.equal?(fail) && !block_given?
+            raise ArgumentError, 'Maybe#to_result must be called with a failure case'
+          end
+          Result::Failure.new(Undefined.default(fail, &block))
         end
       end
     end
