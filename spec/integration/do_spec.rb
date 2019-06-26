@@ -421,4 +421,30 @@ RSpec.describe(Dry::Monads::Do) do
       end
     end
   end
+
+  describe '.wrap and .bind' do
+    before do
+      klass.class_eval do
+        def test_method(success)
+          Dry::Monads::Do.wrap do
+            value_1 = Dry::Monads::Do.bind(Success(2))
+            value_2 = Dry::Monads::Do.bind(success ? Success(3) : Failure('oops'))
+            Success(value_1 + value_2)
+          end
+        end
+      end
+    end
+
+    context 'successful case' do
+      it 'returns the result of a statement' do
+        expect(instance.test_method(true)).to eq Success(5)
+      end
+    end
+
+    context 'first failure' do
+      it 'returns failure' do
+        expect(instance.test_method(false)).to eq Failure('oops')
+      end
+    end
+  end
 end
