@@ -421,4 +421,44 @@ RSpec.describe(Dry::Monads::Do) do
       end
     end
   end
+
+  describe 'Do::Mixin' do
+    include Dry::Monads::Do::Mixin
+
+    let(:block) do
+      lambda do |success|
+        self.() do
+          value_1 = bind(Success(2))
+          value_2 = bind(success ? Success(3) : Failure('oops'))
+          Success(value_1 + value_2)
+        end
+      end
+    end
+
+    before do
+      klass.class_eval do
+        extend Dry::Monads::Do::Mixin
+
+        def test_method(success)
+          Dry::Monads::Do.() do
+            value_1 = Dry::Monads::Do.bind(Success(2))
+            value_2 = Dry::Monads::Do.bind(success ? Success(3) : Failure('oops'))
+            Success(value_1 + value_2)
+          end
+        end
+      end
+    end
+
+    context 'successful case' do
+      it 'returns the result of a statement' do
+        expect(block.(true)).to eql(Success(5))
+      end
+    end
+
+    context 'first failure' do
+      it 'returns failure' do
+        expect(block.(false)).to eql(Failure('oops'))
+      end
+    end
+  end
 end
