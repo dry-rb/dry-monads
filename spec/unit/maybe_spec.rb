@@ -26,6 +26,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     subject { described_class.new('foo') }
 
     it_behaves_like 'a monad'
+    it_behaves_like 'a right monad'
 
     let(:upcased_subject) { described_class.new('FOO') }
 
@@ -452,6 +453,12 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(none.and(some['foo']) { fail }).to eql(none)
         expect(none.and(some['foo'])).to eql(none)
         expect(none.and(none)).to eql(none)
+      end
+    end
+
+    describe '#either' do
+      it 'returns second function applied to the value' do
+        expect(subject.either(-> x { x + 'foo' }, -> x { x.to_s + 'bar' })).to eq('bar')
       end
     end
   end

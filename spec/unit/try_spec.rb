@@ -40,6 +40,7 @@ RSpec.describe(Dry::Monads::Try) do
     subject { div_value['foo'] }
 
     it_behaves_like 'a monad'
+    it_behaves_like 'a right monad'
 
     let(:upcase_value) { div_value['FOO'] }
     let(:upcase_error) { try::Error.new(division_error) }
@@ -306,6 +307,12 @@ RSpec.describe(Dry::Monads::Try) do
       it 'matches using the error value' do
         expect(error[division_error]).to be === error[division_error]
         expect(error[ZeroDivisionError]).to be === error[division_error]
+      end
+    end
+
+    describe '#either' do
+      it 'returns second function applied to the value' do
+        expect(subject.either(-> x { x + 'foo' }, -> x { x.to_s + 'bar' })).to eq('divided by 0bar')
       end
     end
   end

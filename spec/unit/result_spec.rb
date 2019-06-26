@@ -19,6 +19,7 @@ RSpec.describe(Dry::Monads::Result) do
     subject { success['foo'] }
 
     it_behaves_like 'a monad'
+    it_behaves_like 'a right monad'
 
     let(:upcased_subject) { success['FOO'] }
 
@@ -294,12 +295,6 @@ RSpec.describe(Dry::Monads::Result) do
       it 'returns a tuple if no block given' do
         expect(success['foo'].and(success['bar'])).to eql(success[['foo', 'bar']])
         expect(some['foo'].and(failure[123])).to eql(failure[123])
-      end
-    end
-
-    describe '#either' do
-      it 'returns first function applied to the value' do
-        expect(success['foo'].either(-> x { x + 'foo' }, -> x { x + 'bar' })).to eq('foofoo')
       end
     end
   end

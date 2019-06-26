@@ -165,6 +165,18 @@ module Dry
           Maybe.coerce(self.or(*args, &block))
         end
 
+        # Returns result of applying second function to nil.
+        #
+        # @example
+        #   Dry::Monads.None.either(-> x { x + 1 }, -> { 3 }) # => 3
+        #
+        # @param f [#call] Ignored
+        # @param g [#call] Function to call
+        # @return [Any] Return value of `g`
+        def either(_f, g)
+          g.(nil)
+        end
+
         # @return [String]
         def to_s
           'None'

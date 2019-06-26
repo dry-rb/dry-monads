@@ -204,6 +204,18 @@ module Dry
         def ===(other)
           Error === other && exception === other.exception
         end
+
+        # Returns result of applying second function to the exception.
+        #
+        # @example
+        #   Try(ZeroDivisionError) { 1 / 0 }.either(-> x { x + 1 }, -> e { "e: #{e}" }) # => "e: divided by 0"
+        #
+        # @param f [#call] Ignored
+        # @param g [#call] Function to call
+        # @return [Any] Return value of `g`
+        def either(_f, g)
+          g.(exception)
+        end
       end
 
       # A module that can be included for easier access to Try monads.
