@@ -121,7 +121,9 @@ module Dry
               next if method.equal?(:singleton_method_added)
               Do.wrap_method(wrapper, method)
             end
-            object.singleton_methods.each { |m| Do.wrap_method(wrapper, m) }
+            object.singleton_class.instance_methods(false).each do |m|
+              Do.wrap_method(wrapper, m)
+            end
           end
         end
 
