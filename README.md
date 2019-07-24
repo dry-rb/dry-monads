@@ -1,6 +1,6 @@
 [gitter]: https://gitter.im/dry-rb/chat
 [gem]: https://rubygems.org/gems/dry-monads
-[travis]: https://travis-ci.org/dry-rb/dry-monads
+[travis]: https://travis-ci.com/dry-rb/dry-monads
 [code_climate]: https://codeclimate.com/github/dry-rb/dry-monads
 [inch]: http://inch-ci.org/github/dry-rb/dry-monads
 [chat]: https://dry-rb.zulipchat.com
@@ -37,7 +37,7 @@ $ gem install dry-monads
 
 ## Links
 
-* [Documentation](http://dry-rb.org/gems/dry-monads)
+- [Documentation](http://dry-rb.org/gems/dry-monads)
 
 ## Development
 
