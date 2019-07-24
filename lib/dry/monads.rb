@@ -47,7 +47,7 @@ module Dry
       @mixins.fetch_or_store(monads.hash) do
         monads.each { |m| load_monad(m) }
         mixins = monads.map { |m| registry.fetch(m) }
-        Module.new { include(*mixins) }.freeze
+        ::Module.new { include(*mixins) }.freeze
       end
     end
   end

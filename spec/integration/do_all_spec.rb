@@ -78,6 +78,66 @@ RSpec.describe(Dry::Monads::Do::All) do
         expect(child.new.call).to eql(Success('success'))
       end
     end
+
+    context 'class level' do
+      context 'mixin then def' do
+        let(:klass) do
+          Class.new do
+            extend result_mixin
+            extend Dry::Monads::Do::All
+
+            def self.call
+              result = yield Success(:success)
+
+              Success(result.to_s)
+            end
+          end
+        end
+
+        it 'works' do
+          expect(klass.()).to eql(Success('success'))
+        end
+      end
+
+      context 'def then mixin' do
+        let(:klass) do
+          Class.new do
+            extend result_mixin
+
+            def self.call
+              result = yield Success(:success)
+
+              Success(result.to_s)
+            end
+
+            extend Dry::Monads::Do::All
+          end
+        end
+
+        it 'works' do
+          expect(klass.()).to eql(Success('success'))
+        end
+      end
+
+      context 'generated mixin' do
+        let(:klass) do
+          Class.new do
+            extend result_mixin
+            extend Dry::Monads[:do]
+
+            def self.call
+              result = yield Success(:success)
+
+              Success(result.to_s)
+            end
+          end
+        end
+
+        it 'works' do
+          expect(klass.()).to eql(Success('success'))
+        end
+      end
+    end
   end
 
   context 'Do' do

@@ -95,15 +95,39 @@ module Dry
           end
         end
 
-        # @private
+        # @api private
         def self.included(base)
           super
 
-          wrappers = Hash.new { |h, k| h[k] = Module.new }
+          wrappers = ::Hash.new { |h, k| h[k] = ::Module.new }
           tracker = MethodTracker.new(wrappers)
           base.extend(tracker)
           base.instance_methods(false).each { |m| tracker.wrap_method(base, m) }
+
+          base.extend(InstanceMixin) unless base.is_a?(::Class)
         end
+
+        # @api private
+        module InstanceMixin
+          # @api private
+          def extended(object)
+            super
+
+            wrapper = ::Module.new
+            object.singleton_class.prepend(wrapper)
+            object.define_singleton_method(:singleton_method_added) do |method|
+              super(method)
+
+              next if method.equal?(:singleton_method_added)
+              Do.wrap_method(wrapper, method)
+            end
+            object.singleton_class.instance_methods(false).each do |m|
+              Do.wrap_method(wrapper, m)
+            end
+          end
+        end
+
+        extend InstanceMixin
       end
     end
 
