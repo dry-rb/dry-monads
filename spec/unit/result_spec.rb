@@ -37,6 +37,12 @@ RSpec.describe(Dry::Monads::Result) do
       expect(subject.inspect).to eql('Success("foo")')
     end
 
+    describe '.[]' do
+      it 'builds a Success with an array' do
+        expect(described_class[:found, 1]).to eql(success[[:found, 1]])
+      end
+    end
+
     describe '#bind' do
       it 'accepts a proc and does not lift the result' do
         expect(subject.bind(upcase)).to eql('FOO')
@@ -332,6 +338,12 @@ RSpec.describe(Dry::Monads::Result) do
 
     it 'has custom inspection' do
       expect(subject.inspect).to eql('Failure("bar")')
+    end
+
+    describe '.[]' do
+      it 'builds a Failure with an array' do
+        expect(described_class[:not_found, :but_tried]).to eql(failure[[:not_found, :but_tried]])
+      end
     end
 
     describe '#bind' do

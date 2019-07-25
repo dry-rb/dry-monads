@@ -66,6 +66,20 @@ module Dry
         include RightBiased::Right
         include Dry::Equalizer(:value!)
 
+        # Shortcut for Success([...])
+        #
+        #  @example
+        #    include Dry::Monads[:result]
+        #
+        #    def call
+        #      Success[200, {}, ['ok']] # => Success([200, {}, ['ok']])
+        #    end
+        #
+        # @api public
+        def self.[](*value)
+          new(value)
+        end
+
         alias_method :success, :value!
 
         # @param value [Object] a value of a successful operation
@@ -137,6 +151,20 @@ module Dry
         include Dry::Equalizer(:failure)
 
         singleton_class.send(:alias_method, :call, :new)
+
+        # Shortcut for Failure([...])
+        #
+        #  @example
+        #    include Dry::Monads[:result]
+        #
+        #    def call
+        #      Failure[:error, :not_found] # => Failure([:error, :not_found])
+        #    end
+        #
+        # @api public
+        def self.[](*value)
+          new(value, RightBiased::Left.trace_caller)
+        end
 
         # Returns a constructor proc
         #

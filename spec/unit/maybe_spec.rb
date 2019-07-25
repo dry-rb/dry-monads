@@ -59,6 +59,12 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
+    describe '.[]' do
+      it 'builds a Some with an array' do
+        expect(described_class[1, 2]).to eql(some[[1, 2]])
+      end
+    end
+
     describe '#bind' do
       it 'accepts a proc and does not lift the result' do
         expect(subject.bind(upcase)).to eql('FOO')
