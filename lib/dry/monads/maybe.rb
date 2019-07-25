@@ -138,6 +138,16 @@ module Dry
         @instance = new.freeze
         singleton_class.send(:attr_reader, :instance)
 
+        # @api private
+        def self.method_missing(m, *)
+          if (instance.methods(true) - methods(true)).include?(m)
+            raise ConstructorNotAppliedError.new(m, :None)
+          else
+            super
+          end
+        end
+        private_class_method :method_missing
+
         # Line where the value was constructed
         #
         # @return [String]

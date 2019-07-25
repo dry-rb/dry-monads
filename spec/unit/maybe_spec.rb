@@ -285,6 +285,23 @@ RSpec.describe(Dry::Monads::Maybe) do
       expect(subject.inspect).to eql('None')
     end
 
+    describe '.missing_method' do
+      it 'shows a friendly error messsage if an instance method is called' do
+        expect { described_class.fmap }.to raise_error(
+          Dry::Monads::ConstructorNotAppliedError,
+          /None\(\)/
+        )
+      end
+
+      it 'throws NoMethodError on everything else' do
+        begin
+          described_class.garbage
+        rescue => error
+          expect(error.class).to be(NoMethodError)
+        end
+      end
+    end
+
     describe '#initialize' do
       it 'traces the caller' do
         expect(subject.trace).to include("spec/unit/maybe_spec.rb")
