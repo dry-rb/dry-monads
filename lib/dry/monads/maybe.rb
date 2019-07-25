@@ -89,6 +89,20 @@ module Dry
         include Dry::Equalizer(:value!)
         include RightBiased::Right
 
+        # Shortcut for Some([...])
+        #
+        #  @example
+        #    include Dry::Monads[:maybe]
+        #
+        #    def call
+        #      Some[200, {}, ['ok']] # => Some([200, {}, ['ok']])
+        #    end
+        #
+        # @api public
+        def self.[](*value)
+          new(value)
+        end
+
         def initialize(value = Undefined)
           raise ArgumentError, 'nil cannot be some' if value.nil?
           @value = Undefined.default(value, Unit)
