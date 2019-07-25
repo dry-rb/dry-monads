@@ -13,5 +13,15 @@ module Dry
         super("Cannot create Failure from #{ failure.inspect }, it doesn't meet the constraints")
       end
     end
+
+    # Improper use of None
+    class ConstructorNotAppliedError < NoMethodError
+      def initialize(method_name, constructor_name)
+        super(
+          "For calling .#{method_name} on #{constructor_name}() build a value "\
+          "by appending parens: #{constructor_name}()"
+        )
+      end
+    end
   end
 end
