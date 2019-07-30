@@ -503,4 +503,42 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
   end
+
+  describe maybe::Hash do
+    let(:hash) { described_class }
+
+    describe '.all' do
+      it 'traverses all values' do
+        expect(hash.all(foo: some['123'], bar: some['234'])).to eql(
+          some[foo: '123', bar: '234']
+        )
+      end
+
+      it 'returns None if any value is None' do
+        expect(hash.all(foo: none, bar: some['234'])).to eql(none)
+        expect(hash.all(foo: some['123'], bar: none)).to eql(none)
+      end
+
+      it 'returns Some({}) for an empty hash' do
+        expect(hash.all({})).to eql(some[{}])
+      end
+    end
+
+    describe '.filter' do
+      it 'keeps some values and unwraps them' do
+        expect(hash.filter(foo: some['123'], bar: some['234'])).to eql(
+          foo: '123', bar: '234'
+        )
+      end
+
+      it 'skips none values' do
+        expect(hash.filter(foo: none, bar: some['234'])).to eql(bar: '234')
+        expect(hash.filter(foo: some['123'], bar: none)).to eql(foo: '123')
+      end
+
+      it 'returns {} for an empty hash' do
+        expect(hash.filter({})).to eql({})
+      end
+    end
+  end
 end
