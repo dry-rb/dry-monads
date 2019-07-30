@@ -247,6 +247,47 @@ module Dry
 
         include Constructors
       end
+
+      module Hash
+        # Traverses a hash with maybe values. If any value is None then None is returned
+        #
+        # @example
+        #   Maybe::Hash.all(foo: Some(1), bar: Some(2)) # => Some(foo: 1, bar: 2)
+        #   Maybe::Hash.all(foo: Some(1), bar: None())  # => None()
+        #   Maybe::Hash.all(foo: None(), bar: Some(2))  # => None()
+        #
+        # @param hash [::Hash<Object,Maybe>]
+        # @return [Maybe<::Hash>]
+        #
+        def self.all(hash, trace = RightBiased::Left.trace_caller)
+          result = hash.each_with_object({}) do |(key, value), output|
+            if value.some?
+              output[key] = value.value!
+            else
+              return None.new(trace)
+            end
+          end
+
+          Some.new(result)
+        end
+
+        # Traverses a hash with maybe values. Some values are unwrapped, keys with
+        # None values are removed
+        #
+        # @example
+        #   Maybe::Hash.filter(foo: Some(1), bar: Some(2)) # => Some(foo: 1, bar: 2)
+        #   Maybe::Hash.filter(foo: Some(1), bar: None())  # => None()
+        #   Maybe::Hash.filter(foo: None(), bar: Some(2))  # => None()
+        #
+        # @param hash [::Hash<Object,Maybe>]
+        # @return [::Hash]
+        #
+        def self.filter(hash)
+          hash.each_with_object({}) do |(key, value), output|
+            output[key] = value.value! if value.some?
+          end
+        end
+      end
     end
 
     extend Maybe::Mixin::Constructors
