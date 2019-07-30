@@ -55,6 +55,30 @@ module Dry
             new([value], type)
           end
         end
+
+        # Iteratively builds a new list from a block returning Maybe values
+        #
+        # @see https://hackage.haskell.org/package/base-4.12.0.0/docs/Data-List.html#g:9
+        #
+        # @param state [Object.new] Initial state
+        # @param type [#pure] Type of list element
+        # @return [List]
+        def unfold(state, type = nil)
+          xs = []
+
+          loop do
+            m = yield(state)
+
+            if m.some?
+              state, x = m.value!
+              xs << x
+            else
+              break
+            end
+          end
+
+          new(xs, type)
+        end
       end
 
       extend Dry::Core::Deprecations[:'dry-monads']
