@@ -42,6 +42,29 @@ RSpec.describe(Dry::Monads::List) do
     end
   end
 
+  describe '.unfold' do
+    it 'builds a list' do
+      res = list.unfold(0) do |x|
+        if x > 5
+          none
+        else
+          some[[x + 1, 2**x]]
+        end
+      end
+
+      expect(res).to eql(list[1, 2, 4, 8, 16, 32])
+    end
+
+    it 'returns an empty list' do
+      expect(list.unfold(Object.new) { none }).to be_empty
+    end
+
+    it 'accepts type' do
+      typed = list.unfold(Object.new, result) { none }
+      expect(typed.type).to be(result)
+    end
+  end
+
   describe '#inspect' do
     it 'dumps list to a string' do
       expect(subject.inspect).to eql('List[1, 2, 3]')
