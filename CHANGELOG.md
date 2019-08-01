@@ -1,3 +1,76 @@
+# v1.3.0 unreleased
+
+## BREAKING CHANGES
+
+* Support for Ruby 2.3 was dropped.
+
+## Added
+
+* `Result#either` (waiting-for-dev)
+  ```ruby
+  Success(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 2
+  Failure(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 3
+  ```
+* `Maybe#to_result`, it requires a block or value that will be passed to `Failure` in the case of `None`  (SpyMachine + flash-gordon)
+  ```ruby
+  Some(3).to_result(:no_value) # => Success(3)
+  None().to_result { :no_value } # => Failure(:no_value)
+  ```
+* Do notation can be used with `extend`. This simplifies usage in class methods and in other "complicated" cases (gogiel + flash-gordon)
+
+  ```ruby
+  class CreateUser
+    extend Dry::Monads::Do::Mixin
+    extend Dry::Monads[:result]
+
+    def self.run(params)
+      self.call do
+        values = bind Validator.validate(params)
+        user = bind UserRepository.create(values)
+
+        Success(user)
+      end
+    end
+  end
+  ```
+  
+  Or you can bind values directly:
+  ```ruby
+  ma = Dry::Monads.Success(1)
+  mb = Dry::Monads.Success(2)
+  
+  Dry::Monads::Do.() do
+    a = Dry::Monads::Do.bind(ma)
+    b = Dry::Monads::Do.bind(mb)
+    
+    Dry::Monads.Success(a + b)
+  end
+  ```
+* `{Some,Success,Failure}#[]` shortcuts for building arrays wrapped within monadic value (flash-gordon)
+  ```ruby
+  Success[1, 2] # => Success([1, 2]) 
+  ```
+* Experimental support for pattern matching! :tada: (flash-gordon)
+  ```ruby
+  case value
+  in Failure(_) then :failure
+  in Success(10) then :ten
+  in Success(100..500 => code) then code
+  in Success() then :empty
+  in Success(:code, x) then x
+  in Success[:status, x] then x
+  in Success({ status: x }) then x
+  in Success({ code: 200..300 => x }) then x
+  end
+  ```
+  Read more about pattern matching in Ruby: 
+  - https://medium.com/@baweaver/ruby-2-7-pattern-matching-destructuring-on-point-90f56aaf7b4e
+  - https://bugs.ruby-lang.org/issues/14912
+  
+  Keep in mind this feature is experimental and can be changed by 2.7 release. But it rocks already!
+  
+[Compare v1.2.0...master](https://github.com/dry-rb/dry-monads/compare/v1.2.0...master)
+
 # v1.2.0 2019-01-12
 
 ## BREAKING CHANGES
