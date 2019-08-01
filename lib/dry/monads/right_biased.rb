@@ -186,6 +186,25 @@ module Dry
           end
         end
 
+        # Pattern matching
+        #
+        # @example
+        #   case Success(x)
+        #   in Success(Integer) then ...
+        #   in Success(2..100) then ...
+        #   in Success(2..200 => code) then ...
+        #   end
+        # @api private
+        def deconstruct
+          if Unit.equal?(@value)
+            []
+          elsif @value.is_a?(::Array)
+            @value
+          else
+            [@value]
+          end
+        end
+
         private
 
         # @api private
@@ -302,6 +321,27 @@ module Dry
         # @return [RightBiased::Left]
         def and(_)
           self
+        end
+
+        # Pattern matching
+        #
+        # @example
+        #   case Success(x)
+        #   in Success(Integer) then ...
+        #   in Success(2..100) then ...
+        #   in Success(2..200 => code) then ...
+        #   in Failure(_) then ...
+        #   end
+        #
+        # @api private
+        def deconstruct
+          if Unit.equal?(@value)
+            []
+          elsif @value.is_a?(::Array)
+            @value
+          else
+            [@value]
+          end
         end
       end
     end

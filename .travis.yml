@@ -3,7 +3,7 @@ dist: trusty
 cache: bundler
 bundler_args: --without benchmarks docs
 script:
-  - bundle exec rake spec
+  - bundle exec rspec spec $RSPEC_OPTS
 before_install:
   - gem update --system
   - gem install bundler
@@ -18,7 +18,11 @@ env:
   global:
     - JRUBY_OPTS='--dev -J-Xmx1024M'
     - COVERAGE=true
+    - RSPEC_OPTS='--exclude-pattern spec/integration/pattern_matching_spec.rb'
 matrix:
+  include:
+    - rvm: 2.7
+      env: "RSPEC_OPTS=''"
   allow_failures:
     - rvm: ruby-head
 

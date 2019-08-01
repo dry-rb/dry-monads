@@ -19,6 +19,7 @@ end
 
 require 'warning'
 Warning.ignore(/rspec\/core/)
+Warning.ignore(/Pattern matching/)
 
 begin
   require 'pry'

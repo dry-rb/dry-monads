@@ -134,6 +134,7 @@ module Dry
       # @api public
       class None < Maybe
         include RightBiased::Left
+        include Core::Constants
 
         @instance = new.freeze
         singleton_class.send(:attr_reader, :instance)
@@ -204,6 +205,20 @@ module Dry
         # @private
         def hash
           None.instance.object_id
+        end
+
+        # Pattern matching
+        #
+        # @example
+        #   case Some(:foo)
+        #   in Some(Integer) then ...
+        #   in Some(:bar) then ...
+        #   in None() then ...
+        #   end
+        #
+        # @api private
+        def deconstruct
+          EMPTY_ARRAY
         end
       end
 

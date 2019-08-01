@@ -365,6 +365,20 @@ module Dry
         end
       end
 
+      # Pattern matching
+      #
+      # @example
+      #   case List[1, 2, 3]
+      #   in List[1, 2, x] then ...
+      #   in List[Integer, _, _] then ...
+      #   in List[0..2, _, _] then ...
+      #   end
+      #
+      # @api private
+      def deconstruct
+        value
+      end
+
       private
 
       def coerce(other)
