@@ -24,7 +24,8 @@ module Dry::Monads
         end
       end
 
-      # @api private
+      private
+
       def included(base)
         super
 

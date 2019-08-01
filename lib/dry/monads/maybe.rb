@@ -263,6 +263,7 @@ module Dry
         include Constructors
       end
 
+      # Utilities for working with hashes storing Maybe values
       module Hash
         # Traverses a hash with maybe values. If any value is None then None is returned
         #

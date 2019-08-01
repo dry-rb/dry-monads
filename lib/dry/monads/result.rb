@@ -123,9 +123,9 @@ module Dry
         #   Dry::Monads.Success(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 2
         #
         # @param f [#call] Function to apply
-        # @param g [#call] Ignored
+        # @param _ [#call] Ignored
         # @return [Any] Return value of `f`
-        def either(f, _g)
+        def either(f, _)
           f.(success)
         end
 
@@ -271,10 +271,10 @@ module Dry
         # @example
         #   Dry::Monads.Failure(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 3
         #
-        # @param f [#call] Ignored
+        # @param _ [#call] Ignored
         # @param g [#call] Function to call
         # @return [Any] Return value of `g`
-        def either(_f, g)
+        def either(_, g)
           g.(failure)
         end
       end
@@ -373,7 +373,12 @@ module Dry
 
     class Maybe
       class Some < Maybe
-        def to_result(fail = Undefined)
+        # Converts to Sucess(value!)
+        #
+        # @param fail [#call] Fallback value
+        # @param block [Proc] Fallback block
+        # @return [Success<Any>]
+        def to_result(fail = Undefined, &block)
           if Undefined.equal?(fail) && !block_given?
             raise ArgumentError, 'Maybe#to_result must be called with a failure case'
           end
@@ -382,6 +387,11 @@ module Dry
       end
 
       class None < Maybe
+        # Converts to Failure(fallback_value)
+        #
+        # @param fail [#call] Fallback value
+        # @param block [Proc] Fallback block
+        # @return [Failure<Any>]
         def to_result(fail = Undefined, &block)
           if Undefined.equal?(fail) && !block_given?
             raise ArgumentError, 'Maybe#to_result must be called with a failure case'

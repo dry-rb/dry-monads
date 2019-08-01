@@ -20,7 +20,7 @@ module Dry
       attr_reader :exception
 
       class << self
-        extend Dry::Core::Deprecations[:'dry-monads']
+        extend Core::Deprecations[:'dry-monads']
 
         # Invokes a callable and if successful stores the result in the
         # {Try::Value} type, but if one of the specified exceptions was raised it stores
@@ -101,7 +101,7 @@ module Dry
         include Dry::Equalizer(:value!, :catchable)
         include RightBiased::Right
 
-        # @private
+        # @return [Array<Exception>] List of exceptions to rescue
         attr_reader :catchable
 
         # @param exceptions [Array<Exception>] list of exceptions to be rescued
@@ -225,6 +225,7 @@ module Dry
         # @see Dry::Monads::Try
         Try = Try
 
+        # @private
         module Constructors
           # A convenience wrapper for {Monads::Try.run}.
           # If no exceptions are provided it falls back to StandardError.
@@ -234,7 +235,7 @@ module Dry
           # @param exceptions [Array<Exception>]
           # @return [Try]
           def Try(*exceptions, &f)
-            catchable = exceptions.empty? ? Try::DEFAULT_EXCEPTIONS : exceptions.flatten
+            catchable = exceptions.empty? ? DEFAULT_EXCEPTIONS : exceptions.flatten
             Try.run(catchable, f)
           end
         end

@@ -5,6 +5,7 @@ module Dry
   #
   # @api public
   module Monads
+    # @private
     def self.included(base)
       if all_loaded?
         base.include(*constructors)
