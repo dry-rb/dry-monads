@@ -112,6 +112,7 @@ RSpec.describe 'pattern matching' do
           in List[Integer => x] then x
           in List[Time] | List[Date] then :date_or_time
           in List[String | Symbol] then :string_or_symbol
+          in List[*, 5] then 5
           end
         end
       end
@@ -126,6 +127,7 @@ RSpec.describe 'pattern matching' do
       expect(match.(list[Date.today])).to eql(:date_or_time)
       expect(match.(list[:sym])).to eql(:string_or_symbol)
       expect(match.(list['sym'])).to eql(:string_or_symbol)
+      expect(match.(list[1, 2, 3, 4, 5])).to eql(5)
     end
   end
 end
