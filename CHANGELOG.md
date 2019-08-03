@@ -1,4 +1,4 @@
-# v1.3.0 unreleased
+# v1.3.0 2019-08-03
 
 ## BREAKING CHANGES
 
@@ -11,10 +11,11 @@
   Success(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 2
   Failure(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 3
   ```
-* `Maybe#to_result`, it requires a block or value that will be passed to `Failure` in the case of `None`  (SpyMachine + flash-gordon)
+* `Maybe#to_result` (SpyMachine + flash-gordon)
   ```ruby
-  Some(3).to_result(:no_value) # => Success(3)
+  Some(3).to_result(:no_value)   # => Success(3)
   None().to_result { :no_value } # => Failure(:no_value)
+  None().to_result               # => Failure()
   ```
 * Do notation can be used with `extend`. This simplifies usage in class methods and in other "complicated" cases (gogiel + flash-gordon)
 
@@ -50,6 +51,17 @@
   ```ruby
   Success[1, 2] # => Success([1, 2]) 
   ```
+* `List.unfold` yields a block returning `Maybe<Any>`. If the block returns `Some(a)` `a` is appended to the output list. Returning `None` halts the unfloding (flash-gordon)
+  ```ruby
+  List.unfold(0) do |x|
+    if x > 5
+      None()
+    else
+      Some[x + 1, 2**x]
+    end
+  end # => List[1, 2, 3, 4, 5]
+  ```
+  
 * Experimental support for pattern matching! :tada: (flash-gordon)
   ```ruby
   case value
@@ -69,7 +81,7 @@
   
   Keep in mind this feature is experimental and can be changed by 2.7 release. But it rocks already!
   
-[Compare v1.2.0...master](https://github.com/dry-rb/dry-monads/compare/v1.2.0...master)
+[Compare v1.2.0...master](https://github.com/dry-rb/dry-monads/compare/v1.2.0...v1.3.0)
 
 # v1.2.0 2019-01-12
 
