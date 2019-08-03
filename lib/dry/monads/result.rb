@@ -131,7 +131,11 @@ module Dry
 
         # @return [String]
         def to_s
-          "Success(#{ @value.inspect })"
+          if Unit.equal?(@value)
+            'Success()'
+          else
+            "Success(#{@value.inspect})"
+          end
         end
         alias_method :inspect, :to_s
 
@@ -240,7 +244,11 @@ module Dry
 
         # @return [String]
         def to_s
-          "Failure(#{ @value.inspect })"
+          if Unit.equal?(@value)
+            'Failure()'
+          else
+            "Failure(#{@value.inspect})"
+          end
         end
         alias_method :inspect, :to_s
 

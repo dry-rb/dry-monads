@@ -10,6 +10,7 @@ RSpec.describe(Dry::Monads::Try) do
   value = try::Value.method(:new)
   div_value = -> v { value[[ZeroDivisionError], v] }
   error = try::Error.method(:new)
+  unit = Dry::Monads::Unit
 
   division_error = 1 / 0 rescue $ERROR_INFO
   no_method_error = no_method rescue $ERROR_INFO
@@ -54,6 +55,7 @@ RSpec.describe(Dry::Monads::Try) do
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Try::Value("foo")')
+      expect(value[[], unit].to_s).to eql('Try::Value()')
     end
 
     it 'has custom inspection' do

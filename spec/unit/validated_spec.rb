@@ -4,6 +4,7 @@ RSpec.describe(Dry::Monads::Validated) do
   invalid = described_class::Invalid.method(:new)
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
+  unit = Dry::Monads::Unit
 
   result = Dry::Monads::Result
   success = result::Success.method(:new)
@@ -33,6 +34,7 @@ RSpec.describe(Dry::Monads::Validated) do
     describe '#inspect' do
       it 'returns the string representation' do
         expect(subject.inspect).to eql("Valid(1)")
+        expect(valid[unit].inspect).to eql("Valid()")
       end
     end
 

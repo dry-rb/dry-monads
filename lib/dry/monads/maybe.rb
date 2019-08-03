@@ -125,7 +125,11 @@ module Dry
 
         # @return [String]
         def to_s
-          "Some(#{ @value.inspect })"
+          if Unit.equal?(@value)
+            'Some()'
+          else
+            "Some(#{@value.inspect})"
+          end
         end
         alias_method :inspect, :to_s
       end
