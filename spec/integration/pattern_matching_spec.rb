@@ -13,6 +13,7 @@ RSpec.describe 'pattern matching' do
             case value
             in Failure(_) then :failure
             in Success(10) then :ten
+            in Success(Integer => x) if x.equal?(50) then :fifty
             in Success(100..500 => code) then code
             in Success() then :empty
             in Success(:code, x) then x
@@ -24,6 +25,7 @@ RSpec.describe 'pattern matching' do
         end
 
         expect(match.(Success(10))).to eql(:ten)
+        expect(match.(Success(50))).to eql(:fifty)
         expect(match.(Success())).to eql(:empty)
         expect(match.(Success(400))).to eql(400)
         expect(match.(Success([:code, 600]))).to eql(600)
