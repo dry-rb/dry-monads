@@ -31,6 +31,7 @@ RSpec.describe(Dry::Monads::Result) do
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Success("foo")')
+      expect(success[unit].to_s).to eql('Success()')
     end
 
     it 'has custom inspection' do
@@ -334,6 +335,7 @@ RSpec.describe(Dry::Monads::Result) do
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Failure("bar")')
+      expect(failure[unit].to_s).to eql('Failure()')
     end
 
     it 'has custom inspection' do

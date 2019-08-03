@@ -7,6 +7,7 @@ RSpec.describe(Dry::Monads::Task) do
 
   maybe = Dry::Monads::Maybe
   some = maybe::Some.method(:new)
+  unit = Dry::Monads::Unit
 
   task = described_class
 
@@ -121,6 +122,10 @@ RSpec.describe(Dry::Monads::Task) do
       1 / 0 rescue err = $!
       t = task { raise err }.tap(&:to_result)
       expect(t.inspect).to eql("Task(error=#{ err.inspect })")
+    end
+
+    it 'shows empty parens for unit' do
+      expect(task { unit }.tap(&:value!).to_s).to eql('Task(value=())')
     end
   end
 

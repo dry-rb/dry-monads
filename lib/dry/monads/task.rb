@@ -128,14 +128,18 @@ module Dry
       def to_s
         state = case promise.state
                 when :fulfilled
-                  "value=#{ value!.inspect }"
+                  if Unit.equal?(value!)
+                    'value=()'
+                  else
+                    "value=#{value!.inspect}"
+                  end
                 when :rejected
                   "error=#{ promise.reason.inspect }"
                 else
                   '?'
                 end
 
-        "Task(#{ state })"
+        "Task(#{state})"
       end
       alias_method :inspect, :to_s
 

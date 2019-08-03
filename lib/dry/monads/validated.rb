@@ -120,7 +120,11 @@ module Dry
 
         # @return [String]
         def inspect
-          "Valid(#{ value!.inspect })"
+          if Unit.equal?(@value)
+            "Valid()"
+          else
+            "Valid(#{@value.inspect})"
+          end
         end
         alias_method :to_s, :inspect
 

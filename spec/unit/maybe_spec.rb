@@ -37,6 +37,7 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     it 'dumps to string' do
       expect(subject.to_s).to eql('Some("foo")')
+      expect(some[unit].to_s).to eql('Some()')
     end
 
     it 'has custom inspection' do
