@@ -81,7 +81,7 @@
   
   Keep in mind this feature is experimental and can be changed by 2.7 release. But it rocks already!
   
-[Compare v1.2.0...master](https://github.com/dry-rb/dry-monads/compare/v1.2.0...v1.3.0)
+[Compare v1.2.0...v1.3.0](https://github.com/dry-rb/dry-monads/compare/v1.2.0...v1.3.0)
 
 # v1.2.0 2019-01-12
 
