@@ -119,8 +119,9 @@ module Dry
         # @return [Maybe::Some, Maybe::None] Wrapped result, i.e. nil will be mapped to None,
         #                                    other values will be wrapped with Some
         def fmap(*args, &block)
-          self.class.coerce(bind(*args, &block))
+          Maybe.coerce(bind(*args, &block))
         end
+        alias_method :maybe, :fmap
 
         # @return [String]
         def to_s
