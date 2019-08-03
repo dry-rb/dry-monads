@@ -378,10 +378,7 @@ module Dry
         # @param fail [#call] Fallback value
         # @param block [Proc] Fallback block
         # @return [Success<Any>]
-        def to_result(fail = Undefined, &block)
-          if Undefined.equal?(fail) && !block_given?
-            raise ArgumentError, 'Maybe#to_result must be called with a failure case'
-          end
+        def to_result(fail = Unit, &block)
           Result::Success.new(@value)
         end
       end
@@ -392,11 +389,12 @@ module Dry
         # @param fail [#call] Fallback value
         # @param block [Proc] Fallback block
         # @return [Failure<Any>]
-        def to_result(fail = Undefined, &block)
-          if Undefined.equal?(fail) && !block_given?
-            raise ArgumentError, 'Maybe#to_result must be called with a failure case'
+        def to_result(fail = Unit, &block)
+          if block_given?
+            Result::Failure.new(yield)
+          else
+            Result::Failure.new(fail)
           end
-          Result::Failure.new(Undefined.default(fail, &block))
         end
       end
     end

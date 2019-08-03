@@ -192,10 +192,6 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(subject.to_result('baz')).to eql(success['foo'])
         expect(subject.to_result { 'baz' }).to eql(success['foo'])
       end
-
-      it 'requires fallback argument' do
-        expect { subject.to_result }.to raise_error(ArgumentError)
-      end
     end
 
     describe '#tee' do
@@ -412,10 +408,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       it 'transforms self to Result::Failure' do
         expect(subject.to_result('bar')).to eql(failure['bar'])
         expect(subject.to_result { 'bar' }).to eql(failure['bar'])
-      end
-
-      it 'requires fallback argument' do
-        expect { subject.to_result }.to raise_error(ArgumentError)
+        expect(subject.to_result).to eql(failure[unit])
       end
     end
 
