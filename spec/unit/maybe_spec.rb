@@ -345,6 +345,12 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
+    describe '#maybe' do
+      it 'is an alias for fmap' do
+        expect(subject.maybe { fail }).to be(subject)
+      end
+    end
+
     describe '#or' do
       it 'accepts a value as an alternative' do
         expect(subject.or('baz')).to eql('baz')

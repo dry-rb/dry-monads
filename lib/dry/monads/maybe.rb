@@ -163,6 +163,10 @@ module Dry
           @trace = trace
         end
 
+        # @!method maybe(*args, &block)
+        #   Alias of fmap, returns self back
+        alias_method :maybe, :fmap
+
         # If a block is given passes internal value to it and returns the result,
         # otherwise simply returns the parameter val.
         #
