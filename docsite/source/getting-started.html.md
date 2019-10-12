@@ -58,7 +58,7 @@ end
 
 ### Using with do notation
 
-A very common case is using the [Result](/gems/dry-monads/1.0/result) monad with [do notation](/gems/dry-monads/1.0/do-notation):
+A very common case is using the [Result](docs::result) monad with [do notation](docs::do-notation):
 
 ```ruby
 require 'dry/monads'
