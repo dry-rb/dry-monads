@@ -104,7 +104,7 @@ find_user(params[:user_id]).bind do |user|
 end
 ```
 
-Finally, since 1.0, dry-monads has support for [`do` notation](/gems/dry-monads/do-notation/) which simplifies this code even more, making it almost regular yet `nil`-safe:
+Finally, since 1.0, dry-monads has support for [`do` notation](docs::do-notation) which simplifies this code even more, making it almost regular yet `nil`-safe:
 
 ```ruby
 user = yield find_user(params[:user_id])
@@ -166,7 +166,7 @@ address = yield find_address(params[:address_id])
 Success(user.update(address_id: address.id))
 ```
 
-The result of this piece of code can be one of `Success(user)`, `Failure(:user_not_found)`, or `Failure(:address_not_found)`. This style of programming called "Railway Oriented Programming" and can check out [dry-transaction](/gems/dry-transaction) and watch a [nice video](https://fsharpforfunandprofit.com/rop/) on the subject. Also, see [dry-matcher](/gems/dry-matcher/) for an example of how to use monads for controlling the flow of code with a result.
+The result of this piece of code can be one of `Success(user)`, `Failure(:user_not_found)`, or `Failure(:address_not_found)`. This style of programming called "Railway Oriented Programming" and can check out [dry-transaction](/gems/dry-transaction) and watch a [nice video](https://fsharpforfunandprofit.com/rop/) on the subject. Also, see [dry-matcher](/gems/dry-matcher) for an example of how to use monads for controlling the flow of code with a result.
 
 ## A word of warning
 
@@ -176,4 +176,4 @@ If you're interested in functional programming in general, consider learning oth
 
 ## Credits
 
-dry-monads is inspired by Josep M. Bach’s [Kleisli](https://github.com/txus/kleisli) gem and its usage by [dry-transaction](http://dry-rb.org/gems/dry-transaction/) and [dry-types](http://dry-rb.org/gems/dry-types/).
+dry-monads is inspired by Josep M. Bach’s [Kleisli](https://github.com/txus/kleisli) gem and its usage by [dry-transaction](/gems/dry-transaction/) and [dry-types](/gems/dry-types/).
