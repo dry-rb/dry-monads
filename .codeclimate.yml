@@ -1,41 +1,15 @@
-engines:
+version: "2"
+
+prepare:
+  fetch:
+  - url: "https://raw.githubusercontent.com/dry-rb/devtools/master/.rubocop.yml"
+    path: ".rubocop.yml"
+
+exclude_patterns:
+  - "benchmarks/"
+  - "examples/"
+  - "spec/"
+
+plugins:
   rubocop:
     enabled: true
-    checks:
-      Rubocop/Style/Documentation:
-        enabled: false
-      Rubocop/Style/StringLiterals:
-        enabled: false
-      Rubocop/Style/MethodName:
-        enabled: false
-      Rubocop/Style/LambdaCall:
-        enabled: false
-      Rubocop/Style/StabbyLambdaParentheses:
-        enabled: false
-      Rubocop/Style/NestedParenthesizedCalls:
-        enabled: false
-      Rubocop/Style/MultilineBlockChain:
-        enabled: false
-      Rubocop/Style/GuardClause:
-        enabled: false
-      Rubocop/Metrics/LineLength:
-        enabled: true
-        max: 110
-      Rubocop/Style/FileName:
-        enabled: true
-        exclude:
-          - 'lib/dry-monads.rb'
-      Rubocop/Lint/Debugger:
-        enabled: true
-        exclude:
-          - 'bin/console'
-      Rubocop/Lint/HandleExceptions:
-        enabled: true
-        exclude:
-          - 'spec/spec_helper.rb'
-ratings:
-  paths:
-    - lib/**/*.rb
-  exclude_paths:
-    - spec/**/*
-    - examples/**/*
