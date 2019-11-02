@@ -43,14 +43,13 @@ module Dry
         # @api public
         def bind(monads)
           monads = Do.coerce_to_monad(Array(monads))
-          unwrapped = monads.map { |result|
+          unwrapped = monads.map do |result|
             monad = result.to_monad
             monad.or { Do.halt(monad) }.value!
-          }
+          end
           monads.size == 1 ? unwrapped[0] : unwrapped
         end
       end
     end
   end
 end
-

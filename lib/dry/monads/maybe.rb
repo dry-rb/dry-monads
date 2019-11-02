@@ -1,11 +1,10 @@
 require 'dry/equalizer'
-require 'dry/core/constants'
 require 'dry/core/deprecations'
 
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
 require 'dry/monads/unit'
-require 'dry/monads/undefined'
+require 'dry/monads/constants'
 
 module Dry
   module Monads
@@ -16,7 +15,7 @@ module Dry
       include Transformer
 
       class << self
-        extend Dry::Core::Deprecations[:'dry-monads']
+        extend Core::Deprecations[:'dry-monads']
 
         # Wraps the given value with into a Maybe object.
         #
@@ -139,7 +138,6 @@ module Dry
       # @api public
       class None < Maybe
         include RightBiased::Left
-        include Core::Constants
 
         @instance = new.freeze
         singleton_class.send(:attr_reader, :instance)

@@ -1,3 +1,4 @@
+require 'dry/core/constants'
 require 'dry/monads/registry'
 
 module Dry

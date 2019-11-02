@@ -56,7 +56,7 @@ module Dry
       #
       module All
         # @private
-        class MethodTracker < Module
+        class MethodTracker < ::Module
           attr_reader :wrappers
 
           def initialize(wrappers)
@@ -80,7 +80,7 @@ module Dry
 
               def included(base)
                 super
-                Dry::Monads::Do::All.included(base)
+                All.included(base)
               end
             end
           end

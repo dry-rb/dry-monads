@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'dry/core/constants'
 
 module Dry
   module Monads
     # @private
-    Undefined = Dry::Core::Constants::Undefined
+    include Core::Constants
   end
 end
