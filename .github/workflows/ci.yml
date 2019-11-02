@@ -1,6 +1,10 @@
 name: ci
 
-on: [push]
+on:
+  push:
+    paths:
+      - lib/**
+      - spec/**
 
 jobs:
   tests-mri:
