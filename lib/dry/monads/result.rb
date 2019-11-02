@@ -1,6 +1,6 @@
 require 'dry/equalizer'
 
-require 'dry/monads/undefined'
+require 'dry/monads/constants'
 require 'dry/monads/right_biased'
 require 'dry/monads/transformer'
 require 'dry/monads/conversion_stubs'

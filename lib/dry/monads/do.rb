@@ -1,5 +1,6 @@
 require 'dry/monads/list'
 require 'dry/monads/do/mixin'
+require 'dry/monads/constants'
 
 module Dry
   module Monads
@@ -130,7 +131,7 @@ module Dry
 
         # @api private
         def halt(result)
-          raise Halt.new(result)
+          raise Halt.new(result), EMPTY_STRING, EMPTY_ARRAY
         end
       end
     end

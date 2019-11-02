@@ -1,5 +1,4 @@
-require 'dry/core/constants'
-
+require 'dry/monads/constants'
 require 'dry/monads/unit'
 require 'dry/monads/curry'
 require 'dry/monads/errors'
@@ -12,8 +11,6 @@ module Dry
       #
       # @api public
       module Right
-        include Dry::Core::Constants
-
         # @private
         def self.included(m)
           super
