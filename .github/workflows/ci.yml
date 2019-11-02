@@ -23,6 +23,13 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: ${{matrix.ruby}}
+      - name: Download test reporter
+        if: "matrix.coverage == 'true'"
+        run: |
+          mkdir -p tmp/
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
+          chmod +x ./tmp/cc-test-reporter
+          ./tmp/cc-test-reporter before-build
       - name: Run all tests
         env:
           COVERAGE: ${{matrix.coverage}}
@@ -34,7 +41,7 @@ jobs:
         if: "matrix.coverage == 'true'"
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
-        run: bundle exec codeclimate-test-reporter
+        run: ./tmp/cc-test-reporter after-build
 
   tests-others:
     runs-on: ubuntu-latest
