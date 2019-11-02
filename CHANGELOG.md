@@ -1,3 +1,20 @@
+# v1.3.2 unreleased
+
+## Added
+
+- Pattern matching syntax was improved by implementing `#deconstruct_keys`. Now curly braces aren't necessary when the wrapped value is a Hash (flash-gordon)
+  ```ruby
+  case result
+  in Success(code: 200...300) then :ok
+  end
+  ```
+  
+## Internal
+
+- Performance of do notation was improved for failing cases (1.2x to 1.3x on synthetic benchmarks) (flash-gordon)
+
+[Compare v1.3.1...master](https://github.com/dry-rb/dry-monads/compare/v1.3.1...master)
+
 # v1.3.1 2019-09-07
 
 ## Fixed
