@@ -28,10 +28,15 @@ jobs:
       - name: Send coverage results
         if: "matrix.coverage == 'true'"
         run: bundle exec codeclimate-test-reporter
-  tests-jruby:
+
+  tests-others:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["jruby:9.2.8", "ruby:rc"]
     container:
-      image: jruby:9.2.8
+      image: ${{matrix.image}}
     steps:
       - uses: actions/checkout@v1
       - name: Install git
