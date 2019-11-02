@@ -27,6 +27,8 @@ jobs:
           bundle exec rake
       - name: Send coverage results
         if: "matrix.coverage == 'true'"
+        env:
+          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
         run: bundle exec codeclimate-test-reporter
 
   tests-others:
