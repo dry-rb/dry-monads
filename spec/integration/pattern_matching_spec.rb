@@ -19,6 +19,7 @@ RSpec.describe 'pattern matching' do
             in Success(:code, x) then x
             in Success[:status, x] then x
             in Success({ status: x }) then x
+            in Success(code: 301 | 302) then :redirect
             in Success({ code: 200..300 => x }) then x
             end
           end
@@ -32,6 +33,10 @@ RSpec.describe 'pattern matching' do
         expect(match.(Success([:status, 600]))).to eql(600)
         expect(match.(Success({ status: 404 }))).to eql(404)
         expect(match.(Success({ code: 204 }))).to eql(204)
+        expect(match.(Success(code: 301))).to eql(:redirect)
+        expect(match.(Success(code: 302))).to eql(:redirect)
+        expect { match.(Success(code: 303)) }.to raise_error(NoMatchingPatternError)
+        expect { match.(Success([:foo])) }.to raise_error(NoMatchingPatternError)
       end
     end
 
@@ -46,6 +51,7 @@ RSpec.describe 'pattern matching' do
             case value
             in Failure[:not_found, reason] then reason
             in Failure(:error) then :nope
+            in Failure(error: code) then code
             in Failure() then :unit
             end
           end
@@ -54,6 +60,7 @@ RSpec.describe 'pattern matching' do
         expect(match.(Failure([:not_found, :no]))).to eql(:no)
         expect(match.(Failure(:error))).to eql(:nope)
         expect(match.(Failure())).to eql(:unit)
+        expect(match.(Failure(error: :bug))).to eql(:bug)
         expect { match.(Failure(3)) }.to raise_error(NoMatchingPatternError)
       end
     end

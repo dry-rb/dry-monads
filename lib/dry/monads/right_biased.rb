@@ -191,6 +191,7 @@ module Dry
         #   in Success(2..100) then ...
         #   in Success(2..200 => code) then ...
         #   end
+        #
         # @api private
         def deconstruct
           if Unit.equal?(@value)
@@ -199,6 +200,25 @@ module Dry
             @value
           else
             [@value]
+          end
+        end
+
+        # Pattern matching hash values
+        #
+        # @example
+        #   case Success(x)
+        #   in Success(code: 200...300) then :ok
+        #   in Success(code: 300...400) then :redirect
+        #   in Success(code: 400...500) then :user_error
+        #   in Success(code: 500...600) then :server_error
+        #   end
+        #
+        # @api private
+        def deconstruct_keys(_)
+          if @value.is_a?(::Hash)
+            @value
+          else
+            EMPTY_HASH
           end
         end
 
@@ -338,6 +358,23 @@ module Dry
             @value
           else
             [@value]
+          end
+        end
+
+        # Pattern matching hash values
+        #
+        # @example
+        #   case Failure(x)
+        #   in Failure(code: 400...500) then :user_error
+        #   in Failure(code: 500...600) then :server_error
+        #   end
+        #
+        # @api private
+        def deconstruct_keys(_)
+          if @value.is_a?(::Hash)
+            @value
+          else
+            EMPTY_HASH
           end
         end
       end
