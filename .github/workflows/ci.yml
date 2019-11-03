@@ -29,7 +29,7 @@ jobs:
           mkdir -p tmp/
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
           chmod +x ./tmp/cc-test-reporter
-          ./tmp/cc-test-reporter --debug before-build
+          ./tmp/cc-test-reporter before-build
       - name: Run all tests
         env:
           COVERAGE: ${{matrix.coverage}}
@@ -47,7 +47,7 @@ jobs:
         run: |
           GIT_BRANCH=`ruby -e "puts ENV['GITHUB_REF'].split('/', 3).last"` \
           GIT_COMMITTED_AT=`ruby -r time -e "puts Time.iso8601(ENV['GIT_COMMITTED_AT']).to_i"` \
-          ./tmp/cc-test-reporter --debug after-build
+          ./tmp/cc-test-reporter after-build
 
   tests-others:
     runs-on: ubuntu-latest
