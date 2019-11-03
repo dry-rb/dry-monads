@@ -41,6 +41,8 @@ jobs:
         if: "matrix.coverage == 'true'"
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+          GIT_COMMIT_SHA: ${{github.sha}}
+          GIT_BRANCH: ${{github.ref}}
         run: ./tmp/cc-test-reporter --debug after-build
 
   tests-others:
