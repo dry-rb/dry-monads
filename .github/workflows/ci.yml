@@ -44,7 +44,10 @@ jobs:
           GIT_COMMIT_SHA: ${{github.sha}}
           GIT_BRANCH: ${{github.ref}}
           GIT_COMMITTED_AT: ${{github.event.head_commit.timestamp}}
-        run: GIT_BRANCH=`ruby -e "puts ENV['GITHUB_REF'].gsub('refs/heads/', '')"` ./tmp/cc-test-reporter --debug after-build
+        run: |
+          GIT_BRANCH=`ruby -e "puts ENV['GITHUB_REF'].split('/', 3).last"` \
+          GIT_COMMITTED_AT=`ruby -r time -e "puts Time.iso8601(ENV['GIT_COMMITTED_AT']).to_i"` \
+          ./tmp/cc-test-reporter --debug after-build
 
   tests-others:
     runs-on: ubuntu-latest
