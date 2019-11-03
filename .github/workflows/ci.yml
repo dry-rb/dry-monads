@@ -29,7 +29,7 @@ jobs:
           mkdir -p tmp/
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
           chmod +x ./tmp/cc-test-reporter
-          ./tmp/cc-test-reporter before-build
+          ./tmp/cc-test-reporter --debug before-build
       - name: Run all tests
         env:
           COVERAGE: ${{matrix.coverage}}
@@ -41,7 +41,7 @@ jobs:
         if: "matrix.coverage == 'true'"
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
-        run: ./tmp/cc-test-reporter after-build
+        run: ./tmp/cc-test-reporter --debug after-build
 
   tests-others:
     runs-on: ubuntu-latest
