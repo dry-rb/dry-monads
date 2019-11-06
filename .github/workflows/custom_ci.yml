@@ -3,9 +3,9 @@ name: ci
 on:
   push:
     paths:
-      - .github/workflows/ci.yml
       - lib/**
       - spec/**
+      - .github/workflows/ci.yml
 
 jobs:
   tests-mri:
