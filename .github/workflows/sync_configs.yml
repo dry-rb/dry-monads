@@ -20,6 +20,7 @@ jobs:
 
           rsync -av tmp/devtools/shared/ .
 
+          [ -e "./github/workflows/custom_ci.yml" ] && rm ./gitfub/workflows/ci.yml
           git config --local user.email "dry-bot@dry-rb.org"
           git config --local user.name "dry-bot"
           git add -A
