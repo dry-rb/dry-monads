@@ -6,6 +6,8 @@ on:
       - .github/workflows/ci.yml
       - lib/**
       - spec/**
+      - Gemfile
+      - "*.gemspec"
 
 jobs:
   tests-mri:
