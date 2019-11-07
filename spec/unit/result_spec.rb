@@ -205,9 +205,9 @@ RSpec.describe(Dry::Monads::Result) do
 
       describe '#bind' do
         it 'passed extra keywords to block along with value' do
-          expr_result = subject.bind(bar: 'bar') do |foo:, bar: |
-            expect(foo).to eql('foo')
-            expect(bar).to eql('bar')
+          expr_result = subject.bind(bar: 'bar') do |values|
+            expect(values.fetch(:foo)).to eql('foo')
+            expect(values.fetch(:bar)).to eql('bar')
             true
           end
 
@@ -226,10 +226,10 @@ RSpec.describe(Dry::Monads::Result) do
 
       describe '#bind' do
         it 'passed extra keywords to block along with value' do
-          expr_result = subject.bind(:baz, quux: 'quux') do |value, baz, quux: |
+          expr_result = subject.bind(:baz, quux: 'quux') do |value, baz, rest|
             expect(value).to eql(subject.value!)
             expect(baz).to eql(:baz)
-            expect(quux).to eql('quux')
+            expect(rest.fetch(:quux)).to eql('quux')
             true
           end
 

@@ -224,9 +224,20 @@ module Dry
 
         private
 
-        # @api private
-        def destructure(*args, **kwargs)
-          [args, kwargs]
+        if RUBY_VERSION >= '2.7'
+          # @api private
+          def destructure(value)
+            if value.is_a?(::Hash)
+              [EMPTY_ARRAY, value]
+            else
+              [[value], EMPTY_HASH]
+            end
+          end
+        else
+          # @api private
+          def destructure(*args, **kwargs)
+            [args, kwargs]
+          end
         end
 
         # @api private
