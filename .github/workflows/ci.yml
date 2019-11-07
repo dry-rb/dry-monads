@@ -39,8 +39,7 @@ jobs:
           COVERAGE: ${{matrix.coverage}}
         run: |
           gem install bundler
-          bundle config set without 'tools docs benchmarks'
-          bundle install --jobs 4 --retry 3
+          bundle install --jobs 4 --retry 3 --without tools docs benchmarks
           bundle exec rake
       - name: Send coverage results
         if: "matrix.coverage == 'true'"
@@ -71,6 +70,5 @@ jobs:
       - name: Run all tests
         run: |
           gem install bundler
-          bundle config set without 'tools docs benchmarks'
-          bundle install --jobs 4 --retry 3 --without tools docs
+          bundle install --jobs 4 --retry 3 --without tools docs benchmarks
           bundle exec rspec
