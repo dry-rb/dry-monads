@@ -122,7 +122,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     context 'keywords' do
-      let(:build_name) { -> (first_name:, last_name:) { "#{ first_name } #{ last_name }" } }
+      let(:build_name) { -> (values) { "#{values.fetch(:first_name)} #{values.fetch(:last_name)}" } }
 
       it 'works' do
         expect(Some(build_name).apply(Some(first_name: 'John', last_name: 'Doe'))).to eql(Some('John Doe'))
@@ -130,7 +130,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     context 'mixed' do
-      let(:build_name) { -> (first_name, last_name:) { "#{ first_name } #{ last_name }" } }
+      let(:build_name) { -> (first_name, rest) { "#{first_name} #{rest.fetch(:last_name)}" } }
 
       it 'works' do
         expect(Some(build_name).apply(Some('John')).apply(Some(last_name: 'Doe'))).to eql(Some('John Doe'))
