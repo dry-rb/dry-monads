@@ -1,4 +1,4 @@
-# v1.3.2 unreleased
+# v1.3.2 2019-11-30
 
 ## Fixed
 
@@ -17,7 +17,7 @@
 
 - Performance of do notation was improved for failing cases (1.2x to 1.3x on synthetic benchmarks) (flash-gordon)
 
-[Compare v1.3.1...master](https://github.com/dry-rb/dry-monads/compare/v1.3.1...master)
+[Compare v1.3.1...v1.3.2](https://github.com/dry-rb/dry-monads/compare/v1.3.1...v1.3.2)
 
 # v1.3.1 2019-09-07
 
