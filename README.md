@@ -1,4 +1,3 @@
-[gitter]: https://gitter.im/dry-rb/chat
 [gem]: https://rubygems.org/gems/dry-monads
 [ci]: https://github.com/dry-rb/dry-monads/actions?query=workflow%3Aci
 [code_climate]: https://codeclimate.com/github/dry-rb/dry-monads
