@@ -131,7 +131,7 @@ module Dry
 
         # @api private
         def halt(result)
-          raise Halt.new(result), EMPTY_STRING, EMPTY_ARRAY
+          raise Halt.new(result), EMPTY_STRING, []
         end
       end
     end
