@@ -1,3 +1,11 @@
+# v1.3.3 2019-12-11
+
+## Fixed
+
+- Incompatibility with Rails. Internal (!) halt exceptions now use mutable backtraces because spring [mutates](https://github.com/rails/spring/blob/ee687859008e947bc905b95121e306e2948d31c9/lib/spring/application.rb#L295-L311) (!) them. For the record, this a bug in Rails (johnmaxwell)
+
+[Compare v1.3.2...v1.3.3](https://github.com/dry-rb/dry-monads/compare/v1.3.2...v1.3.3)
+
 # v1.3.2 2019-11-30
 
 ## Fixed
