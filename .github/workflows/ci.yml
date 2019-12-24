@@ -34,13 +34,14 @@ jobs:
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
           chmod +x ./tmp/cc-test-reporter
           ./tmp/cc-test-reporter before-build
-      - name: Run all tests
-        env:
-          COVERAGE: ${{matrix.coverage}}
+      - name: Bundle install
         run: |
           gem install bundler
           bundle install --jobs 4 --retry 3 --without tools docs benchmarks
-          bundle exec rake
+      - name: Run all tests
+        env:
+          COVERAGE: ${{matrix.coverage}}
+        run: bundle exec rake
       - name: Send coverage results
         if: "matrix.coverage == 'true'"
         env:
@@ -67,8 +68,9 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends git
-      - name: Run all tests
+      - name: Bundle install
         run: |
           gem install bundler
           bundle install --jobs 4 --retry 3 --without tools docs benchmarks
-          bundle exec rspec
+      - name: Run all tests
+        run: bundle exec rake
