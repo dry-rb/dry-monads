@@ -13,7 +13,7 @@ end
 
 require 'warning'
 Warning.ignore(/rspec\/core/)
-Warning.ignore(/Pattern matching/)
+Warning[:experimental] = false if Warning.respond_to?(:[])
 
 begin
   require 'pry'

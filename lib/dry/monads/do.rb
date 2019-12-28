@@ -10,6 +10,8 @@ module Dry
     module Do
       extend Mixin
 
+      DELEGATE = ::RUBY_VERSION < '2.7' ? '*' : '...'
+
       # @api private
       class Halt < StandardError
         # @api private
@@ -103,7 +105,7 @@ module Dry
         # @api private
         def wrap_method(target, method_name)
           target.module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
-            def #{method_name}(*)
+            def #{method_name}(#{DELEGATE})
               if block_given?
                 super
               else
