@@ -1,3 +1,11 @@
+# v1.3.4 2019-12-28
+
+## Fixed
+
+- One more delegation warning happenning in do notation (flash-gordon)
+
+[Compare v1.3.3...v1.3.4](https://github.com/dry-rb/dry-monads/compare/v1.3.3...v1.3.4)
+
 # v1.3.3 2019-12-11
 
 ## Fixed
