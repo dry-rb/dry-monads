@@ -59,7 +59,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: ["jruby:9.2.8", "ruby:rc"]
+        image: ["jruby:9.2.9", "ruby:2.7"]
     container:
       image: ${{matrix.image}}
     steps:
