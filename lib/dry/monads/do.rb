@@ -13,7 +13,7 @@ module Dry
       DELEGATE = ::RUBY_VERSION < '2.7' ? '*' : '...'
 
       # @api private
-      class Halt < StandardError
+      class Halt < Exception
         # @api private
         attr_reader :result
 
