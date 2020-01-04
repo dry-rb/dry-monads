@@ -1,49 +1,29 @@
 [gem]: https://rubygems.org/gems/dry-monads
-[ci]: https://github.com/dry-rb/dry-monads/actions?query=workflow%3Aci
-[code_climate]: https://codeclimate.com/github/dry-rb/dry-monads
-[inch]: http://inch-ci.org/github/dry-rb/dry-monads
+[actions]: https://github.com/dry-rb/dry-monads/actions
+[codacy]: https://www.codacy.com/gh/dry-rb/dry-monads
 [chat]: https://dry-rb.zulipchat.com
+[inchpages]: http://inch-ci.org/github/dry-rb/dry-monads
 
 # dry-monads [![Join the chat at https://dry-rb.zulipchat.com](https://img.shields.io/badge/dry--rb-join%20chat-%23346b7a.svg)][chat]
 
-[![Gem Version](https://img.shields.io/gem/v/dry-monads.svg)][gem]
-[![Build Status](https://github.com/dry-rb/dry-monads/workflows/ci/badge.svg)][ci]
-[![Code Climate](https://api.codeclimate.com/v1/badges/b0ea4d8023d53b7f0f50/maintainability)][code_climate]
-[![Test Coverage](https://api.codeclimate.com/v1/badges/b0ea4d8023d53b7f0f50/test_coverage)][code_climate]
-[![API Documentation Coverage](http://inch-ci.org/github/dry-rb/dry-monads.svg)][inch]
-
-Monads for Ruby.
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'dry-monads'
-```
-
-And then execute:
-
-```sh
-$ bundle
-```
-
-Or install it yourself as:
-
-```sh
-$ gem install dry-monads
-```
+[![Gem Version](https://badge.fury.io/rb/dry-monads.svg)][gem]
+[![CI Status](https://github.com/dry-rb/dry-monads/workflows/ci/badge.svg)][actions]
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/22edf59617be4aef97cfbe4e1c99f1ce)][codacy]
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/22edf59617be4aef97cfbe4e1c99f1ce)][codacy]
+[![Inline docs](http://inch-ci.org/github/dry-rb/dry-monads.svg?branch=master)][inchpages]
 
 ## Links
 
-- [Documentation](http://dry-rb.org/gems/dry-monads)
+* [User documentation](http://dry-rb.org/gems/dry-monads)
+* [API documentation](http://rubydoc.info/gems/dry-monads)
 
-## Development
+## Supported Ruby versions
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run
-`rake spec` to run the tests. You can also run `bin/console` for an interactive
-prompt that will allow you to experiment.
+This library officially supports the following Ruby versions:
 
-## Contributing
+* MRI >= `2.4`
+* jruby >= `9.2`
 
-Bug reports and pull requests are welcome on GitHub at <https://github.com/dry-rb/dry-monads>.
+## License
+
+See `LICENSE` file.
