@@ -1,15 +1,10 @@
+require_relative 'support/coverage'
+
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'pathname'
 
 SPEC_ROOT = Pathname(__FILE__).dirname
-
-if ENV['COVERAGE'] == 'true'
-  require 'simplecov'
-  SimpleCov.start do
-    add_filter '/spec/'
-  end
-end
 
 require 'warning'
 Warning.ignore(/rspec\/core/)
