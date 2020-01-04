@@ -8,6 +8,7 @@ on:
       - .github/workflows/ci.yml
       - lib/**
       - spec/**
+      - Rakefile
       - Gemfile
       - Gemfile.devtools
       - "*.gemspec"
