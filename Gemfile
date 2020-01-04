@@ -1,18 +1,16 @@
 source 'https://rubygems.org'
 
-git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
+eval_gemfile 'Gemfile.devtools'
 
 gemspec
 
 group :test do
-  gem 'simplecov', require: false
   gem 'warning'
 end
 
 group :tools do
   gem 'pry-byebug', platform: :mri
   gem 'pry', platform: :jruby
-  gem 'ossy', github: 'solnic/ossy', branch: 'master'
   gem 'benchmark-ips'
 end
 
