@@ -10,6 +10,7 @@ on:
       - spec/**
       - Gemfile
       - "*.gemspec"
+      - ".rubocop.yml"
 
 jobs:
   tests-mri:
