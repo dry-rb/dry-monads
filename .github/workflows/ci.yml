@@ -9,6 +9,7 @@ on:
       - lib/**
       - spec/**
       - Gemfile
+      - Gemfile.devtools
       - "*.gemspec"
       - ".rubocop.yml"
 
