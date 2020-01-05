@@ -34,8 +34,12 @@ jobs:
         uses: eregon/use-ruby-action@master
         with:
           ruby-version: ${{matrix.ruby}}
+      - name: Install latest bundler
+        run: |
+          gem install bundler
+          bundle config set without 'tools benchmarks docs'
       - name: Bundle install
-        run: bundle install --jobs 4 --retry 3 --without tools docs benchmarks
+        run: bundle install --jobs 4 --retry 3
       - name: Run all tests
         env:
           COVERAGE: ${{matrix.coverage}}
