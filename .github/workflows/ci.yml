@@ -35,9 +35,7 @@ jobs:
         with:
           ruby-version: ${{matrix.ruby}}
       - name: Bundle install
-        run: |
-          gem install bundler
-          bundle install --jobs 4 --retry 3 --without tools docs benchmarks
+        run: bundle install --jobs 4 --retry 3 --without tools docs benchmarks
       - name: Run all tests
         env:
           COVERAGE: ${{matrix.coverage}}
