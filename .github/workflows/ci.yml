@@ -13,6 +13,9 @@ on:
       - Gemfile.devtools
       - "*.gemspec"
       - ".rubocop.yml"
+  pull_request:
+    branches:
+      - master
 
 jobs:
   tests:
