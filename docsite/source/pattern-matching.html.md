@@ -4,7 +4,7 @@ layout: gem-single
 name: dry-monads
 ---
 
-Ruby 2.7 introduces pattern matchings, it is nicely supported by dry-monads 1.3+.
+Ruby 2.7 introduces pattern matching, it is nicely supported by dry-monads 1.3+.
 
 ### Matching Result values
 
@@ -22,10 +22,10 @@ in Success([1, *])
   # any array starting with 1
 in Success(String => s) if s.size < 100
   # only if `s` is short enough
-in Success({ counter: Integer })
+in Success(counter: Integer)
   # matches Success(counter: 50)
   # doesn't match Success(counter: 50, extra: 50)
-in Success({ user: User, account: Account => user_account, ** })
+in Success(user: User, account: Account => user_account)
   # matches Success(user: User.new(...), account: Account.new(...), else: ...)
   # user_account is bound to the value of the `:account` key
 in Success()
@@ -45,8 +45,8 @@ In the sippet above, the patterns will be tried sequentially. If `value` doesn't
 
 ```ruby
 case value
-in Some(Integer => x)
-  # x is an integer
+in Some(Integer => x) if x > 0
+  # x is a positive integer
 in Some(Float | String)
   # ...
 in None
