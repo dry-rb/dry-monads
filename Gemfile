@@ -6,10 +6,6 @@ eval_gemfile 'Gemfile.devtools'
 
 gemspec
 
-group :test do
-  gem 'warning'
-end
-
 group :tools do
   gem 'benchmark-ips'
   gem 'pry', platform: :jruby
