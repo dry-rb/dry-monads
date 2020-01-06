@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe(Dry::Monads::Maybe) do
   maybe = described_class
 
@@ -14,7 +16,7 @@ RSpec.describe(Dry::Monads::Maybe) do
 
       it 'returns a new instance' do
         expect(none).to eql(None())
-        expect(none.trace).to include("spec/integration/maybe_spec.rb:7:in `block")
+        expect(none.trace).to include('spec/integration/maybe_spec.rb:9:in `block')
       end
     end
 
@@ -31,7 +33,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     example 'using named method with lambda' do
-      expect(some.bind ->(x) { x * 2 }).to eql(6)
+      expect(some.bind(->(x) { x * 2 })).to eql(6)
     end
   end
 
@@ -41,7 +43,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     example 'using named method with proc' do
-      expect(none.bind ->(x) { x * 2 }).to eql(None())
+      expect(none.bind(->(x) { x * 2 })).to eql(None())
     end
   end
 
@@ -52,7 +54,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       example 'using proc' do
-        expect(some.fmap ->(x) { x * 2 }).to eql(Some(6))
+        expect(some.fmap(->(x) { x * 2 })).to eql(Some(6))
       end
     end
 
@@ -62,7 +64,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       example 'using proc' do
-        expect(none.fmap ->(x) { x * 2 }).to eql(None())
+        expect(none.fmap(->(x) { x * 2 })).to eql(None())
       end
     end
   end
@@ -109,7 +111,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       let(:build_name) do
         Class.new do
           def call(first_name, last_name)
-            "#{ first_name } #{ last_name }"
+            "#{first_name} #{last_name}"
           end
         end
       end
@@ -138,7 +140,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     context 'optional arguments' do
-      let(:build_name) { -> (first_name, last_name = 'Doe') { "#{ first_name } #{ last_name }" } }
+      let(:build_name) { -> (first_name, last_name = 'Doe') { "#{first_name} #{last_name}" } }
 
       it 'works' do
         expect(Some(build_name).apply(Some('John'))).to eql(Some('John Doe'))
@@ -160,7 +162,7 @@ RSpec.describe(Dry::Monads::Maybe) do
         def call(value)
           [
             value.map(&Maybe),
-            value.map(&Some),
+            value.map(&Some)
           ]
         end
       end
@@ -175,7 +177,7 @@ RSpec.describe(Dry::Monads::Maybe) do
 
   describe 'matching' do
     let(:match) do
-      -> value do
+      lambda do |value|
         case value
         when Some('foo') then :foo_eql
         when Some(/\w+/) then :bar_rg

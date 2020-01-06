@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'concurrent/promise'
 
 require 'dry/monads/task'
@@ -45,12 +47,12 @@ module Dry
                 when :fulfilled
                   value!.inspect
                 when :rejected
-                  "!#{ promise.reason.inspect }"
+                  "!#{promise.reason.inspect}"
                 else
                   '?'
                 end
 
-        "Lazy(#{ state })"
+        "Lazy(#{state})"
       end
       alias_method :inspect, :to_s
 

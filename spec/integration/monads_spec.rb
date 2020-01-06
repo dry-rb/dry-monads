@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe(Dry::Monads) do
   let(:m) { described_class }
   list = Dry::Monads::List
@@ -129,7 +131,7 @@ RSpec.describe(Dry::Monads) do
       end
 
       it 'traces the caller' do
-        expect(m.Invalid(1).trace).to include("monads_spec.rb")
+        expect(m.Invalid(1).trace).to include('monads_spec.rb')
       end
     end
   end
@@ -137,7 +139,7 @@ RSpec.describe(Dry::Monads) do
   describe 'Try' do
     describe '.Try' do
       it 'safely runs a block' do
-        expect(m.Try { fail }).to be_a_failure
+        expect(m.Try { raise }).to be_a_failure
       end
     end
   end

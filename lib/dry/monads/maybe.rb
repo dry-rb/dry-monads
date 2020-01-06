@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dry/equalizer'
 require 'dry/core/deprecations'
 
@@ -104,6 +106,7 @@ module Dry
 
         def initialize(value = Undefined)
           raise ArgumentError, 'nil cannot be some' if value.nil?
+
           @value = Undefined.default(value, Unit)
         end
 

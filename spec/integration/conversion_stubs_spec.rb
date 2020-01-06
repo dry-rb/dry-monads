@@ -1,10 +1,12 @@
-RSpec.describe "Conversion method stubs raising errors" do
-  describe "Result" do
+# frozen_string_literal: true
+
+RSpec.describe 'Conversion method stubs raising errors' do
+  describe 'Result' do
     after do
-      re_require "maybe", "validated"
+      re_require 'maybe', 'validated'
     end
 
-    describe "Success" do
+    describe 'Success' do
       before do
         # To simulate files like maybe, validated, etc. not being loaded, we
         # simply remove the methods they add, and then re-require the files
@@ -14,117 +16,117 @@ RSpec.describe "Conversion method stubs raising errors" do
         Dry::Monads::Result::Success.send :remove_method, :to_validated
       end
 
-      specify "#to_maybe" do
+      specify '#to_maybe' do
         expect { Dry::Monads::Success('foo').to_maybe }.to raise_error(RuntimeError)
       end
 
-      specify "#to_validated" do
+      specify '#to_validated' do
         expect { Dry::Monads::Success('foo').to_validated }.to raise_error(RuntimeError)
       end
     end
 
-    describe "Failure" do
+    describe 'Failure' do
       before do
         Dry::Monads::Result::Failure.send :remove_method, :to_maybe
         Dry::Monads::Result::Failure.send :remove_method, :to_validated
       end
 
-      specify "#to_maybe" do
+      specify '#to_maybe' do
         expect { Dry::Monads::Failure('foo').to_maybe }.to raise_error(RuntimeError)
       end
 
-      specify "#to_validated" do
+      specify '#to_validated' do
         expect { Dry::Monads::Failure('foo').to_validated }.to raise_error(RuntimeError)
       end
     end
   end
 
-  describe "Task" do
+  describe 'Task' do
     before do
       Dry::Monads::Task.send :remove_method, :to_maybe
       Dry::Monads::Task.send :remove_method, :to_result
     end
 
     after do
-      re_require "maybe", "result"
+      re_require 'maybe', 'result'
     end
 
-    specify "#to_maybe" do
+    specify '#to_maybe' do
       expect { Dry::Monads::Task.new { 'foo' }.to_maybe }.to raise_error(RuntimeError)
     end
 
-    specify "#to_result" do
+    specify '#to_result' do
       expect { Dry::Monads::Task.new { 'foo' }.to_result }.to raise_error(RuntimeError)
     end
   end
 
-  describe "Try" do
+  describe 'Try' do
     after do
-      re_require "maybe", "result"
+      re_require 'maybe', 'result'
     end
 
-    describe "Value" do
+    describe 'Value' do
       before do
         Dry::Monads::Try::Value.send :remove_method, :to_maybe
         Dry::Monads::Try::Value.send :remove_method, :to_result
       end
 
-      specify "#to_maybe" do
-        expect { Dry::Monads::Try(ZeroDivisionError) { 1/1 }.to_maybe }.to raise_error(RuntimeError)
+      specify '#to_maybe' do
+        expect { Dry::Monads::Try(ZeroDivisionError) { 1 / 1 }.to_maybe }.to raise_error(RuntimeError)
       end
 
-      specify "#to_result" do
-        expect { Dry::Monads::Try(ZeroDivisionError) { 1/1 }.to_result }.to raise_error(RuntimeError)
+      specify '#to_result' do
+        expect { Dry::Monads::Try(ZeroDivisionError) { 1 / 1 }.to_result }.to raise_error(RuntimeError)
       end
     end
 
-    describe "Error" do
+    describe 'Error' do
       before do
         Dry::Monads::Try::Error.send :remove_method, :to_maybe
         Dry::Monads::Try::Error.send :remove_method, :to_result
       end
 
-      specify "#to_maybe" do
-        expect { Dry::Monads::Try(ZeroDivisionError) { 1/0 }.to_maybe }.to raise_error(RuntimeError)
+      specify '#to_maybe' do
+        expect { Dry::Monads::Try(ZeroDivisionError) { 1 / 0 }.to_maybe }.to raise_error(RuntimeError)
       end
 
-      specify "#to_result" do
-        expect { Dry::Monads::Try(ZeroDivisionError) { 1/0 }.to_result }.to raise_error(RuntimeError)
+      specify '#to_result' do
+        expect { Dry::Monads::Try(ZeroDivisionError) { 1 / 0 }.to_result }.to raise_error(RuntimeError)
       end
     end
   end
 
-  describe "Validated" do
+  describe 'Validated' do
     after do
-      re_require "maybe", "result"
+      re_require 'maybe', 'result'
     end
 
-    describe "Valid" do
+    describe 'Valid' do
       before do
         Dry::Monads::Validated::Valid.send :remove_method, :to_maybe
         Dry::Monads::Validated::Valid.send :remove_method, :to_result
       end
 
-      specify "#to_maybe" do
+      specify '#to_maybe' do
         expect { Dry::Monads::Valid.new('foo').to_maybe }.to raise_error(RuntimeError)
       end
 
-      specify "#to_result" do
+      specify '#to_result' do
         expect { Dry::Monads::Valid.new('foo').to_result }.to raise_error(RuntimeError)
       end
     end
 
-    describe "Invalid" do
+    describe 'Invalid' do
       before do
         Dry::Monads::Validated::Invalid.send :remove_method, :to_maybe
         Dry::Monads::Validated::Invalid.send :remove_method, :to_result
       end
 
-      specify "#to_maybe" do
+      specify '#to_maybe' do
         expect { Dry::Monads::Invalid.new('foo').to_maybe }.to raise_error(RuntimeError)
       end
 
-      specify "#to_result" do
+      specify '#to_result' do
         expect { Dry::Monads::Invalid.new('foo').to_result }.to raise_error(RuntimeError)
       end
     end

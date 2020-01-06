@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 eval_gemfile 'Gemfile.devtools'
@@ -9,13 +11,13 @@ group :test do
 end
 
 group :tools do
-  gem 'pry-byebug', platform: :mri
-  gem 'pry', platform: :jruby
   gem 'benchmark-ips'
+  gem 'pry', platform: :jruby
+  gem 'pry-byebug', platform: :mri
 end
 
 group :docs do
+  gem 'redcarpet'
   gem 'yard'
   gem 'yard-junk'
-  gem 'redcarpet'
 end

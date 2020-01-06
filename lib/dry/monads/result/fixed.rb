@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dry::Monads
   class Result
     # @see Monads#Result
@@ -7,13 +9,13 @@ module Dry::Monads
         new(error, **options)
       end
 
-      def initialize(error, **options)
+      def initialize(error, **_options)
         @mod = Module.new do
           define_method(:Failure) do |value|
             if error === value
               Failure.new(value, RightBiased::Left.trace_caller)
             else
-              raise InvalidFailureTypeError.new(value)
+              raise InvalidFailureTypeError, value
             end
           end
 

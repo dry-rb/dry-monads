@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dry/core/deprecations'
 
 Dry::Core::Deprecations.warn('Either monad was renamed to Result', tag: :'dry-monads')

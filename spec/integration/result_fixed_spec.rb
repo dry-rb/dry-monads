@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'dry-types'
 
 RSpec.describe(Dry::Monads::Result) do
@@ -29,9 +32,9 @@ RSpec.describe(Dry::Monads::Result) do
         end
       end
 
-      let(:division_error) { 1 / 0 rescue $! }
-      let(:no_method_error) { self.missing rescue $! }
-      let(:runtime_error) { 'foo'.freeze.upcase! rescue $! }
+      let(:division_error) { 1 / 0 rescue $ERROR_INFO }
+      let(:no_method_error) { self.missing rescue $ERROR_INFO }
+      let(:runtime_error) { 'foo'.freeze.upcase! rescue $ERROR_INFO }
 
       it 'passes with known errors' do
         expect(subject.Failure(division_error)).to eql(failure.(division_error))
@@ -59,15 +62,15 @@ RSpec.describe(Dry::Monads::Result) do
 
     it 'tracks the caller' do
       error = subject.Failure(:no_user)
-      expect(error.trace).to include("spec/integration/result_fixed_spec.rb")
+      expect(error.trace).to include('spec/integration/result_fixed_spec.rb')
     end
 
     it 'raises an error on invalid type' do
-      expect { subject.Failure("no_user") }.
-        to raise_error(
-             Dry::Monads::InvalidFailureTypeError,
-             %q[Cannot create Failure from "no_user", it doesn't meet the constraints]
-           )
+      expect { subject.Failure('no_user') }
+        .to raise_error(
+          Dry::Monads::InvalidFailureTypeError,
+          %q(Cannot create Failure from "no_user", it doesn't meet the constraints)
+        )
     end
 
     it 'uses unit as a default value' do

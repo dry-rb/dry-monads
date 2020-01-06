@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe(Dry::Monads::Lazy) do
   mixin = Dry::Monads::Lazy::Mixin
   include mixin
@@ -67,12 +69,12 @@ RSpec.describe(Dry::Monads::Lazy) do
 
   describe '#to_s' do
     it 'introspects the value' do
-      expect(subject.to_s).to eql("Lazy(?)")
+      expect(subject.to_s).to eql('Lazy(?)')
 
       subject.value!
-      expect(subject.to_s).to eql("Lazy(3)")
+      expect(subject.to_s).to eql('Lazy(3)')
 
-      expect(Lazy { 1 / 0 }.force.to_s).to eql("Lazy(!#<ZeroDivisionError: divided by 0>)")
+      expect(Lazy { 1 / 0 }.force.to_s).to eql('Lazy(!#<ZeroDivisionError: divided by 0>)')
     end
   end
 

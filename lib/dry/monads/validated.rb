@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dry/monads/conversion_stubs'
 require 'dry/monads/constants'
 require 'dry/monads/right_biased'
@@ -49,7 +51,7 @@ module Dry
       #
       def bind(*)
         # See https://typelevel.org/cats/datatypes/validated.html for details on why
-        raise NotImplementedError, "Validated is not a monad because it would violate the monad laws"
+        raise NotImplementedError, 'Validated is not a monad because it would violate the monad laws'
       end
 
       # Valid result
@@ -121,7 +123,7 @@ module Dry
         # @return [String]
         def inspect
           if Unit.equal?(@value)
-            "Valid()"
+            'Valid()'
           else
             "Valid(#{@value.inspect})"
           end
@@ -167,10 +169,10 @@ module Dry
         #   @return [Validated::Invalid]
         #
         def apply(val = Undefined)
-          Undefined.
-            default(val) { yield }.
-            alt_map { |v| @error + v }.
-            fmap { return self }
+          Undefined
+            .default(val) { yield }
+            .alt_map { |v| @error + v }
+            .fmap { return self }
         end
 
         # Lifts a block/proc over Invalid
@@ -211,7 +213,7 @@ module Dry
 
         # @return [String]
         def inspect
-          "Invalid(#{ @error.inspect })"
+          "Invalid(#{@error.inspect})"
         end
         alias_method :to_s, :inspect
 
@@ -225,7 +227,6 @@ module Dry
       # Mixin with Validated constructors
       #
       module Mixin
-
         # Successful validation result
         # @see Dry::Monads::Validated::Valid
         Valid = Valid
@@ -250,6 +251,7 @@ module Dry
           def Valid(value = Undefined, &block)
             v = Undefined.default(value, block)
             raise ArgumentError, 'No value given' if !value.nil? && v.nil?
+
             Valid.new(v)
           end
 
@@ -266,6 +268,7 @@ module Dry
           def Invalid(value = Undefined, &block)
             v = Undefined.default(value, block)
             raise ArgumentError, 'No value given' if !value.nil? && v.nil?
+
             Invalid.new(v, RightBiased::Left.trace_caller)
           end
         end

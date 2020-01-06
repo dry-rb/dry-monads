@@ -1,4 +1,6 @@
-require 'thread'
+# frozen_string_literal: true
+
+require 'English'
 
 RSpec.describe(Dry::Monads::Task) do
   result = Dry::Monads::Result
@@ -16,7 +18,7 @@ RSpec.describe(Dry::Monads::Task) do
   end
 
   def deferred(&block)
-    -> do
+    lambda do
       expect(Thread.current).not_to be(Thread.main)
       block.call
     end
@@ -77,7 +79,7 @@ RSpec.describe(Dry::Monads::Task) do
 
     it 'tracks the caller' do
       error = task { 1 / 0 }.to_result
-      expect(error.trace).to include("spec/unit/task_spec.rb")
+      expect(error.trace).to include('spec/unit/task_spec.rb')
     end
   end
 
@@ -93,7 +95,7 @@ RSpec.describe(Dry::Monads::Task) do
 
     it 'tracks the caller' do
       error = task { 1 / 0 }.to_maybe
-      expect(error.trace).to include("spec/unit/task_spec.rb")
+      expect(error.trace).to include('spec/unit/task_spec.rb')
     end
   end
 
@@ -110,18 +112,18 @@ RSpec.describe(Dry::Monads::Task) do
   describe '#inspect' do
     it 'inspects pending' do
       t = task { sleep 0.01 }
-      expect(t.inspect).to eql("Task(?)")
+      expect(t.inspect).to eql('Task(?)')
     end
 
     it 'inspects complete' do
       t = task { :something }.tap(&:value!)
-      expect(t.inspect).to eql("Task(value=:something)")
+      expect(t.inspect).to eql('Task(value=:something)')
     end
 
     it 'inspects failed' do
-      1 / 0 rescue err = $!
+      1 / 0 rescue err = $ERROR_INFO
       t = task { raise err }.tap(&:to_result)
-      expect(t.inspect).to eql("Task(error=#{ err.inspect })")
+      expect(t.inspect).to eql("Task(error=#{err.inspect})")
     end
 
     it 'shows empty parens for unit' do
@@ -209,7 +211,7 @@ RSpec.describe(Dry::Monads::Task) do
 
   describe '.failed' do
     it 'creates a failed task' do
-      error = (1 / 0 rescue $!)
+      error = (1 / 0 rescue $ERROR_INFO)
       expect(task.failed(error).to_result).to eql(failure[error])
     end
   end

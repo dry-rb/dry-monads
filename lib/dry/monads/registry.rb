@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'concurrent/map'
 
 module Dry
@@ -36,8 +38,9 @@ module Dry
       # @private
       def register_mixin(name, mod)
         if registry.key?(name)
-          raise ArgumentError, "#{ name.inspect } is already registered"
+          raise ArgumentError, "#{name.inspect} is already registered"
         end
+
         self.registry = registry.merge(name => mod)
       end
 
@@ -49,7 +52,7 @@ module Dry
       # @private
       def load_monad(name)
         path = @paths.fetch(name) {
-          raise ArgumentError, "#{ name.inspect } is not a known monad"
+          raise ArgumentError, "#{name.inspect} is not a known monad"
         }
         Array(path).each { |p| require p }
       end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe 'Dry::Monads::Either', :suppress_deprecations do
   before { require 'dry/monads/either' }
 
@@ -12,4 +14,3 @@ RSpec.describe 'Dry::Monads::Either', :suppress_deprecations do
     expect(Left(1)).to eql(Failure(1))
   end
 end
-

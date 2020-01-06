@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dry/equalizer'
 require 'dry/core/deprecations'
 
@@ -71,6 +73,7 @@ module Dry
         # @return [Try::Value,Try::Error]
         def [](*exceptions, &block)
           raise ArgumentError, 'At least one exception type required' if exceptions.empty?
+
           run(exceptions, block)
         end
       end
@@ -181,7 +184,7 @@ module Dry
 
         # @return [String]
         def to_s
-          "Try::Error(#{ exception.class }: #{ exception.message })"
+          "Try::Error(#{exception.class}: #{exception.message})"
         end
         alias_method :inspect, :to_s
 
@@ -259,6 +262,7 @@ module Dry
         def Value(value = Undefined, exceptions = DEFAULT_EXCEPTIONS, &block)
           v = Undefined.default(value, block)
           raise ArgumentError, 'No value given' if !value.nil? && v.nil?
+
           Value.new(exceptions, v)
         end
 
@@ -275,6 +279,7 @@ module Dry
         def Error(error = Undefined, &block)
           v = Undefined.default(error, block)
           raise ArgumentError, 'No value given' if v.nil?
+
           Try::Error.new(v)
         end
       end

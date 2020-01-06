@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'concurrent/promise'
 
 require 'dry/monads/unit'
@@ -134,7 +136,7 @@ module Dry
                     "value=#{value!.inspect}"
                   end
                 when :rejected
-                  "error=#{ promise.reason.inspect }"
+                  "error=#{promise.reason.inspect}"
                 else
                   '?'
                 end
@@ -167,11 +169,11 @@ module Dry
             inner.execute
             inner.on_success { |r| child.on_fulfill(r) }
             inner.on_error { |e| child.on_reject(e) }
-          rescue => e
+          rescue StandardError => e
             child.on_reject(e)
           end
         end
-        promise.on_success  { |v| child.on_fulfill(v) }
+        promise.on_success { |v| child.on_fulfill(v) }
 
         self.class.new(child)
       end
@@ -200,6 +202,7 @@ module Dry
       def ==(other)
         return true if equal?(other)
         return false unless self.class == other.class
+
         compare_promises(promise, other.promise)
       end
 

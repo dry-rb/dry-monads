@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dry/monads/do'
 
 module Dry
@@ -119,6 +121,7 @@ module Dry
               super(method)
 
               next if method.equal?(:singleton_method_added)
+
               Do.wrap_method(wrapper, method)
             end
             object.singleton_class.instance_methods(false).each do |m|

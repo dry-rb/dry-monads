@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for 'an applicative' do
   describe '.pure' do
     it 'wraps a value with a context' do

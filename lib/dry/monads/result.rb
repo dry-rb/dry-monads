@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dry/equalizer'
 
 require 'dry/monads/constants'
@@ -299,7 +301,6 @@ module Dry
         # Value constructors
         #
         module Constructors
-
           # Success constructor
           #
           # @overload Success(value)
@@ -386,7 +387,7 @@ module Dry
         # @param fail [#call] Fallback value
         # @param block [Proc] Fallback block
         # @return [Success<Any>]
-        def to_result(fail = Unit, &block)
+        def to_result(_fail = Unit)
           Result::Success.new(@value)
         end
       end
@@ -397,7 +398,7 @@ module Dry
         # @param fail [#call] Fallback value
         # @param block [Proc] Fallback block
         # @return [Failure<Any>]
-        def to_result(fail = Unit, &block)
+        def to_result(fail = Unit)
           if block_given?
             Result::Failure.new(yield)
           else

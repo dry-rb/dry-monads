@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dry/equalizer'
 
 require 'dry/monads/maybe'
@@ -163,8 +165,8 @@ module Dry
       #
       # @return [String]
       def inspect
-        type_ann = typed? ? "<#{ type.name.split('::').last }>" : ''
-        "List#{ type_ann }#{ value.inspect }"
+        type_ann = typed? ? "<#{type.name.split('::').last}>" : ''
+        "List#{type_ann}#{value.inspect}"
       end
       alias_method :to_s, :inspect
 
@@ -263,10 +265,10 @@ module Dry
       def typed(type = nil)
         if type.nil?
           if size.zero?
-            raise ArgumentError, "Cannot infer a monad for an empty list"
+            raise ArgumentError, 'Cannot infer a monad for an empty list'
           else
             self.class.warn(
-              "Automatic monad inference is deprecated, pass a type explicitly "\
+              'Automatic monad inference is deprecated, pass a type explicitly '\
               "or use a predefined constant, e.g. List::Result\n"\
               "#{caller.find { |l| l !~ %r{(lib/dry/monads)|(gems)} }}"
             )
@@ -296,16 +298,16 @@ module Dry
       # @return [Monad] Result is a monadic value
       def traverse(proc = nil, &block)
         unless typed?
-          raise StandardError, "Cannot traverse an untyped list"
+          raise StandardError, 'Cannot traverse an untyped list'
         end
 
         cons = type.pure { |list, i| list + List.pure(i) }
         with = proc || block || Traverse[type]
 
         foldl(type.pure(EMPTY)) do |acc, el|
-          cons.
-            apply(acc).
-            apply { with.(el) }
+          cons
+            .apply(acc)
+            .apply { with.(el) }
         end
       end
 
@@ -433,7 +435,6 @@ module Dry
       #
       # @api public
       module Mixin
-
         # @see Dry::Monads::List
         List = List
 

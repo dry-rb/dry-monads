@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe(Dry::Monads::Validated) do
   validated = described_class
   valid = described_class::Valid.method(:new)
@@ -33,14 +35,14 @@ RSpec.describe(Dry::Monads::Validated) do
 
     describe '#inspect' do
       it 'returns the string representation' do
-        expect(subject.inspect).to eql("Valid(1)")
-        expect(valid[unit].inspect).to eql("Valid()")
+        expect(subject.inspect).to eql('Valid(1)')
+        expect(valid[unit].inspect).to eql('Valid()')
       end
     end
 
     describe '#fmap' do
       it 'lifts a block' do
-        expect(subject.fmap { |value| (value + 1).to_s }).to eql(valid.("2"))
+        expect(subject.fmap { |value| (value + 1).to_s }).to eql(valid.('2'))
       end
     end
 
@@ -52,15 +54,15 @@ RSpec.describe(Dry::Monads::Validated) do
 
     describe '#alt_map' do
       it 'is an inversed fmap' do
-        expect(subject.alt_map { fail }).to be(subject)
-        expect(subject.alt_map(-> { fail })).to be(subject)
+        expect(subject.alt_map { raise }).to be(subject)
+        expect(subject.alt_map(-> { raise })).to be(subject)
       end
     end
 
     describe '#or' do
       it 'returns self back' do
-        expect(subject.or { fail }).to be(subject)
-        expect(subject.or(-> { fail })).to be(subject)
+        expect(subject.or { raise }).to be(subject)
+        expect(subject.or(-> { raise })).to be(subject)
       end
     end
 
@@ -105,25 +107,25 @@ RSpec.describe(Dry::Monads::Validated) do
 
     describe '#inspect' do
       it 'returns the string representation' do
-        expect(subject.inspect).to eql("Invalid(:missing_value)")
+        expect(subject.inspect).to eql('Invalid(:missing_value)')
       end
     end
 
     describe '#fmap' do
       it 'returns self back' do
-        expect(subject.fmap { fail }).to be(subject)
-        expect(subject.fmap(-> { fail })).to be(subject)
+        expect(subject.fmap { raise }).to be(subject)
+        expect(subject.fmap(-> { raise })).to be(subject)
       end
     end
 
     describe '#alt_map' do
       it 'is an inversed fmap' do
-        expect(subject.alt_map { |value| value.to_s }).to eql(invalid.("missing_value"))
-        expect(subject.alt_map(-> value { value.to_s })).to eql(invalid.("missing_value"))
+        expect(subject.alt_map(&:to_s)).to eql(invalid.('missing_value'))
+        expect(subject.alt_map(-> value { value.to_s })).to eql(invalid.('missing_value'))
       end
 
       it 'traces the caller' do
-        expect(subject.alt_map { |x| x }.trace).to include("validated_spec.rb")
+        expect(subject.alt_map { |x| x }.trace).to include('validated_spec.rb')
       end
     end
 
@@ -152,7 +154,7 @@ RSpec.describe(Dry::Monads::Validated) do
       end
 
       it 'traces the caller' do
-        expect(subject.to_maybe.trace).to include("spec/unit/validated_spec.rb")
+        expect(subject.to_maybe.trace).to include('spec/unit/validated_spec.rb')
       end
     end
 
@@ -162,7 +164,7 @@ RSpec.describe(Dry::Monads::Validated) do
       end
 
       it 'traces the caller' do
-        expect(subject.to_result.trace).to include("spec/unit/validated_spec.rb")
+        expect(subject.to_result.trace).to include('spec/unit/validated_spec.rb')
       end
     end
 
@@ -179,11 +181,11 @@ RSpec.describe(Dry::Monads::Validated) do
   describe '#bind' do
     it 'tells that Validated has no monad instance' do
       expect {
-        valid.(1).bind { fail }
+        valid.(1).bind { raise }
       }.to raise_error(
-             NotImplementedError,
-             "Validated is not a monad because it would violate the monad laws"
-           )
+        NotImplementedError,
+        'Validated is not a monad because it would violate the monad laws'
+      )
     end
   end
 end

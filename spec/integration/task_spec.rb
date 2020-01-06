@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'concurrent/executor/single_thread_executor'
 
 RSpec.describe(Dry::Monads::Task) do

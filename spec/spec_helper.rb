@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 require_relative 'support/coverage'
 
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
 require 'pathname'
 
 SPEC_ROOT = Pathname(__FILE__).dirname
 
 require 'warning'
-Warning.ignore(/rspec\/core/)
+Warning.ignore(%r{rspec/core})
 Warning[:experimental] = false if Warning.respond_to?(:[])
 
 begin
@@ -20,7 +22,7 @@ $VERBOSE = true
 
 require 'dry/monads/all'
 
-Dir["./spec/shared/**/*.rb"].sort.each { |f| require f }
+Dir['./spec/shared/**/*.rb'].sort.each { |f| require f }
 
 module Kernel
   def suppress_warnings
@@ -28,14 +30,14 @@ module Kernel
     $VERBOSE = nil
     result = yield
     $VERBOSE = original_verbosity
-    return result
+    result
   end
 end
 
 module TestHelpers
   def re_require(*paths)
     paths.each { |p| Dry::Monads.unload_monad(p) }
-    all_paths = paths + %w(all)
+    all_paths = paths + %w[all]
 
     $LOADED_FEATURES.delete_if { |feature|
       all_paths.any? { |path| feature.include?("dry/monads/#{path}.rb") }

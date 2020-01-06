@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe(Dry::Monads::Maybe) do
   maybe = described_class
   some = maybe::Some.method(:new)
@@ -72,7 +74,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it 'accepts a block too' do
-        expect(subject.bind { |s| s.upcase }).to eql('FOO')
+        expect(subject.bind(&:upcase)).to eql('FOO')
       end
 
       it 'passes extra arguments to a block' do
@@ -110,7 +112,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it 'accepts a block too' do
-        expect(subject.fmap { |s| s.upcase }).to eql(upcased_subject)
+        expect(subject.fmap(&:upcase)).to eql(upcased_subject)
       end
 
       it 'passes extra arguments to a block' do
@@ -150,11 +152,11 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it 'accepts a block as an alternative' do
-        expect(subject.or { fail }).to be(subject)
+        expect(subject.or { raise }).to be(subject)
       end
 
       it 'ignores all values' do
-        expect(subject.or(:foo, :bar, :baz) { fail }).to be(subject)
+        expect(subject.or(:foo, :bar, :baz) { raise }).to be(subject)
       end
     end
 
@@ -164,11 +166,11 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it 'accepts a block as an alternative' do
-        expect(subject.or_fmap { fail }).to be(subject)
+        expect(subject.or_fmap { raise }).to be(subject)
       end
 
       it 'ignores all values' do
-        expect(subject.or_fmap(:foo, :bar, :baz) { fail }).to be(subject)
+        expect(subject.or_fmap(:foo, :bar, :baz) { raise }).to be(subject)
       end
     end
 
@@ -255,15 +257,15 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     describe '#and' do
       it 'joins two maybe values with a block' do
-        expect(some['foo'].and(some['bar']) { |foo, bar| [foo, bar] }).to eql(some[['foo', 'bar']])
+        expect(some['foo'].and(some['bar']) { |foo, bar| [foo, bar] }).to eql(some[%w[foo bar]])
       end
 
       it 'returns none if argument is none' do
-        expect(some['foo'].and(none) { |foo, bar| fail }).to eql(none)
+        expect(some['foo'].and(none) { |_foo, _bar| raise }).to eql(none)
       end
 
       it 'returns a tuple if no block given' do
-        expect(some['foo'].and(some['bar'])).to eql(some[['foo', 'bar']])
+        expect(some['foo'].and(some['bar'])).to eql(some[%w[foo bar]])
         expect(some['foo'].and(none)).to eql(none)
       end
     end
@@ -299,21 +301,21 @@ RSpec.describe(Dry::Monads::Maybe) do
       it 'throws NoMethodError on everything else' do
         begin
           described_class.garbage
-        rescue => error
-          expect(error.class).to be(NoMethodError)
+        rescue StandardError => e
+          expect(e.class).to be(NoMethodError)
         end
       end
     end
 
     describe '#initialize' do
       it 'traces the caller' do
-        expect(subject.trace).to include("spec/unit/maybe_spec.rb")
+        expect(subject.trace).to include('spec/unit/maybe_spec.rb')
       end
     end
 
     describe '#value!' do
       it 'raises an error' do
-        expect { subject.value! }.to raise_error(Dry::Monads::UnwrapError, "value! was called on None")
+        expect { subject.value! }.to raise_error(Dry::Monads::UnwrapError, 'value! was called on None')
       end
     end
 
@@ -323,11 +325,11 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it 'accepts a block and returns itself' do
-        expect(subject.bind { |s| s.upcase }).to be subject
+        expect(subject.bind(&:upcase)).to be subject
       end
 
       it 'ignores arguments' do
-        expect(subject.bind(1, 2, 3) { fail }).to be subject
+        expect(subject.bind(1, 2, 3) { raise }).to be subject
       end
     end
 
@@ -337,17 +339,17 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it 'accepts a block and returns itself' do
-        expect(subject.fmap { |s| s.upcase }).to be subject
+        expect(subject.fmap(&:upcase)).to be subject
       end
 
       it 'ignores arguments' do
-        expect(subject.fmap(1, 2, 3) { fail }).to be subject
+        expect(subject.fmap(1, 2, 3) { raise }).to be subject
       end
     end
 
     describe '#maybe' do
       it 'is an alias for fmap' do
-        expect(subject.maybe { fail }).to be(subject)
+        expect(subject.maybe { raise }).to be(subject)
       end
     end
 
@@ -425,11 +427,11 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it 'accepts a block and returns itself' do
-        expect(subject.tee { |s| s.upcase }).to be subject
+        expect(subject.tee(&:upcase)).to be subject
       end
 
       it 'ignores arguments' do
-        expect(subject.tee(1, 2, 3) { fail }).to be subject
+        expect(subject.tee(1, 2, 3) { raise }).to be subject
       end
     end
 
@@ -478,7 +480,7 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     describe '#and' do
       it 'always return None' do
-        expect(none.and(some['foo']) { fail }).to eql(none)
+        expect(none.and(some['foo']) { raise }).to eql(none)
         expect(none.and(some['foo'])).to eql(none)
         expect(none.and(none)).to eql(none)
       end
@@ -505,7 +507,7 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     describe '#None' do
       example 'tracks the caller' do
-        expect(subject.None().trace).to include("spec/unit/maybe_spec.rb")
+        expect(subject.None().trace).to include('spec/unit/maybe_spec.rb')
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe(Dry::Monads::List) do
   list = described_class
 
@@ -37,7 +39,7 @@ RSpec.describe(Dry::Monads::List) do
         Valid('john@doe.me'), Valid('John')
       ]
 
-      expect(errors.traverse).to eql(Valid(list["john@doe.me", "John"]))
+      expect(errors.traverse).to eql(Valid(list['john@doe.me', 'John']))
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe(Dry::Monads::Do) do
   include Dry::Monads::Maybe::Mixin
   include Dry::Monads::Result::Mixin
@@ -106,7 +108,7 @@ RSpec.describe(Dry::Monads::Do) do
 
           def transaction
             yield
-          rescue => e
+          rescue StandardError => e
             @rolled_back = true
             raise e
           end
@@ -181,13 +183,13 @@ RSpec.describe(Dry::Monads::Do) do
             m1 = Try { 1 }
             m2 = Try { 2 }
 
-            Dry::Monads::Try::pure(yield(m1, m2).reduce(:+))
+            Dry::Monads::Try.pure(yield(m1, m2).reduce(:+))
           end
         end
       end
 
       it 'returns the result of a statement' do
-        expect(instance.call).to eql(Dry::Monads::Try::pure(3))
+        expect(instance.call).to eql(Dry::Monads::Try.pure(3))
       end
     end
 
@@ -198,7 +200,7 @@ RSpec.describe(Dry::Monads::Do) do
             m1 = Try { 1 / 0 }
             m2 = Try { 2 }
 
-            Dry::Monads::Try::pure(yield(m1, m2).reduce(:+))
+            Dry::Monads::Try.pure(yield(m1, m2).reduce(:+))
           end
         end
       end
@@ -215,7 +217,7 @@ RSpec.describe(Dry::Monads::Do) do
             m1 = Try { 1 }
             m2 = Try { 2 / 0 }
 
-            Dry::Monads::Try::pure(yield(m1, m2).reduce(:+))
+            Dry::Monads::Try.pure(yield(m1, m2).reduce(:+))
           end
         end
       end
@@ -297,7 +299,7 @@ RSpec.describe(Dry::Monads::Do) do
   context 'passing procs' do
     before do
       class Test::Operation
-        def call(&block)
+        def call
           result = yield Success(:heya)
 
           Success(result)
@@ -396,7 +398,7 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it "returns a concatenated list of results" do
+      it 'returns a concatenated list of results' do
         expect(instance.call).to eql(Success(List([1, 2, 3])))
       end
     end
@@ -416,7 +418,7 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it "returns a concatenated list of failures" do
+      it 'returns a concatenated list of failures' do
         expect(instance.call).to eql(Invalid(List([2, 3])))
       end
     end

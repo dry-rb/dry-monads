@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe(Dry::Monads::List) do
   list = described_class
 
@@ -18,7 +20,7 @@ RSpec.describe(Dry::Monads::List) do
     let(:array_like) do
       Object.new.tap do |o|
         def o.to_ary
-          %w(a b c)
+          %w[a b c]
         end
       end
     end
@@ -32,7 +34,7 @@ RSpec.describe(Dry::Monads::List) do
     end
 
     it 'coerces any array-like object' do
-      expect(list.coerce(array_like)).to eql(list.new(%w(a b c)))
+      expect(list.coerce(array_like)).to eql(list.new(%w[a b c]))
     end
 
     it 'raises a type error on uncoercible object' do
@@ -152,8 +154,8 @@ RSpec.describe(Dry::Monads::List) do
 
     it 'returns an enumerator if no block given' do
       expect(subject.map).to be_a(Enumerator)
-      expect(subject.map.with_index { |el, idx|  [el, idx] }).
-        to eql([[1, 0], [2, 1], [3, 2]])
+      expect(subject.map.with_index { |el, idx| [el, idx] })
+        .to eql([[1, 0], [2, 1], [3, 2]])
     end
   end
 
@@ -179,7 +181,7 @@ RSpec.describe(Dry::Monads::List) do
 
   describe '#fold_left' do
     it 'returns initial value for the empty list' do
-      expect(empty_list.fold_left(100) { fail }).to eql(100)
+      expect(empty_list.fold_left(100) { raise }).to eql(100)
     end
 
     it 'folds from the left' do
@@ -205,7 +207,7 @@ RSpec.describe(Dry::Monads::List) do
 
   describe '#fold_right' do
     it 'returns initial value for the empty list' do
-      expect(empty_list.fold_right(100) { fail }).to eql(100)
+      expect(empty_list.fold_right(100) { raise }).to eql(100)
     end
 
     it 'folds from the right' do
@@ -292,13 +294,13 @@ RSpec.describe(Dry::Monads::List) do
       end
 
       it 'halts on Failure' do
-        expect(subject.traverse { |i| i == 2 ? failure.(i) : success.(i) }).
-          to eql(failure.(2))
+        expect(subject.traverse { |i| i == 2 ? failure.(i) : success.(i) })
+          .to eql(failure.(2))
       end
 
       it 'halts on first Failure' do
-        expect(subject.traverse { |i| i > 1 ? failure.(i) : success.(i) }).
-          to eql(failure.(2))
+        expect(subject.traverse { |i| i > 1 ? failure.(i) : success.(i) })
+          .to eql(failure.(2))
       end
 
       it 'works without a block' do
@@ -314,13 +316,13 @@ RSpec.describe(Dry::Monads::List) do
       end
 
       it 'halts on None' do
-        expect(subject.traverse { |i| i == 2 ? none : some.(i) }).
-          to eql(none)
+        expect(subject.traverse { |i| i == 2 ? none : some.(i) })
+          .to eql(none)
       end
 
       it 'halts on first None' do
-        expect(subject.traverse { |i| i == 1 ? none : fail }).
-          to eql(none)
+        expect(subject.traverse { |i| i == 1 ? none : raise })
+          .to eql(none)
       end
     end
 
@@ -328,11 +330,11 @@ RSpec.describe(Dry::Monads::List) do
       subject { list[1, 2].typed(list) }
 
       it 'flips a list' do
-        expect(subject.traverse { |x| list[x] }).
-          to eql(list[list[1, 2]].typed(list))
+        expect(subject.traverse { |x| list[x] })
+          .to eql(list[list[1, 2]].typed(list))
 
-        expect(subject.traverse { |x| list[x, x + 1] }).
-          to eql(list[list[1, 2], list[1, 3], list[2, 2], list[2, 3]].typed(list))
+        expect(subject.traverse { |x| list[x, x + 1] })
+          .to eql(list[list[1, 2], list[1, 3], list[2, 2], list[2, 3]].typed(list))
       end
     end
 

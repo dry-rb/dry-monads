@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'English'
 
 RSpec.describe(Dry::Monads::Try) do
@@ -31,9 +33,9 @@ RSpec.describe(Dry::Monads::Try) do
       expect {
         try[&-> { raise division_error }]
       }.to raise_error(
-             ArgumentError,
-             'At least one exception type required'
-           )
+        ArgumentError,
+        'At least one exception type required'
+      )
     end
   end
 
@@ -68,7 +70,7 @@ RSpec.describe(Dry::Monads::Try) do
       end
 
       it 'accepts a block too' do
-        expect(subject.bind { |s| s.upcase }).to eql('FOO')
+        expect(subject.bind(&:upcase)).to eql('FOO')
       end
 
       it 'captures checked exceptions and return Failure object' do
@@ -112,7 +114,7 @@ RSpec.describe(Dry::Monads::Try) do
       end
 
       it 'accepts a block and returns Success' do
-        expect(subject.fmap { |s| s.upcase }).to eql(upcase_value)
+        expect(subject.fmap(&:upcase)).to eql(upcase_value)
       end
 
       it 'accepts a block and returns Failure' do
@@ -170,7 +172,7 @@ RSpec.describe(Dry::Monads::Try) do
 
     describe '#or' do
       it 'returns itself' do
-        expect(subject.or { fail }).to be(subject)
+        expect(subject.or { raise }).to be(subject)
       end
     end
 
@@ -239,11 +241,11 @@ RSpec.describe(Dry::Monads::Try) do
       end
 
       it 'accepts a block and returns itself' do
-        expect(subject.bind { |s| s.upcase }).to be subject
+        expect(subject.bind(&:upcase)).to be subject
       end
 
       it 'ignores arguments' do
-        expect(subject.bind(1, 2, 3) { fail }).to be subject
+        expect(subject.bind(1, 2, 3) { raise }).to be subject
       end
     end
 
@@ -257,7 +259,7 @@ RSpec.describe(Dry::Monads::Try) do
       end
 
       it 'ignores arguments' do
-        expect(subject.fmap(1, 2, 3) { fail }).to be subject
+        expect(subject.fmap(1, 2, 3) { raise }).to be subject
       end
     end
 
@@ -267,7 +269,7 @@ RSpec.describe(Dry::Monads::Try) do
       end
 
       it 'tracks the caller' do
-        expect(subject.to_maybe.trace).to include("spec/unit/try_spec.rb")
+        expect(subject.to_maybe.trace).to include('spec/unit/try_spec.rb')
       end
     end
 
@@ -277,7 +279,7 @@ RSpec.describe(Dry::Monads::Try) do
       end
 
       it 'tracks the caller' do
-        expect(subject.to_result.trace).to include("spec/unit/try_spec.rb")
+        expect(subject.to_result.trace).to include('spec/unit/try_spec.rb')
       end
     end
 

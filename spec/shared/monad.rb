@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for 'a monad' do
   describe '#to_monad' do
     it 'returns self' do

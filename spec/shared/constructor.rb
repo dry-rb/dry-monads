@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples_for 'a constructor' do
   let(:value) { described_class.new(1) }
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dry/monads/unit'
 
 RSpec.describe(Dry::Monads::Unit) do

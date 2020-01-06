@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 
 # must be required manually to provide the JSON serialization

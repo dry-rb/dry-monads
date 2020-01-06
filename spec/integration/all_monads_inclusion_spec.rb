@@ -1,17 +1,19 @@
-RSpec.describe "Dry::Monads module mixin" do
-  it "raises an error when all monads are not loaded" do
+# frozen_string_literal: true
+
+RSpec.describe 'Dry::Monads module mixin' do
+  it 'raises an error when all monads are not loaded' do
     Dry::Monads.unload_monad(:maybe)
 
     expect {
       class Test::MyClass
         include Dry::Monads
       end
-    }.to raise_error RuntimeError, %r{Load all monads first}
+    }.to raise_error RuntimeError, /Load all monads first/
 
     re_require 'maybe'
   end
 
-  it "raises no error when all monads are loaded" do
+  it 'raises no error when all monads are loaded' do
     expect {
       class Test::MyClass
         include Dry::Monads

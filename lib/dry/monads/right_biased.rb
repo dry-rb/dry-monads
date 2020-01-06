@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dry/monads/constants'
 require 'dry/monads/unit'
 require 'dry/monads/curry'
@@ -118,7 +120,7 @@ module Dry
         # @return [RightBiased::Left,RightBiased::Right]
         def apply(val = Undefined)
           unless @value.respond_to?(:call)
-            raise TypeError, "Cannot apply #{ val.inspect } to #{ @value.inspect }"
+            raise TypeError, "Cannot apply #{val.inspect} to #{@value.inspect}"
           end
 
           Undefined.default(val) { yield }.fmap { |unwrapped| curry.(unwrapped) }
@@ -258,7 +260,7 @@ module Dry
 
         # Raises an error on accessing internal value
         def value!
-          raise UnwrapError.new(self)
+          raise UnwrapError, self
         end
 
         # Ignores the input parameter and returns self. It exists to keep the interface

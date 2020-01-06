@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe(Dry::Monads::Try) do
   include Dry::Monads::Try::Mixin
 
@@ -131,7 +133,7 @@ RSpec.describe(Dry::Monads::Try) do
 
   describe 'matching' do
     let(:match) do
-      -> value do
+      lambda do |value|
         case value
         when Value('foo') then :foo_eql
         when Value(/\w+/) then :bar_rg
