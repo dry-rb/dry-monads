@@ -216,9 +216,9 @@ module Dry
         #   end
         #
         # @api private
-        def deconstruct_keys(_)
-          if @value.is_a?(::Hash)
-            @value
+        def deconstruct_keys(keys)
+          if @value.respond_to?(:deconstruct_keys)
+            @value.deconstruct_keys(keys)
           else
             EMPTY_HASH
           end
@@ -383,9 +383,9 @@ module Dry
         #   end
         #
         # @api private
-        def deconstruct_keys(_)
-          if @value.is_a?(::Hash)
-            @value
+        def deconstruct_keys(keys)
+          if @value.respond_to?(:deconstruct_keys)
+            @value.deconstruct_keys(keys)
           else
             EMPTY_HASH
           end

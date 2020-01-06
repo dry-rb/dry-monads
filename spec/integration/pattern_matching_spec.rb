@@ -5,6 +5,14 @@ RSpec.describe 'pattern matching' do
     context 'Success' do
       let(:match) { Test::Context.new }
 
+      let(:hash_like) do
+        Object.new.tap do |o|
+          def o.deconstruct_keys(_)
+            { code: 101 }
+          end
+        end
+      end
+
       specify 'destructuring' do
         class Test::Context
           include Dry::Monads[:result]
@@ -21,6 +29,7 @@ RSpec.describe 'pattern matching' do
             in Success({ status: x }) then x
             in Success(code: 301 | 302) then :redirect
             in Success({ code: 200..300 => x }) then x
+            in Success(code: 101) then :switch_protocol
             end
           end
         end
@@ -35,6 +44,8 @@ RSpec.describe 'pattern matching' do
         expect(match.(Success({ code: 204 }))).to eql(204)
         expect(match.(Success(code: 301))).to eql(:redirect)
         expect(match.(Success(code: 302))).to eql(:redirect)
+        expect(match.(Success(hash_like))).to eql(:switch_protocol)
+
         expect { match.(Success(code: 303)) }.to raise_error(NoMatchingPatternError)
         expect { match.(Success([:foo])) }.to raise_error(NoMatchingPatternError)
       end
@@ -42,6 +53,14 @@ RSpec.describe 'pattern matching' do
 
     context 'Failure' do
       let(:match) { Test::Context.new }
+
+      let(:hash_like) do
+        Object.new.tap do |o|
+          def o.deconstruct_keys(_)
+            { error: :extracted }
+          end
+        end
+      end
 
       specify 'destructuring' do
         class Test::Context
@@ -61,6 +80,7 @@ RSpec.describe 'pattern matching' do
         expect(match.(Failure(:error))).to eql(:nope)
         expect(match.(Failure())).to eql(:unit)
         expect(match.(Failure(error: :bug))).to eql(:bug)
+        expect(match.(Failure(hash_like))).to eql(:extracted)
         expect { match.(Failure(3)) }.to raise_error(NoMatchingPatternError)
       end
     end
