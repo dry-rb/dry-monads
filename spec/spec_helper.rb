@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
 require_relative 'support/coverage'
+require_relative 'support/warnings'
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
 require 'pathname'
 
 SPEC_ROOT = Pathname(__FILE__).dirname
-
-require 'warning'
-Warning.ignore(%r{rspec/core})
-Warning[:experimental] = false if Warning.respond_to?(:[])
 
 begin
   require 'pry'
