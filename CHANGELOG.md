@@ -1,3 +1,11 @@
+# v1.3.5 2020-01-06
+
+## Added
+
+- Smarter keys deconstruction in pattern matching (flash-gordon)
+
+[Compare v1.3.4...v1.3.5](https://github.com/dry-rb/dry-monads/compare/v1.3.4...v1.3.5)
+
 # v1.3.4 2019-12-28
 
 ## Fixed
