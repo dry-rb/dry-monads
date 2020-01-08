@@ -1,6 +1,6 @@
 RSpec.describe 'pattern matching' do
   context 'Result' do
-    include Dry::Monads[:result]
+    include Dry::Monads[:result, :maybe]
 
     context 'Success' do
       let(:match) { Test::Context.new }
@@ -23,7 +23,7 @@ RSpec.describe 'pattern matching' do
 
       specify 'destructuring' do
         class Test::Context
-          include Dry::Monads[:result]
+          include Dry::Monads[:result, :maybe]
 
           def call(value)
             case value
@@ -40,7 +40,8 @@ RSpec.describe 'pattern matching' do
             in Success(code: 101) then :switch_protocol
             in Success(1, 2) then :ein_zwei
             in Success[3, 4] then :drei_vier
-            in Success(*array) if array.size > 1 then array
+            in Success(Some(:foo)) then :foo_extracted
+            in Success([_, _, _] => captured) then captured
             end
           end
         end
@@ -58,7 +59,8 @@ RSpec.describe 'pattern matching' do
         expect(match.(Success(hash_like))).to eql(:switch_protocol)
         expect(match.(Success([1, 2]))).to eql(:ein_zwei)
         expect(match.(Success([3, 4]))).to eql(:drei_vier)
-        expect(match.(Success(array_like))).to eql([4, 9, 16])
+        expect(match.(Success(array_like))).to be(array_like)
+        expect(match.(Success(Some(:foo)))).to eql(:foo_extracted)
 
         expect { match.(Success(code: 303)) }.to raise_error(NoMatchingPatternError)
         expect { match.(Success([:foo])) }.to raise_error(NoMatchingPatternError)
@@ -172,5 +174,9 @@ RSpec.describe 'pattern matching' do
       expect(match.(list['sym'])).to eql(:string_or_symbol)
       expect(match.(list[1, 2, 3, 4, 5])).to eql(5)
     end
+  end
+
+  example 'unit is an empty array' do
+    Dry::Monads::Unit in []
   end
 end
