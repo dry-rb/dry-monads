@@ -66,3 +66,32 @@ in List[]
   # empty list
 end
 ```
+
+### Matching array values
+
+dry-monads treats all wrapped array values as tuples rather than lists.
+For examplle, this will not work:
+
+```ruby
+Success([1, 2, 3]) in Success(numbers) # => no match!
+```
+
+But this will:
+
+```ruby
+Success([1, 2, 3]) in Success(one, two, three)
+```
+
+And this will too:
+
+```ruby
+Success([1, 2, 3]) in Success[1, 2 ,3]
+```
+
+To capture an array value, use `*`:
+
+```ruby
+Success([1, 2, 3]) in Success(*numbers)
+```
+
+At least for `Failure` values, people use tuples more often; this is why dry-monads treats _all_ arrays as tuples. We could make `Success`/`Failure` behaviors different, but this would be even more unexpected.
