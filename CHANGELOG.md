@@ -1,3 +1,11 @@
+# v1.3.6 2020-01-08
+
+## Added
+
+- Delegation of `.deconstruct` calls (flash-gordon)
+
+[Compare v1.3.5...v1.3.6](https://github.com/dry-rb/dry-monads/compare/v1.3.5...v1.3.6)
+
 # v1.3.5 2020-01-06
 
 ## Added
