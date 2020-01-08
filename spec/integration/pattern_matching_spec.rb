@@ -13,6 +13,14 @@ RSpec.describe 'pattern matching' do
         end
       end
 
+      let(:array_like) do
+        Object.new.tap do |o|
+          def o.deconstruct
+            [4, 9, 16]
+          end
+        end
+      end
+
       specify 'destructuring' do
         class Test::Context
           include Dry::Monads[:result]
@@ -30,6 +38,9 @@ RSpec.describe 'pattern matching' do
             in Success(code: 301 | 302) then :redirect
             in Success({ code: 200..300 => x }) then x
             in Success(code: 101) then :switch_protocol
+            in Success(1, 2) then :ein_zwei
+            in Success[3, 4] then :drei_vier
+            in Success(*array) if array.size > 1 then array
             end
           end
         end
@@ -45,6 +56,9 @@ RSpec.describe 'pattern matching' do
         expect(match.(Success(code: 301))).to eql(:redirect)
         expect(match.(Success(code: 302))).to eql(:redirect)
         expect(match.(Success(hash_like))).to eql(:switch_protocol)
+        expect(match.(Success([1, 2]))).to eql(:ein_zwei)
+        expect(match.(Success([3, 4]))).to eql(:drei_vier)
+        expect(match.(Success(array_like))).to eql([4, 9, 16])
 
         expect { match.(Success(code: 303)) }.to raise_error(NoMatchingPatternError)
         expect { match.(Success([:foo])) }.to raise_error(NoMatchingPatternError)

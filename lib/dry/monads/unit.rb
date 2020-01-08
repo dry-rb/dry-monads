@@ -26,6 +26,10 @@ module Dry
       def unit.inspect
         'Unit'
       end
+
+      def unit.deconstruct
+        EMPTY_ARRAY
+      end
     end
   end
 end

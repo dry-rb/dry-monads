@@ -196,10 +196,8 @@ module Dry
         #
         # @api private
         def deconstruct
-          if Unit.equal?(@value)
-            []
-          elsif @value.is_a?(::Array)
-            @value
+          if @value.respond_to?(:deconstruct)
+            @value.deconstruct
           else
             [@value]
           end
