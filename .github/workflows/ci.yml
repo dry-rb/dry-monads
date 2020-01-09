@@ -2,7 +2,7 @@
 
 name: ci
 
-on:
+'on':
   push:
     paths:
       - .github/workflows/ci.yml
@@ -32,6 +32,11 @@ jobs:
         include:
           - ruby: "2.6"
             coverage: "true"
+    env:
+      CLASSPATH: "" # tmp jruby build workaround
+      COVERAGE: ${{matrix.coverage}}
+      CODACY_RUN_LOCAL: true
+      CODACY_PROJECT_TOKEN: ${{secrets.CODACY_PROJECT_TOKEN}}
     steps:
       - uses: actions/checkout@v1
       - name: Set up Ruby
@@ -45,8 +50,4 @@ jobs:
       - name: Bundle install
         run: bundle install --jobs 4 --retry 3
       - name: Run all tests
-        env:
-          COVERAGE: ${{matrix.coverage}}
-          CODACY_RUN_LOCAL: true
-          CODACY_PROJECT_TOKEN: ${{secrets.CODACY_PROJECT_TOKEN}}
         run: bundle exec rake
