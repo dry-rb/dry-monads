@@ -1,2 +1,15 @@
 name: dry-monads
 codacy_id: f2eed41bf7f04b38b0a7691c2cf6e73c
+gemspec:
+  authors: ["Nikita Shilnikov"]
+  email: ["fg@flashgordon.ru"]
+  summary: "Common monads for Ruby."
+  development_dependencies:
+    - bundler
+    - [dry-types, ">= 0.1.2"]
+    - rake
+    - rspec
+  runtime_dependencies:
+    - [concurrent-ruby, "~> 1.0"]
+    - [dry-core, "~> 0.4", ">= 0.4.4"]
+    - dry-equalizer
