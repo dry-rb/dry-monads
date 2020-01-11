@@ -6,10 +6,10 @@ gemspec:
   summary: "Common monads for Ruby."
   development_dependencies:
     - bundler
-    - [dry-types, ">= 0.1.2"]
     - rake
     - rspec
+    - [dry-types, ">= 0.1.2"]
   runtime_dependencies:
     - [concurrent-ruby, "~> 1.0"]
-    - [dry-core, "~> 0.4", ">= 0.4.4"]
     - dry-equalizer
+    - [dry-core, "~> 0.4", ">= 0.4.4"]
