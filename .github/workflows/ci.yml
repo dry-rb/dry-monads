@@ -2,7 +2,7 @@
 
 name: ci
 
-'on':
+"on":
   push:
     paths:
       - .github/workflows/ci.yml
@@ -11,8 +11,8 @@ name: ci
       - Rakefile
       - Gemfile
       - Gemfile.devtools
-      - "*.gemspec"
       - ".rubocop.yml"
+      - project.yml
   pull_request:
     branches:
       - master
