@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
   spec.version       = Dry::Monads::VERSION.dup
 
-  spec.summary       = "Common monads for Ruby."
+  spec.summary       = "Common monads for Ruby"
   spec.description   = spec.summary
   spec.homepage      = 'https://dry-rb.org/gems/dry-monads'
   spec.files         = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'dry-monads.gemspec', 'lib/**/*']
