@@ -39,7 +39,7 @@ in Failure[error_code, *payload]
 end
 ```
 
-In the sippet above, the patterns will be tried sequentially. If `value` doesn't match any pattern, an error will be thrown.
+In the snippet above, the patterns will be tried sequentially. If `value` doesn't match any pattern, an error will be thrown.
 
 ### Matching Maybe
 
@@ -70,7 +70,7 @@ end
 ### Matching array values
 
 dry-monads treats all wrapped array values as tuples rather than lists.
-For examplle, this will not work:
+For example, this will not work:
 
 ```ruby
 Success([1, 2, 3]) in Success(numbers) # => no match!
