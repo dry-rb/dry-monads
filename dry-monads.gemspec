@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "Common monads for Ruby."
   spec.description   = spec.summary
   spec.homepage      = 'https://dry-rb.org/gems/dry-monads'
-  spec.files         = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'lib/**/*']
+  spec.files         = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'dry-monads.gemspec', 'lib/**/*']
   spec.require_paths = ['lib']
 
   spec.metadata['allowed_push_host'] = 'https://rubygems.org'
@@ -27,11 +27,11 @@ Gem::Specification.new do |spec|
 
   # to update dependencies edit project.yml
   spec.add_runtime_dependency "concurrent-ruby", "~> 1.0"
-  spec.add_runtime_dependency "dry-equalizer"
   spec.add_runtime_dependency "dry-core", "~> 0.4", ">= 0.4.4"
+  spec.add_runtime_dependency "dry-equalizer"
 
   spec.add_development_dependency "bundler"
+  spec.add_development_dependency "dry-types", ">= 0.1.2"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
-  spec.add_development_dependency "dry-types", ">= 0.1.2"
 end
