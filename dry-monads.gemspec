@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "Common monads for Ruby"
   spec.description   = spec.summary
   spec.homepage      = 'https://dry-rb.org/gems/dry-monads'
-  spec.files         = Dir['CHANGELOG.md', 'LICENSE', 'README.md', 'dry-monads.gemspec', 'lib/**/*']
+  spec.files         = Dir["CHANGELOG.md", "LICENSE", "README.md", "dry-monads.gemspec", "lib/**/*"]
   spec.require_paths = ['lib']
 
   spec.metadata['allowed_push_host'] = 'https://rubygems.org'
