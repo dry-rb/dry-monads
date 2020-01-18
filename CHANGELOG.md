@@ -5,12 +5,16 @@
 
 - `Unit` destructures to an empty array (flash-gordon)
 
+[Compare v1.3.5...vunreleased](https://github.com/dry-rb/dry-monads/compare/v1.3.5...vunreleased)
+
 ## 1.3.5 2020-01-06
 
 
 ### Added
 
 - Smarter keys deconstruction in pattern matching (flash-gordon)
+
+[Compare v1.3.4...v1.3.5](https://github.com/dry-rb/dry-monads/compare/v1.3.4...v1.3.5)
 
 ## 1.3.4 2019-12-28
 
@@ -19,12 +23,16 @@
 
 - One more delegation warning happenning in do notation (flash-gordon)
 
+[Compare v1.3.3...v1.3.4](https://github.com/dry-rb/dry-monads/compare/v1.3.3...v1.3.4)
+
 ## 1.3.3 2019-12-11
 
 
 ### Fixed
 
 - Incompatibility with Rails. Internal (!) halt exceptions now use mutable backtraces because spring [mutates](https://github.com/rails/spring/blob/ee687859008e947bc905b95121e306e2948d31c9/lib/spring/application.rb#L295-L311) (!) them. For the record, this a bug in Rails (johnmaxwell)
+
+[Compare v1.3.2...v1.3.3](https://github.com/dry-rb/dry-monads/compare/v1.3.2...v1.3.3)
 
 ## 1.3.2 2019-11-30
 
@@ -44,12 +52,16 @@
 
 - Warnings about keywords from Ruby 2.7 (flash-gordon)
 
+[Compare v1.3.1...v1.3.2](https://github.com/dry-rb/dry-monads/compare/v1.3.1...v1.3.2)
+
 ## 1.3.1 2019-09-07
 
 
 ### Fixed
 
 - Added missing `None#maybe` :sweat_smile: (flash-gordon)
+
+[Compare v1.3.0...v1.3.1](https://github.com/dry-rb/dry-monads/compare/v1.3.0...v1.3.1)
 
 ## 1.3.0 2019-08-03
 
@@ -134,6 +146,8 @@
   - https://bugs.ruby-lang.org/issues/14912
 
   Keep in mind this feature is experimental and can be changed by 2.7 release. But it rocks already!
+
+[Compare v1.2.0...v1.3.0](https://github.com/dry-rb/dry-monads/compare/v1.2.0...v1.3.0)
 
 ## 1.2.0 2019-01-12
 
@@ -224,6 +238,8 @@
   ```
 - `Task.failed` is a counterpart of `Task.pure`, accepts an exception and returns a failed task immediately (flash-gordon)
 
+[Compare v1.1.0...v1.2.0](https://github.com/dry-rb/dry-monads/compare/v1.1.0...v1.2.0)
+
 ## 1.1.0 2018-10-16
 
 
@@ -247,6 +263,8 @@
 
 - Do notation was made to work nicely with inheritance. This shouldn't break any existing code but if it does please report (flash-gordon)
 
+[Compare v1.0.1...v1.1.0](https://github.com/dry-rb/dry-monads/compare/v1.0.1...v1.1.0)
+
 ## 1.0.1 2018-08-11
 
 
@@ -260,6 +278,8 @@
 ### Fixed
 
 - Fixed behavior of `List<Validated>#traverse` in presence of `Valid` values (flash-gordon + SunnyMagadan)
+
+[Compare v1.0.0...v1.0.1](https://github.com/dry-rb/dry-monads/compare/v1.0.0...v1.0.1)
 
 ## 1.0.0 2018-06-26
 
@@ -400,6 +420,8 @@
 - `Either#value` and `Maybe#value` were both droped, use `value_or` or `value!` when you :100: sure it's safe
 - `require 'dry/monads'` doesn't load all monads anymore, use `require 'dry/monads/all'` instead or cherry pick them with `require 'dry/monads/maybe'` etc (timriley)
 
+[Compare v0.4.0...v1.0.0](https://github.com/dry-rb/dry-monads/compare/v0.4.0...v1.0.0)
+
 ## 0.4.0 2017-11-11
 
 
@@ -425,12 +447,16 @@
 
 - The `Either` monad was renamed to `Result` which sounds less nerdy but better reflects the purpose of the type. `Either::Right` became `Result::Success` and `Either::Left` became `Result::Failure`. This change is backward-compatible overall but you will see the new names when using old `Left` and `Right` methods (citizen428)
 - Consequently, `Try::Success` and `Try::Failure` were renamed to `Try::Value` and `Try::Error` (flash-gordon)
+[Compare v0.3.1...v0.4.0](https://github.com/dry-rb/dry-monads/compare/v0.3.1...v0.4.0)
+
 ## 0.3.1 2017-03-18
 
 
 ### Fixed
 
 - Fixed unexpected coercing to `Hash` on `.bind` call (flash-gordon)
+
+[Compare v0.3.0...v0.3.1](https://github.com/dry-rb/dry-monads/compare/v0.3.0...v0.3.1)
 
 ## 0.3.0 2017-03-16
 
@@ -445,6 +471,8 @@
 - Added `List#traverse` that "flips" the list with an embedded monad (flash-gordon + damncabbage)
 - Added `#tee` for all right-biased monads (flash-gordon)
 
+[Compare v0.2.1...v0.3.0](https://github.com/dry-rb/dry-monads/compare/v0.2.1...v0.3.0)
+
 ## 0.2.1 2016-11-13
 
 
@@ -457,6 +485,8 @@
 - `Right(nil).to_maybe` now returns `None` with a warning instead of failing (orisaka)
 - `Some#value_or` doesn't require an argument because `None#value_or` doesn't require it either if a block was passed (flash-gordon)
 
+[Compare v0.2.0...v0.2.1](https://github.com/dry-rb/dry-monads/compare/v0.2.0...v0.2.1)
+
 ## 0.2.0 2016-09-18
 
 
@@ -465,12 +495,16 @@
 - Added `Maybe#to_json` as an opt-in extension for serialization to JSON (rocknruby)
 - Added `Maybe#value_or` which returns you the underlying value with a fallback in a single method call (dsounded)
 
+[Compare v0.1.1...v0.2.0](https://github.com/dry-rb/dry-monads/compare/v0.1.1...v0.2.0)
+
 ## 0.1.1 2016-08-25
 
 
 ### Fixed
 
 - Added explicit requires of `dry-equalizer`. This allows to safely load only specific monads (artofhuman)
+
+[Compare v0.1.0...v0.1.1](https://github.com/dry-rb/dry-monads/compare/v0.1.0...v0.1.1)
 
 ## 0.1.0 2016-08-23
 
@@ -482,6 +516,8 @@
 ### Changed
 
 - Dropped MRI 2.0 support (flash-gordon)
+[Compare v0.0.2...v0.1.0](https://github.com/dry-rb/dry-monads/compare/v0.0.2...v0.1.0)
+
 ## 0.0.2 2016-06-29
 
 
@@ -489,6 +525,8 @@
 
 - Added `Either#to_either` so that you can rely on duck-typing when you work with different types of monads (timriley)
 - Added `Maybe#to_maybe` for consistency with `#to_either` (flash-gordon)
+
+[Compare v0.0.1...v0.0.2](https://github.com/dry-rb/dry-monads/compare/v0.0.1...v0.0.2)
 
 ## 0.0.1 2016-05-02
 
