@@ -6,7 +6,7 @@
 - `Unit` destructures to an empty array (flash-gordon)
 
 
-[Compare v1.3.5...vunreleased](https://github.com/dry-rb/dry-monads/compare/v1.3.5...vunreleased)
+[Compare v1.3.5...master](https://github.com/dry-rb/dry-monads/compare/v1.3.5...master)
 
 ## 1.3.5 2020-01-06
 
