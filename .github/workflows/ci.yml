@@ -74,4 +74,29 @@ jobs:
       - name: Trigger release workflow
         run: |
           tag=$(echo $GITHUB_REF | cut -d / -f 3)
-          bundle exec bin/ossy gh w $GITHUB_REPOSITORY release --payload "{\"tag\":\"$tag\"}"
+  release:
+    runs-on: ubuntu-latest
+    if: contains(github.ref, 'tags')
+    needs: tests
+    env:
+      GITHUB_LOGIN: dry-bot
+      GITHUB_TOKEN: ${{secrets.GH_PAT}}
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Ruby
+        uses: eregon/use-ruby-action@master
+        with:
+          ruby-version: 2.6
+      - name: Install latest bundler
+        run: |
+          gem install bundler
+      - name: Bundle
+        run: |
+          bundle install
+      - name: Symlink ossy
+        run: |
+          ln -sf "$(bundle info ossy --path)/bin/ossy" bin/ossy
+      - name: Trigger release workflow
+        run: |
+          tag=$(echo $GITHUB_REF | cut -d / -f 3)
+          bundle exec bin/ossy gh w $GITHUB_REPOSITORY release --payload "{\"tag\":\"$tag\",\"tag_creator\":\"$GITHUB_ACTOR\",\"repo\":\"$GITHUB_REPOSITORY\"}"
