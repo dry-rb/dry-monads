@@ -5,14 +5,15 @@ name: ci
 "on":
   push:
     paths:
-      - .github/workflows/ci.yml
-      - lib/**
-      - spec/**
-      - Rakefile
-      - Gemfile
-      - Gemfile.devtools
+      - ".github/workflows/ci.yml"
+      - "lib/**"
+      - "*.gemspec"
+      - "spec/**"
+      - "Rakefile"
+      - "Gemfile"
+      - "Gemfile.devtools"
       - ".rubocop.yml"
-      - project.yml
+      - "project.yml"
   pull_request:
     branches:
       - master
