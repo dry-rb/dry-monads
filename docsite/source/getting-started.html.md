@@ -35,9 +35,9 @@ class CreateUser
   def call(params)
     # ...
     if valid?(params)
-      None()
-    else
       Some(create_user(params))
+    else
+      None()
     end
   end
 end
