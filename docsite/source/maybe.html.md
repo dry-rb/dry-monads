@@ -13,7 +13,7 @@ Applies a block to a monadic value. If the value is `Some` then calls the block 
 ```ruby
 extend Dry::Monads[:maybe]
 
-maybe_user = Maybe(user).bind do |u|
+maybe_street = Maybe(user).bind do |u|
   Maybe(u.address).bind do |a|
     Maybe(a.street)
   end
