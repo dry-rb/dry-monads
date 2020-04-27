@@ -106,6 +106,13 @@ module Dry
           true
         end
 
+        # Raise the inner error of a Failure if any.
+        #
+        # @return [Object]
+        def value_or_raise!
+          value_or { |error| raise error }
+        end
+
         # Does the same thing as #bind except it also wraps the value
         # in an instance of Result::Success monad. This allows for easier
         # chaining of calls.
