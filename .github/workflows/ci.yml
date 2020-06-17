@@ -37,8 +37,6 @@ jobs:
     env:
       CLASSPATH: "" # tmp jruby build workaround
       COVERAGE: ${{matrix.coverage}}
-      CODACY_RUN_LOCAL: true
-      CODACY_PROJECT_TOKEN: ${{secrets.CODACY_PROJECT_TOKEN}}
     steps:
       - uses: actions/checkout@v1
       - name: Install package dependencies
@@ -55,6 +53,12 @@ jobs:
         run: bundle install --jobs 4 --retry 3
       - name: Run all tests
         run: bundle exec rake
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@master
+        if: env.COVERAGE == 'true'
+        with:
+          project-token: ${{secrets.CODACY_PROJECT_TOKEN}}
+          coverage-reports: coverage/coverage.xm
   release:
     runs-on: ubuntu-latest
     if: contains(github.ref, 'tags') && github.event_name == 'create'
