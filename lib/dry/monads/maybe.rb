@@ -83,7 +83,7 @@ module Dry
         Maybe
       end
 
-      # Convenient way to call #maybe on an instance
+      # Convenient way to call #fmap on an instance
       def method_missing(*args, &block)
         fmap do |value|
           value.public_send(*args, &block)
