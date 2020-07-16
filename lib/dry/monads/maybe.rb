@@ -84,11 +84,25 @@ module Dry
       end
 
       # Convenient way to call #fmap on an instance
+      #
+      # @api private
       def method_missing(*args, &block)
         fmap do |value|
           value.public_send(*args, &block)
         end
       end
+
+      # @api private
+      def respond_to_missing?(method_name, include_private = false)
+        if none?
+          true
+        elsif some?
+          @value.respond_to?(method_name, include_private)
+        else
+          super
+        end
+      end
+
       # Represents a value that is present, i.e. not nil.
       #
       # @api public
