@@ -146,6 +146,12 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
+    describe "#method_missing" do
+      it "delegates calls to #fmap" do
+        expect(subject.upcase).to eql(upcased_subject)
+      end
+    end
+
     describe '#or' do
       it 'accepts a value as an alternative' do
         expect(subject.or(some['baz'])).to be(subject)
