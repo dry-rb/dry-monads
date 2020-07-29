@@ -13,14 +13,17 @@ RSpec.describe(Dry::Monads::Do::All) do
     context "include first" do
       let(:adder) do
         spec = self
-        Class.new {
+        klass = Class.new do
           include spec.mixin
 
           def sum(a, b)
             c = yield(a) + yield(b)
             Success(c)
           end
-        }.tap { |c| c.include(result_mixin) }.new
+        end
+
+        klass.include(result_mixin)
+        klass.new
       end
 
       it "wraps arbitrary methods defined _after_ mixing in" do
@@ -34,29 +37,33 @@ RSpec.describe(Dry::Monads::Do::All) do
       end
     end
 
-    context 'visibility protection' do
+    context "visibility protection" do
       let(:object) do
         spec = self
-        Class.new {
+        klass = Class.new do
           include spec.mixin
 
           protected
+
           def my_protected_method
             raise VisibilityLeak, "Should not be able to call a protected method"
           end
 
           private
+
           def my_private_method
             raise VisibilityLeak, "Should not be able to call a private method"
           end
-        }.tap {|c| c.include(result_mixin) }.new
+        end
+
+        klass.tap { |c| c.include(result_mixin) }.new
       end
 
-      it 'is preserved for protected methods' do
+      it "is preserved for protected methods" do
         expect { object.my_protected_method }.to raise_error(NoMethodError)
       end
 
-      it 'is preserved for private methods' do
+      it "is preserved for private methods" do
         expect { object.my_private_method }.to raise_error(NoMethodError)
       end
     end
@@ -68,45 +75,42 @@ RSpec.describe(Dry::Monads::Do::All) do
     it_behaves_like "Do::All"
 
     it "wraps already defined method" do
-      klass = Class.new {
+      klass = Class.new do
         def sum(a, b)
           c = yield(a) + yield(b)
           Success(c)
         end
-      }.tap { |c|
-        c.include(mixin, result_mixin)
-      }
+      end
 
+      klass.include(mixin, result_mixin)
       adder = klass.new
 
       expect(adder.sum(Success(1), Success(2))).to eql(Success(3))
     end
 
-    it 'preserves private methods' do
-      klass = Class.new {
+    it "preserves private methods" do
+      klass = Class.new do
         private
+
         def my_private_method
           raise VisibilityLeak, "Should not be able to call a private method"
         end
-      }.tap { |c|
-        c.include(mixin, result_mixin)
-      }
-
+      end
+      klass.include(mixin, result_mixin)
       object = klass.new
 
       expect { object.my_private_method }.to raise_error(NoMethodError)
     end
 
-    it 'preserves protected methods' do
-      klass = Class.new {
+    it "preserves protected methods" do
+      klass = Class.new do
         protected
+
         def my_protected_method
           raise VisibilityLeak, "Should not be able to call a protected method"
         end
-      }.tap { |c|
-        c.include(mixin, result_mixin)
-      }
-
+      end
+      klass.include(mixin, result_mixin)
       object = klass.new
 
       expect { object.my_protected_method }.to raise_error(NoMethodError)
@@ -114,7 +118,7 @@ RSpec.describe(Dry::Monads::Do::All) do
 
     context "inheritance" do
       it "works with inheritance" do
-        base = Class.new.tap { |c| c.include(mixin, result_mixin) }
+        base = Class.new.include(mixin, result_mixin)
         child = Class.new(base) {
           def call
             result = yield Success(:success)
@@ -126,7 +130,7 @@ RSpec.describe(Dry::Monads::Do::All) do
       end
 
       it "doesn't care about the order" do
-        base = Class.new.tap { |c| c.include(mixin, result_mixin) }
+        base = Class.new.include(mixin, result_mixin)
         child = Class.new(base)
         base.class_eval {
           def call
@@ -139,33 +143,33 @@ RSpec.describe(Dry::Monads::Do::All) do
         expect(child.new.call).to eql(Success("success"))
       end
 
-      it 'preserves private methods' do
-        base = Class.new.tap { |c| c.include(mixin, result_mixin) }
-        klass = Class.new(base) {
+      it "preserves private methods" do
+        base = Class.new.include(mixin, result_mixin)
+        klass = Class.new(base) do
           private
+
           def my_private_method
             raise VisibilityLeak, "Should not be able to call a private method"
           end
-        }.tap { |c|
-          c.include(mixin, result_mixin)
-        }
+        end
 
+        klass.include(mixin, result_mixin)
         object = klass.new
 
         expect { object.my_private_method }.to raise_error(NoMethodError)
       end
 
-      it 'preserves protected methods' do
-        base = Class.new.tap { |c| c.include(mixin, result_mixin) }
-        klass = Class.new(base) {
+      it "preserves protected methods" do
+        base = Class.new.include(mixin, result_mixin)
+        klass = Class.new(base) do
           protected
+
           def my_protected_method
             raise VisibilityLeak, "Should not be able to call a protected method"
           end
-        }.tap { |c|
-          c.include(mixin, result_mixin)
-        }
+        end
 
+        klass.include(mixin, result_mixin)
         object = klass.new
 
         expect { object.my_protected_method }.to raise_error(NoMethodError)

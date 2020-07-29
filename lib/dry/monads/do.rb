@@ -85,7 +85,7 @@ module Dry
         # @return [Module]
         def for(*methods)
           mod = ::Module.new do
-            methods.each { |method_name| Do.wrap_method(self, method_name) }
+            methods.each { |method_name| Do.wrap_method(self, method_name, :public) }
           end
 
           ::Module.new do
@@ -105,7 +105,7 @@ module Dry
         end
 
         # @api private
-        def wrap_method(target, method_name)
+        def wrap_method(target, method_name, visibility)
           target.module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
             def #{method_name}(#{DELEGATE})
               if block_given?
@@ -114,6 +114,7 @@ module Dry
                 Do.() { super { |*ms| Do.bind(ms) } }
               end
             end
+            #{visibility} :#{method_name}
           RUBY
         end
 
