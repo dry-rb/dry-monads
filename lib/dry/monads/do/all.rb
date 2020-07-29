@@ -70,8 +70,15 @@ module Dry
             module_eval do
               define_method(:method_added) do |method|
                 super(method)
+                visibility = if private_method_defined?(method)
+                               :private
+                             elsif protected_method_defined?(method)
+                               :protected
+                             else
+                               :public
+                             end
 
-                tracker.wrap_method(self, method)
+                tracker.wrap_method(self, method, visibility)
               end
 
               define_method(:inherited) do |base|
@@ -92,8 +99,8 @@ module Dry
             target.prepend(wrappers[target])
           end
 
-          def wrap_method(target, method)
-            Do.wrap_method(wrappers[target], method)
+          def wrap_method(target, method, visibility)
+            Do.wrap_method(wrappers[target], method, visibility)
           end
         end
 
@@ -104,7 +111,18 @@ module Dry
           wrappers = ::Hash.new { |h, k| h[k] = ::Module.new }
           tracker = MethodTracker.new(wrappers)
           base.extend(tracker)
-          base.instance_methods(false).each { |m| tracker.wrap_method(base, m) }
+
+          base.public_instance_methods(false).each do |m|
+            tracker.wrap_method(base, m, :public)
+          end
+
+          base.protected_instance_methods(false).each do |m|
+            tracker.wrap_method(base, m, :protected)
+          end
+
+          base.private_instance_methods(false).each do |m|
+            tracker.wrap_method(base, m, :private)
+          end
 
           base.extend(InstanceMixin) unless base.is_a?(::Class)
         end
@@ -122,10 +140,27 @@ module Dry
 
               next if method.equal?(:singleton_method_added)
 
-              Do.wrap_method(wrapper, method)
+              visibility = if private_method_defined?(method)
+                             :private
+                           elsif protected_method_defined?(method)
+                             :protected
+                           else
+                             :public
+                           end
+
+              Do.wrap_method(wrapper, method, visibility)
             end
-            object.singleton_class.instance_methods(false).each do |m|
-              Do.wrap_method(wrapper, m)
+
+            object.singleton_class.public_instance_methods(false).each do |m|
+              Do.wrap_method(wrapper, m, :public)
+            end
+
+            object.singleton_class.protected_instance_methods(false).each do |m|
+              Do.wrap_method(wrapper, m, :protected)
+            end
+
+            object.singleton_class.private_instance_methods(false).each do |m|
+              Do.wrap_method(wrapper, m, :private)
             end
           end
         end
