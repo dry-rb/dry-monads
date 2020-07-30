@@ -83,9 +83,17 @@ module Dry
         #
         # @param [Array<Symbol>] methods
         # @return [Module]
-        def for(*methods)
+        def for(*public_methods, **methods_with_visibility)
           mod = ::Module.new do
-            methods.each { |method_name| Do.wrap_method(self, method_name, :public) }
+            public_methods.each do |method_name|
+              Do.wrap_method(self, method_name, nil)
+            end
+
+            methods_with_visibility.each do |visibility, methods|
+              methods.each do |method_name|
+                Do.wrap_method(self, method_name, visibility)
+              end
+            end
           end
 
           ::Module.new do
