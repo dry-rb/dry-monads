@@ -166,13 +166,13 @@ address = yield find_address(params[:address_id])
 Success(user.update(address_id: address.id))
 ```
 
-The result of this piece of code can be one of `Success(user)`, `Failure(:user_not_found)`, or `Failure(:address_not_found)`. This style of programming called "Railway Oriented Programming" and can check out [dry-transaction](/gems/dry-transaction) and watch a [nice video](https://fsharpforfunandprofit.com/rop/) on the subject. Also, see [dry-matcher](/gems/dry-matcher) for an example of how to use monads for controlling the flow of code with a result.
+The result of this piece of code can be one of `Success(user)`, `Failure(:user_not_found)`, or `Failure(:address_not_found)`. This style of programming is called "Railway Oriented Programming" and you can check out [dry-transaction](/gems/dry-transaction) and watch a [nice video](https://fsharpforfunandprofit.com/rop/) on the subject. Also, see [dry-matcher](/gems/dry-matcher) for an example of how to use monads for controlling the flow of code with a result.
 
 ## A word of warning
 
 Before `do` came around here was a warning about over-using monads, turned out with `do` notation code does not differ much from regular Ruby code. Just don't wrap everything with `Maybe`, come up with conventions.
 
-If you're interested in functional programming in general, consider learning other languages such as Haskell, Scala, OCaml, this will make you a better programmer no matter what programming language you use on a daily basis. And if not earlier then maybe after that dry-monads will become another instrument in your Ruby toolbox :)
+If you're interested in functional programming in general, consider learning other languages such as Haskell, Scala, OCaml, this will make you a better programmer no matter what programming language you use on a daily basis. And if not earlier then maybe after that, dry-monads will become another instrument in your Ruby toolbox :)
 
 ## Credits
 
