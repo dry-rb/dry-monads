@@ -103,6 +103,17 @@ Failure('Error').value!
 # => Dry::Monads::UnwrapError: value! was called on Failure
 ```
 
+### `value_or_raise!`
+
+Use `value_or_raise!` for extracting values or raising the inner error of a Failure in case there is one.
+
+```ruby
+extend Dry::Monads[:result]
+
+Sucess({}).value_or_raise! # => {}
+Failure(StandardError.new).value_or_raise! # => Will raise StandardError
+```
+
 ### `or`
 
 An example of using `or` with `Success` and `Failure`.

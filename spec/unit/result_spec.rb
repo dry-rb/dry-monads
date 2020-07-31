@@ -195,6 +195,20 @@ RSpec.describe(Dry::Monads::Result) do
       end
     end
 
+    describe '#value_or_raise!' do
+      it 'doesn\'t raise an error if Success' do
+        expect {
+          result::Success.new({}).value_or_raise!
+        }.not_to raise_error
+      end
+
+      it 'raises the inner error if Failure' do
+        expect {
+          result::Failure.new(StandardError.new).value_or_raise!
+        }.to raise_error(StandardError)
+      end
+    end
+
     describe '#to_validated' do
       it 'returns Valid' do
         expect(subject.to_validated).to eql(valid.('foo'))
