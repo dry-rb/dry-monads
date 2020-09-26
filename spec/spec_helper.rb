@@ -2,6 +2,7 @@
 
 require_relative 'support/coverage'
 require_relative 'support/warnings'
+require_relative "support/rspec_options"
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
@@ -48,13 +49,6 @@ module TestHelpers
   end
 end
 
-# Namespace holding all objects created during specs
-module Test
-  def self.remove_constants
-    constants.each(&method(:remove_const))
-  end
-end
-
 module Dry::Monads
   def self.unload_monad(name)
     if registry.key?(name.to_sym)
@@ -69,13 +63,11 @@ RSpec.configure do |config|
   unless RUBY_VERSION >= '2.7'
     config.exclude_pattern = '**/pattern_matching_spec.rb'
   end
-  config.disable_monkey_patching!
-  config.filter_run_when_matching :focus
 
   config.include TestHelpers
 
-  config.after do
-    Test.remove_constants
+  config.before do
+    stub_const('Test', Module.new)
   end
 
   config.around :each, :suppress_deprecations do |ex|
