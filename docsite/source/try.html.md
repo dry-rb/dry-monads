@@ -59,10 +59,10 @@ class ExceptionalLand
 
   def call
     Try { 10 / 2 }.fmap { |x| x * 3 }
-    # => 15
+    # => Try::Value(15)
 
     Try[ZeroDivisionError] { 10 / 0 }.fmap { |x| x * 3 }
-    # => Failure(ZeroDivisionError: divided by 0)
+    # => Try::Error(ZeroDivisionError: divided by 0)
   end
 end
 ```
