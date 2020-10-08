@@ -20,11 +20,11 @@ module Dry
     #
     Unit = Object.new.tap do |unit|
       def unit.to_s
-        'Unit'
+        "Unit"
       end
 
       def unit.inspect
-        'Unit'
+        "Unit"
       end
 
       def unit.deconstruct

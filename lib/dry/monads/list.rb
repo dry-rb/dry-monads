@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'dry/equalizer'
+require "dry/equalizer"
 
-require 'dry/monads/maybe'
-require 'dry/monads/task'
-require 'dry/monads/result'
-require 'dry/monads/try'
-require 'dry/monads/validated'
-require 'dry/monads/transformer'
-require 'dry/monads/curry'
+require "dry/monads/maybe"
+require "dry/monads/task"
+require "dry/monads/result"
+require "dry/monads/try"
+require "dry/monads/validated"
+require "dry/monads/transformer"
+require "dry/monads/curry"
 
 module Dry
   module Monads
@@ -165,7 +165,7 @@ module Dry
       #
       # @return [String]
       def inspect
-        type_ann = typed? ? "<#{type.name.split('::').last}>" : ''
+        type_ann = typed? ? "<#{type.name.split("::").last}>" : ""
         "List#{type_ann}#{value.inspect}"
       end
       alias_method :to_s, :inspect
@@ -265,10 +265,10 @@ module Dry
       def typed(type = nil)
         if type.nil?
           if size.zero?
-            raise ArgumentError, 'Cannot infer a monad for an empty list'
+            raise ArgumentError, "Cannot infer a monad for an empty list"
           else
             self.class.warn(
-              'Automatic monad inference is deprecated, pass a type explicitly '\
+              "Automatic monad inference is deprecated, pass a type explicitly "\
               "or use a predefined constant, e.g. List::Result\n"\
               "#{caller.find { |l| l !~ %r{(lib/dry/monads)|(gems)} }}"
             )
@@ -298,7 +298,7 @@ module Dry
       # @return [Monad] Result is a monadic value
       def traverse(proc = nil, &block)
         unless typed?
-          raise StandardError, 'Cannot traverse an untyped list'
+          raise StandardError, "Cannot traverse an untyped list"
         end
 
         cons = type.pure { |list, i| list + List.pure(i) }
@@ -449,9 +449,9 @@ module Dry
       end
     end
 
-    require 'dry/monads/registry'
+    require "dry/monads/registry"
     register_mixin(:list, List::Mixin)
   end
 end
 
-require 'dry/monads/traverse'
+require "dry/monads/traverse"

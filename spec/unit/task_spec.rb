@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'English'
+require "English"
 
 RSpec.describe(Dry::Monads::Task) do
   result = Dry::Monads::Result
@@ -28,22 +28,22 @@ RSpec.describe(Dry::Monads::Task) do
     task(&deferred { 1 })
   end
 
-  it_behaves_like 'a monad'
+  it_behaves_like "a monad"
 
-  describe '.new' do
-    it 'delays the execution' do
+  describe ".new" do
+    it "delays the execution" do
       expect(subject.value!).to be 1
     end
   end
 
-  describe '#fmap' do
-    it 'chains transformations' do
+  describe "#fmap" do
+    it "chains transformations" do
       chain = subject.fmap { |v| v * 2 }
 
       expect(chain.value!).to be 2
     end
 
-    it 'runs a block only on success' do
+    it "runs a block only on success" do
       called = false
       t = task { 1 / 0 }.fmap { called = true }
       t.to_result
@@ -52,158 +52,162 @@ RSpec.describe(Dry::Monads::Task) do
     end
   end
 
-  describe '#bind' do
-    it 'combines tasks' do
+  describe "#bind" do
+    it "combines tasks" do
       chain = subject.bind { |v| task { v * 2 } }
 
       expect(chain.value!).to be 2
     end
   end
 
-  describe '#then' do
-    it 'is an alias of #bind' do
+  describe "#then" do
+    it "is an alias of #bind" do
       expect(subject.method(:then)).to eql(subject.method(:bind))
     end
   end
 
-  describe '#to_result' do
-    it 'transforms a successful execution to Result' do
+  describe "#to_result" do
+    it "transforms a successful execution to Result" do
       expect(subject.to_result).to eql(success[1])
     end
 
-    it 'transforms an unsuccessful result to a Failure' do
+    it "transforms an unsuccessful result to a Failure" do
       error = task { 1 / 0 }.to_result
       expect(error).to be_a_failure
       expect(error.failure).to be_a(ZeroDivisionError)
     end
 
-    it 'tracks the caller' do
+    it "tracks the caller" do
       error = task { 1 / 0 }.to_result
-      expect(error.trace).to include('spec/unit/task_spec.rb')
+      expect(error.trace).to include("spec/unit/task_spec.rb")
     end
   end
 
-  describe '#to_maybe' do
-    it 'transforms a successful execution to Some' do
+  describe "#to_maybe" do
+    it "transforms a successful execution to Some" do
       expect(subject.to_maybe).to eql(some[1])
     end
 
-    it 'transforms an unsuccessful result to None' do
+    it "transforms an unsuccessful result to None" do
       error = task { 1 / 0 }.to_maybe
       expect(error).to be_none
     end
 
-    it 'tracks the caller' do
+    it "tracks the caller" do
       error = task { 1 / 0 }.to_maybe
-      expect(error.trace).to include('spec/unit/task_spec.rb')
+      expect(error.trace).to include("spec/unit/task_spec.rb")
     end
   end
 
-  describe '#value!' do
-    it 'unwraps the value' do
+  describe "#value!" do
+    it "unwraps the value" do
       expect(subject.value!).to be 1
     end
 
-    it 'raises an error on unsuccessful computation' do
+    it "raises an error on unsuccessful computation" do
       expect { task { 1 / 0 }.value! }.to raise_error(ZeroDivisionError)
     end
   end
 
-  describe '#inspect' do
-    it 'inspects pending' do
+  describe "#inspect" do
+    it "inspects pending" do
       t = task { sleep 0.01 }
-      expect(t.inspect).to eql('Task(?)')
+      expect(t.inspect).to eql("Task(?)")
     end
 
-    it 'inspects complete' do
+    it "inspects complete" do
       t = task { :something }.tap(&:value!)
-      expect(t.inspect).to eql('Task(value=:something)')
+      expect(t.inspect).to eql("Task(value=:something)")
     end
 
-    it 'inspects failed' do
-      1 / 0 rescue err = $ERROR_INFO
+    it "inspects failed" do
+      begin
+        1 / 0
+      rescue StandardError
+        err = $ERROR_INFO
+      end
       t = task { raise err }.tap(&:to_result)
       expect(t.inspect).to eql("Task(error=#{err.inspect})")
     end
 
-    it 'shows empty parens for unit' do
-      expect(task { unit }.tap(&:value!).to_s).to eql('Task(value=())')
+    it "shows empty parens for unit" do
+      expect(task { unit }.tap(&:value!).to_s).to eql("Task(value=())")
     end
   end
 
-  describe '#to_s' do
-    it 'is an alias for inspect' do
+  describe "#to_s" do
+    it "is an alias for inspect" do
       expect(subject.method(:to_s)).to eql(subject.method(:inspect))
     end
   end
 
-  describe '#or' do
-    it 'runs a block on failure' do
+  describe "#or" do
+    it "runs a block on failure" do
       m = task { 1 / 0 }.or { task { :success } }
       expect(m.wait).to be == task { :success }.wait
     end
 
-    it 'ignores blocks on success' do
+    it "ignores blocks on success" do
       m = subject.or { task { :success } }
       expect(m.wait).to be == task { 1 }.wait
     end
   end
 
-  describe '#or_fmap' do
-    it 'runs a block on failure' do
+  describe "#or_fmap" do
+    it "runs a block on failure" do
       m = task { 1 / 0 }.or_fmap { :success }.to_result
       expect(m).to eql(success[:success])
     end
   end
 
-  describe '#value_or' do
-    specify 'if success unwraps the value' do
+  describe "#value_or" do
+    specify "if success unwraps the value" do
       expect(subject.value_or { 2 }).to be(1)
     end
 
-    specify 'if failure calls the given block' do
+    specify "if failure calls the given block" do
       expect(task { 1 / 0 }.value_or { 2 }).to be(2)
     end
   end
 
-  describe '#complete?' do
-    it 'checks whether the task is complete' do
+  describe "#complete?" do
+    it "checks whether the task is complete" do
       expect(task { sleep 0.01 }.wait).to be_complete
       expect(task { sleep 0.01 }).not_to be_complete
     end
   end
 
-  describe '#wait' do
-    it 'waits for resolution' do
+  describe "#wait" do
+    it "waits for resolution" do
       expect(task { sleep 0.01 }.wait).to be_complete
       expect(task { sleep 0.01 }).not_to be_complete
     end
 
-    it 'accepts a timeout' do
+    it "accepts a timeout" do
       expect(task { sleep 10 }.wait(0.01)).not_to be_complete
     end
   end
 
-  describe '.[]' do
+  describe ".[]" do
     let(:immediate) { Concurrent::ImmediateExecutor.new }
 
-    it 'allows to inject an underlying executor' do
+    it "allows to inject an underlying executor" do
       expect(task[immediate, &-> { Thread.current }].to_result).to eql(success[Thread.main])
     end
 
-    it 'supports global pools' do
+    it "supports global pools" do
       expect(task[:immediate, &-> { Thread.current }].to_result).to eql(success[Thread.main])
       expect(task[:io, &-> { Thread.current }].to_result).not_to eql(success[Thread.main])
       expect(task[:fast, &-> { Thread.current }].to_result).not_to eql(success[Thread.main])
     end
   end
 
-  describe '.pure' do
-    it 'creates a resolved task' do
+  describe ".pure" do
+    it "creates a resolved task" do
       expect(task.pure(1)).to be == subject.wait
     end
 
-    it 'accepts a block too' do
+    it "accepts a block too" do
       one = -> { 1 }
       expect(task.pure(&one)).to be == task { one }.wait
     end
@@ -216,21 +220,21 @@ RSpec.describe(Dry::Monads::Task) do
     end
   end
 
-  describe '#apply' do
+  describe "#apply" do
     let(:two) { task { 2 } }
     let(:three) { task { 3 } }
 
-    it 'applies arguments to the underlying callable' do
+    it "applies arguments to the underlying callable" do
       lifted = task.pure(-> x { x * 2 })
       expect(lifted.apply(two).to_result).to eql(success[4])
     end
 
-    it 'curries the callable' do
+    it "curries the callable" do
       lifted = task.pure(-> x, y { x * y * 2 })
       expect(lifted.apply(two).apply(three).to_result).to eql(success[12])
     end
 
-    it 'can be used via pure with block' do
+    it "can be used via pure with block" do
       lifted = task.pure { |x, y| x * y * 2 }
       expect(lifted.apply(two).apply(three).to_result).to eql(success[12])
     end

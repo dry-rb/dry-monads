@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'dry/monads/result'
-require 'dry/monads/do/all'
+require "dry/monads/result"
+require "dry/monads/do/all"
 
 RSpec.describe(Dry::Monads::Do::All) do
   result_mixin = Dry::Monads::Result::Mixin
   include result_mixin
 
-  shared_examples_for 'Do::All' do
-    context 'include first' do
+  shared_examples_for "Do::All" do
+    context "include first" do
       let(:adder) do
         spec = self
         Class.new {
@@ -21,24 +21,24 @@ RSpec.describe(Dry::Monads::Do::All) do
         }.tap { |c| c.include(result_mixin) }.new
       end
 
-      it 'wraps arbitrary methods defined _after_ mixing in' do
+      it "wraps arbitrary methods defined _after_ mixing in" do
         expect(adder.sum(Success(1), Success(2))).to eql(Success(3))
         expect(adder.sum(Success(1), Failure(2))).to eql(Failure(2))
         expect(adder.sum(Failure(1), Success(2))).to eql(Failure(1))
       end
 
-      it 'removes uses a given block' do
+      it "removes uses a given block" do
         expect(adder.sum(1, 2) { |x| x }).to eql(Success(3))
       end
     end
   end
 
-  context 'Do::All' do
+  context "Do::All" do
     let(:mixin) { Dry::Monads::Do::All }
 
-    it_behaves_like 'Do::All'
+    it_behaves_like "Do::All"
 
-    it 'wraps already defined method' do
+    it "wraps already defined method" do
       klass = Class.new {
         def sum(a, b)
           c = yield(a) + yield(b)
@@ -53,8 +53,8 @@ RSpec.describe(Dry::Monads::Do::All) do
       expect(adder.sum(Success(1), Success(2))).to eql(Success(3))
     end
 
-    context 'inheritance' do
-      it 'works with inheritance' do
+    context "inheritance" do
+      it "works with inheritance" do
         base = Class.new.tap { |c| c.include(mixin, result_mixin) }
         child = Class.new(base) {
           def call
@@ -63,7 +63,7 @@ RSpec.describe(Dry::Monads::Do::All) do
           end
         }
 
-        expect(child.new.call).to eql(Success('success'))
+        expect(child.new.call).to eql(Success("success"))
       end
 
       it "doesn't care about the order" do
@@ -76,13 +76,13 @@ RSpec.describe(Dry::Monads::Do::All) do
           end
         }
 
-        expect(base.new.call).to eql(Success('success'))
-        expect(child.new.call).to eql(Success('success'))
+        expect(base.new.call).to eql(Success("success"))
+        expect(child.new.call).to eql(Success("success"))
       end
     end
 
-    context 'class level' do
-      context 'mixin then def' do
+    context "class level" do
+      context "mixin then def" do
         let(:klass) do
           Class.new do
             extend result_mixin
@@ -96,12 +96,12 @@ RSpec.describe(Dry::Monads::Do::All) do
           end
         end
 
-        it 'works' do
-          expect(klass.()).to eql(Success('success'))
+        it "works" do
+          expect(klass.()).to eql(Success("success"))
         end
       end
 
-      context 'def then mixin' do
+      context "def then mixin" do
         let(:klass) do
           Class.new do
             extend result_mixin
@@ -116,12 +116,12 @@ RSpec.describe(Dry::Monads::Do::All) do
           end
         end
 
-        it 'works' do
-          expect(klass.()).to eql(Success('success'))
+        it "works" do
+          expect(klass.()).to eql(Success("success"))
         end
       end
 
-      context 'generated mixin' do
+      context "generated mixin" do
         let(:klass) do
           Class.new do
             extend result_mixin
@@ -135,16 +135,16 @@ RSpec.describe(Dry::Monads::Do::All) do
           end
         end
 
-        it 'works' do
-          expect(klass.()).to eql(Success('success'))
+        it "works" do
+          expect(klass.()).to eql(Success("success"))
         end
       end
     end
   end
 
-  context 'Do' do
+  context "Do" do
     let(:mixin) { Dry::Monads::Do }
 
-    it_behaves_like 'Do::All'
+    it_behaves_like "Do::All"
   end
 end

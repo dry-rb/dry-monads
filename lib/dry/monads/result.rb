@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'dry/equalizer'
+require "dry/equalizer"
 
-require 'dry/monads/constants'
-require 'dry/monads/right_biased'
-require 'dry/monads/transformer'
-require 'dry/monads/conversion_stubs'
-require 'dry/monads/unit'
+require "dry/monads/constants"
+require "dry/monads/right_biased"
+require "dry/monads/transformer"
+require "dry/monads/conversion_stubs"
+require "dry/monads/unit"
 
 module Dry
   module Monads
@@ -134,7 +134,7 @@ module Dry
         # @return [String]
         def to_s
           if Unit.equal?(@value)
-            'Success()'
+            "Success()"
           else
             "Success(#{@value.inspect})"
           end
@@ -247,7 +247,7 @@ module Dry
         # @return [String]
         def to_s
           if Unit.equal?(@value)
-            'Failure()'
+            "Failure()"
           else
             "Failure(#{@value.inspect})"
           end
@@ -457,7 +457,7 @@ module Dry
       end
     end
 
-    require 'dry/monads/registry'
+    require "dry/monads/registry"
     register_mixin(:result, Result::Mixin)
   end
 end

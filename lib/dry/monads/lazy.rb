@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'concurrent/promise'
+require "concurrent/promise"
 
-require 'dry/monads/task'
+require "dry/monads/task"
 
 module Dry
   module Monads
@@ -49,7 +49,7 @@ module Dry
                 when :rejected
                   "!#{promise.reason.inspect}"
                 else
-                  '?'
+                  "?"
                 end
 
         "Lazy(#{state})"
@@ -80,7 +80,7 @@ module Dry
       end
     end
 
-    require 'dry/monads/registry'
+    require "dry/monads/registry"
     register_mixin(:lazy, Lazy::Mixin)
   end
 end

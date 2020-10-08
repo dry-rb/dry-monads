@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'concurrent/promise'
+require "concurrent/promise"
 
-require 'dry/monads/unit'
-require 'dry/monads/curry'
-require 'dry/monads/conversion_stubs'
+require "dry/monads/unit"
+require "dry/monads/curry"
+require "dry/monads/conversion_stubs"
 
 module Dry
   module Monads
@@ -131,14 +131,14 @@ module Dry
         state = case promise.state
                 when :fulfilled
                   if Unit.equal?(value!)
-                    'value=()'
+                    "value=()"
                   else
                     "value=#{value!.inspect}"
                   end
                 when :rejected
                   "error=#{promise.reason.inspect}"
                 else
-                  '?'
+                  "?"
                 end
 
         "Task(#{state})"
@@ -314,7 +314,7 @@ module Dry
       end
     end
 
-    require 'dry/monads/registry'
+    require "dry/monads/registry"
     register_mixin(:task, Task::Mixin)
   end
 end

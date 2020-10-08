@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'dry/monads/validated'
+require "dry/monads/validated"
 
 module Dry
   module Monads

@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
+require "dry/monads/constants"
+
 module Dry::Monads
   class Result
     # @see Monads#Result
     # @private
-    class Fixed < Module
+    class Fixed < ::Module
       def self.[](error, **options)
         new(error, **options)
       end

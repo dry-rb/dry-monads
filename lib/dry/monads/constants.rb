@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'dry/core/constants'
+require "dry/core/constants"
 
 module Dry
   module Monads

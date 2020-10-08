@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'dry/core/deprecations'
+require "dry/core/deprecations"
 
-Dry::Core::Deprecations.warn('Either monad was renamed to Result', tag: :'dry-monads')
+Dry::Core::Deprecations.warn("Either monad was renamed to Result", tag: :'dry-monads')
 
-require 'dry/monads/result'
+require "dry/monads/result"
 
 module Dry
   module Monads

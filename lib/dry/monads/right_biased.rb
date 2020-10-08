@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'dry/monads/constants'
-require 'dry/monads/unit'
-require 'dry/monads/curry'
-require 'dry/monads/errors'
+require "dry/monads/constants"
+require "dry/monads/unit"
+require "dry/monads/curry"
+require "dry/monads/errors"
 
 module Dry
   module Monads
@@ -226,7 +226,7 @@ module Dry
 
         private
 
-        if RUBY_VERSION >= '2.7'
+        if RUBY_VERSION >= "2.7"
           # @api private
           def destructure(value)
             if value.is_a?(::Hash)

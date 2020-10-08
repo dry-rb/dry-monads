@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'bundler/setup'
-require 'dry/monads/all'
+require "bundler/setup"
+require "dry/monads/all"
 
 M = Dry::Monads
 
@@ -10,7 +10,7 @@ M = Dry::Monads
 # with your gem easier. You can also use a different console, if you like.
 
 # (If you use this, don't forget to add pry to your Gemfile!)
-require 'pry'
+require "pry"
 
 binding.pry
 

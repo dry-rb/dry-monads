@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'dry/monads/list'
-require 'dry/monads/do/mixin'
-require 'dry/monads/constants'
+require "dry/monads/list"
+require "dry/monads/do/mixin"
+require "dry/monads/constants"
 
 module Dry
   module Monads
@@ -12,7 +12,7 @@ module Dry
     module Do
       extend Mixin
 
-      DELEGATE = ::RUBY_VERSION < '2.7' ? '*' : '...'
+      DELEGATE = ::RUBY_VERSION < "2.7" ? "*" : "..."
 
       # @api private
       class Halt < StandardError
@@ -100,7 +100,7 @@ module Dry
           super
 
           # Actually mixes in Do::All
-          require 'dry/monads/do/all'
+          require "dry/monads/do/all"
           base.include All
         end
 
@@ -135,7 +135,7 @@ module Dry
 
         # @api private
         def halt(result)
-          raise Halt.new(result), EMPTY_STRING, []
+          raise Halt.new(result), "", []
         end
       end
     end

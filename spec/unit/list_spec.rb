@@ -14,9 +14,9 @@ RSpec.describe(Dry::Monads::List) do
   subject { list[1, 2, 3] }
   let(:empty_list) { list[] }
 
-  it_behaves_like 'a monad'
+  it_behaves_like "a monad"
 
-  describe '.coerce' do
+  describe ".coerce" do
     let(:array_like) do
       Object.new.tap do |o|
         def o.to_ary
@@ -25,27 +25,27 @@ RSpec.describe(Dry::Monads::List) do
       end
     end
 
-    it 'coerces nil to an empty list' do
+    it "coerces nil to an empty list" do
       expect(list.coerce(nil)).to eql(list.new([]))
     end
 
-    it 'coerces an array' do
+    it "coerces an array" do
       expect(list.coerce([1, 2])).to eql(list.new([1, 2]))
     end
 
-    it 'coerces any array-like object' do
+    it "coerces any array-like object" do
       expect(list.coerce(array_like)).to eql(list.new(%w[a b c]))
     end
 
-    it 'raises a type error on uncoercible object' do
+    it "raises a type error on uncoercible object" do
       expect {
         list.coerce(Object.new)
       }.to raise_error(TypeError, /Can't coerce/)
     end
   end
 
-  describe '.unfold' do
-    it 'builds a list' do
+  describe ".unfold" do
+    it "builds a list" do
       res = list.unfold(0) do |x|
         if x > 5
           none
@@ -57,279 +57,279 @@ RSpec.describe(Dry::Monads::List) do
       expect(res).to eql(list[1, 2, 4, 8, 16, 32])
     end
 
-    it 'returns an empty list' do
+    it "returns an empty list" do
       expect(list.unfold(Object.new) { none }).to be_empty
     end
 
-    it 'accepts type' do
+    it "accepts type" do
       typed = list.unfold(Object.new, result) { none }
       expect(typed.type).to be(result)
     end
   end
 
-  describe '#inspect' do
-    it 'dumps list to a string' do
-      expect(subject.inspect).to eql('List[1, 2, 3]')
+  describe "#inspect" do
+    it "dumps list to a string" do
+      expect(subject.inspect).to eql("List[1, 2, 3]")
     end
   end
 
-  describe '#to_s' do
-    it 'dumps list to a string' do
-      expect(subject.to_s).to eql('List[1, 2, 3]')
+  describe "#to_s" do
+    it "dumps list to a string" do
+      expect(subject.to_s).to eql("List[1, 2, 3]")
     end
 
-    it 'acts as #inspect' do
+    it "acts as #inspect" do
       expect(subject.to_s).to eql(subject.inspect)
     end
 
-    it 'shows type' do
-      expect(list::Result[success.(true)].to_s).to eql('List<Result>[Success(true)]')
+    it "shows type" do
+      expect(list::Result[success.(true)].to_s).to eql("List<Result>[Success(true)]")
     end
   end
 
-  describe '#==' do
-    it 'compares two lists' do
+  describe "#==" do
+    it "compares two lists" do
       expect(subject).to eq(list[1, 2, 3])
     end
   end
 
-  describe '#eql?' do
-    it 'compares two lists with hash equality' do
+  describe "#eql?" do
+    it "compares two lists with hash equality" do
       expect(subject).to eql(list[1, 2, 3])
     end
   end
 
-  describe '#+' do
-    it 'concatenates two lists' do
+  describe "#+" do
+    it "concatenates two lists" do
       expect(subject).to eql(list[1, 2] + list[3])
     end
 
-    it 'coerces an argument' do
+    it "coerces an argument" do
       expect(subject + [4, 5]).to eql(list[1, 2, 3, 4, 5])
     end
   end
 
-  describe '#to_a' do
-    it 'coerces to an array' do
+  describe "#to_a" do
+    it "coerces to an array" do
       expect(subject.to_a).to eql([1, 2, 3])
     end
   end
 
-  describe '#to_ary' do
-    it 'coerces to an array' do
+  describe "#to_ary" do
+    it "coerces to an array" do
       expect(subject.to_ary)
     end
 
-    it 'allows to split a list' do
+    it "allows to split a list" do
       a, *b = subject
       expect(a).to eql(1)
       expect(b).to eql([2, 3])
     end
   end
 
-  describe '#bind' do
-    it 'binds a block' do
+  describe "#bind" do
+    it "binds a block" do
       expect(subject.bind { |x| [x * 2] }).to eql(list[2, 4, 6])
     end
 
-    it 'binds a proc' do
+    it "binds a proc" do
       expect(subject.bind(-> x { [x * 2] })).to eql(list[2, 4, 6])
     end
   end
 
-  describe '#fmap' do
-    it 'maps a block' do
+  describe "#fmap" do
+    it "maps a block" do
       expect(subject.fmap { |x| x * 2 }).to eql(list[2, 4, 6])
     end
 
-    it 'maps a proc' do
+    it "maps a proc" do
       expect(subject.fmap(-> x { x * 2 })).to eql(list[2, 4, 6])
     end
   end
 
-  describe '#map' do
-    it 'maps a block over a list' do
+  describe "#map" do
+    it "maps a block over a list" do
       expect(subject.map { |x| x * 2 }).to eql(list[2, 4, 6])
     end
 
-    it 'returns an enumerator if no block given' do
+    it "returns an enumerator if no block given" do
       expect(subject.map).to be_a(Enumerator)
       expect(subject.map.with_index { |el, idx| [el, idx] })
         .to eql([[1, 0], [2, 1], [3, 2]])
     end
   end
 
-  describe '#first' do
-    it 'returns first value for non-empty list' do
+  describe "#first" do
+    it "returns first value for non-empty list" do
       expect(subject.first).to eql(1)
     end
 
-    it 'returns nil for an empty list' do
+    it "returns nil for an empty list" do
       expect(empty_list.first).to be_nil
     end
   end
 
-  describe '#last' do
-    it 'returns value for non-empty list' do
+  describe "#last" do
+    it "returns value for non-empty list" do
       expect(subject.last).to eql(3)
     end
 
-    it 'returns nil for an empty list' do
+    it "returns nil for an empty list" do
       expect(empty_list.last).to be_nil
     end
   end
 
-  describe '#fold_left' do
-    it 'returns initial value for the empty list' do
+  describe "#fold_left" do
+    it "returns initial value for the empty list" do
       expect(empty_list.fold_left(100) { raise }).to eql(100)
     end
 
-    it 'folds from the left' do
+    it "folds from the left" do
       expect(subject.fold_left(0) { |x, y| x - y }).to eql(-6)
     end
   end
 
-  describe '#foldl' do
-    it 'is an ailas for fold_left' do
+  describe "#foldl" do
+    it "is an ailas for fold_left" do
       expect(subject.foldl(0) { |x, y| x - y }).to eql(-6)
     end
   end
 
-  describe '#reduce' do
-    it 'is an ailas for fold_left' do
+  describe "#reduce" do
+    it "is an ailas for fold_left" do
       expect(subject.reduce(0) { |x, y| x - y }).to eql(-6)
     end
 
-    it 'acts as Array#reduce' do
+    it "acts as Array#reduce" do
       expect(subject.reduce(0) { |x, y| x - y }).to eql([1, 2, 3].reduce(0) { |x, y| x - y })
     end
   end
 
-  describe '#fold_right' do
-    it 'returns initial value for the empty list' do
+  describe "#fold_right" do
+    it "returns initial value for the empty list" do
       expect(empty_list.fold_right(100) { raise }).to eql(100)
     end
 
-    it 'folds from the right' do
+    it "folds from the right" do
       expect(subject.fold_right(0) { |x, y| x - y }).to eql(2)
     end
   end
 
-  describe '#foldr' do
-    it 'is an ailas for fold_right' do
+  describe "#foldr" do
+    it "is an ailas for fold_right" do
       expect(subject.foldr(0) { |x, y| x - y }).to eql(2)
     end
   end
 
-  describe '#empty?' do
-    it 'returns false for a non-empty list' do
+  describe "#empty?" do
+    it "returns false for a non-empty list" do
       expect(subject).not_to be_empty
     end
 
-    it 'returns true for an empty list' do
+    it "returns true for an empty list" do
       expect(empty_list).to be_empty # what a surprise
     end
   end
 
-  describe '#sort' do
-    it 'sorts a list' do
+  describe "#sort" do
+    it "sorts a list" do
       expect(list[3, 2, 1].sort).to eql(subject)
     end
   end
 
-  describe '#filter' do
-    it 'filters with a block' do
+  describe "#filter" do
+    it "filters with a block" do
       expect(subject.filter(&:odd?)).to eql(list[1, 3])
     end
   end
 
-  describe '#select' do
-    it 'is an alias for filter' do
+  describe "#select" do
+    it "is an alias for filter" do
       expect(subject.select(&:odd?)).to eql(list[1, 3])
     end
   end
 
-  describe '#size' do
-    it 'returns list size' do
+  describe "#size" do
+    it "returns list size" do
       expect(subject.size).to eql(3)
     end
   end
 
-  describe '#reverse' do
-    it 'reverses the list' do
+  describe "#reverse" do
+    it "reverses the list" do
       expect(subject.reverse).to eql(list[3, 2, 1])
     end
   end
 
-  describe '#head' do
-    it 'returns the first element' do
+  describe "#head" do
+    it "returns the first element" do
       expect(subject.head).to eql(some[1])
     end
 
-    it 'returns None for an empty list' do
+    it "returns None for an empty list" do
       expect(empty_list.head).to eql(none)
     end
   end
 
-  describe '#tail' do
-    it 'drop the first element' do
+  describe "#tail" do
+    it "drop the first element" do
       expect(subject.tail).to eql(list[2, 3])
     end
 
-    it 'returns an empty list for a list with one item' do
+    it "returns an empty list for a list with one item" do
       expect(list[1].tail).to eql(empty_list)
     end
 
-    it 'returns an empty list for an empty_list' do
+    it "returns an empty list for an empty_list" do
       expect(empty_list.tail).to eql(empty_list)
     end
   end
 
-  describe '#traverse' do
-    context 'list of results' do
+  describe "#traverse" do
+    context "list of results" do
       subject { list[1, 2, 3].typed(result) }
 
-      it 'flips Successes' do
+      it "flips Successes" do
         expect(subject.traverse { |x| success.(x + 1) }).to eql(success.(list[2, 3, 4]))
       end
 
-      it 'halts on Failure' do
+      it "halts on Failure" do
         expect(subject.traverse { |i| i == 2 ? failure.(i) : success.(i) })
           .to eql(failure.(2))
       end
 
-      it 'halts on first Failure' do
+      it "halts on first Failure" do
         expect(subject.traverse { |i| i > 1 ? failure.(i) : success.(i) })
           .to eql(failure.(2))
       end
 
-      it 'works without a block' do
+      it "works without a block" do
         expect(list::Result[success.(1), failure.(2), failure.(3)].traverse).to eql(failure.(2))
       end
     end
 
-    context 'list of maybes' do
+    context "list of maybes" do
       subject { list[1, 2, 3].typed(maybe) }
 
-      it 'flips Somes' do
+      it "flips Somes" do
         expect(subject.traverse { |x| some.(x + 1) }).to eql(some.(list[2, 3, 4]))
       end
 
-      it 'halts on None' do
+      it "halts on None" do
         expect(subject.traverse { |i| i == 2 ? none : some.(i) })
           .to eql(none)
       end
 
-      it 'halts on first None' do
+      it "halts on first None" do
         expect(subject.traverse { |i| i == 1 ? none : raise })
           .to eql(none)
       end
     end
 
-    context 'list of lists' do
+    context "list of lists" do
       subject { list[1, 2].typed(list) }
 
-      it 'flips a list' do
+      it "flips a list" do
         expect(subject.traverse { |x| list[x] })
           .to eql(list[list[1, 2]].typed(list))
 
@@ -338,18 +338,18 @@ RSpec.describe(Dry::Monads::List) do
       end
     end
 
-    it 'raises an error for untyped list' do
+    it "raises an error for untyped list" do
       expect { subject.traverse }.to raise_error(StandardError, /Cannot traverse/)
     end
   end
 
-  describe '#typed' do
-    it 'turns the list into a typed one' do
+  describe "#typed" do
+    it "turns the list into a typed one" do
       expect(subject.typed(result)).to be_typed
       expect(subject.typed(result).type).to be result
     end
 
-    it 'infers type for not empty list', :suppress_deprecations do
+    it "infers type for not empty list", :suppress_deprecations do
       expect(list[success.(1)].typed.type).to be result
       expect(list[failure.(1)].typed.type).to be result
       expect(list[some.(1)].typed.type).to be maybe
@@ -357,41 +357,41 @@ RSpec.describe(Dry::Monads::List) do
       expect(list[list[]].typed.type).to be list
     end
 
-    it 'cannot guess a type of the empty list' do
+    it "cannot guess a type of the empty list" do
       expect { list[].typed }.to raise_error(ArgumentError, /Cannot infer/)
     end
   end
 
   describe described_class::Result do
-    it 'carries the result type' do
+    it "carries the result type" do
       expect(described_class[].type).to be Dry::Monads::Result
     end
   end
 
   describe described_class::Task do
-    it 'carries the task type' do
+    it "carries the task type" do
       expect(described_class[].type).to be Dry::Monads::Task
     end
   end
 
   describe described_class::Maybe do
-    it 'carries the task type' do
+    it "carries the task type" do
       expect(described_class[].type).to be Dry::Monads::Maybe
     end
   end
 
   describe described_class::Try do
-    it 'carries the task type' do
+    it "carries the task type" do
       expect(described_class[].type).to be Dry::Monads::Try
     end
   end
 
-  describe '#collect' do
-    it 'gathers Somes' do
+  describe "#collect" do
+    it "gathers Somes" do
       expect(list[some[1], none, some[3]].collect(&:itself)).to eql(list[1, 3])
     end
 
-    it 'returns enumerator' do
+    it "returns enumerator" do
       expect(list[some[1], none, some[3]].collect.map { |x| x * 2 }).to eql([2, 6])
     end
   end

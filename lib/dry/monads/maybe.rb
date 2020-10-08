@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'dry/equalizer'
-require 'dry/core/deprecations'
+require "dry/equalizer"
+require "dry/core/deprecations"
 
-require 'dry/monads/right_biased'
-require 'dry/monads/transformer'
-require 'dry/monads/unit'
-require 'dry/monads/constants'
+require "dry/monads/right_biased"
+require "dry/monads/transformer"
+require "dry/monads/unit"
+require "dry/monads/constants"
 
 module Dry
   module Monads
@@ -105,7 +105,7 @@ module Dry
         end
 
         def initialize(value = Undefined)
-          raise ArgumentError, 'nil cannot be some' if value.nil?
+          raise ArgumentError, "nil cannot be some" if value.nil?
 
           @value = Undefined.default(value, Unit)
         end
@@ -128,7 +128,7 @@ module Dry
         # @return [String]
         def to_s
           if Unit.equal?(@value)
-            'Some()'
+            "Some()"
           else
             "Some(#{@value.inspect})"
           end
@@ -202,7 +202,7 @@ module Dry
 
         # @return [String]
         def to_s
-          'None'
+          "None"
         end
         alias_method :inspect, :to_s
 
@@ -327,7 +327,7 @@ module Dry
       class Success < Result
         # @return [Maybe::Some]
         def to_maybe
-          Kernel.warn 'Success(nil) transformed to None' if @value.nil?
+          Kernel.warn "Success(nil) transformed to None" if @value.nil?
           Dry::Monads::Maybe(@value)
         end
       end
@@ -389,7 +389,7 @@ module Dry
       end
     end
 
-    require 'dry/monads/registry'
+    require "dry/monads/registry"
     register_mixin(:maybe, Maybe::Mixin)
   end
 end

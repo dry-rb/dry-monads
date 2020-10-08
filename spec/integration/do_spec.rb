@@ -24,8 +24,8 @@ RSpec.describe(Dry::Monads::Do) do
 
   let(:instance) { klass.new }
 
-  context 'with Result' do
-    context 'successful case' do
+  context "with Result" do
+    context "successful case" do
       before do
         klass.class_eval do
           def call
@@ -40,12 +40,12 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns the result of a statement' do
+      it "returns the result of a statement" do
         expect(instance.call).to eql(Success(3))
       end
     end
 
-    context 'first failure' do
+    context "first failure" do
       before do
         klass.class_eval do
           def call
@@ -60,12 +60,12 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns failure' do
+      it "returns failure" do
         expect(instance.call).to eql(Failure(:no_one))
       end
     end
 
-    context 'second failure' do
+    context "second failure" do
       before do
         klass.class_eval do
           def call
@@ -80,12 +80,12 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns failure' do
+      it "returns failure" do
         expect(instance.call).to eql(Failure(:no_two))
       end
     end
 
-    context 'with stateful blocks' do
+    context "with stateful blocks" do
       before do
         klass.class_eval do
           attr_reader :rolled_back
@@ -115,15 +115,15 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'halts the executing with an exception' do
+      it "halts the executing with an exception" do
         expect(instance.call).to eql(Failure(:no_two))
         expect(instance.rolled_back).to be(true)
       end
     end
   end
 
-  context 'with Maybe' do
-    context 'successful case' do
+  context "with Maybe" do
+    context "successful case" do
       before do
         klass.class_eval do
           def call
@@ -135,12 +135,12 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns the result of a statement' do
+      it "returns the result of a statement" do
         expect(instance.call).to eql(Some(3))
       end
     end
 
-    context 'first failure' do
+    context "first failure" do
       before do
         klass.class_eval do
           def call
@@ -152,12 +152,12 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns none' do
+      it "returns none" do
         expect(instance.call).to be_none
       end
     end
 
-    context 'second failure' do
+    context "second failure" do
       before do
         klass.class_eval do
           def call
@@ -169,14 +169,14 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns none' do
+      it "returns none" do
         expect(instance.call).to be_none
       end
     end
   end
 
-  context 'with Try' do
-    context 'successful case' do
+  context "with Try" do
+    context "successful case" do
       before do
         klass.class_eval do
           def call
@@ -188,12 +188,12 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns the result of a statement' do
+      it "returns the result of a statement" do
         expect(instance.call).to eql(Dry::Monads::Try.pure(3))
       end
     end
 
-    context 'first failure' do
+    context "first failure" do
       before do
         klass.class_eval do
           def call
@@ -205,12 +205,12 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns Error' do
+      it "returns Error" do
         expect(instance.call).to be_error
       end
     end
 
-    context 'second failure' do
+    context "second failure" do
       before do
         klass.class_eval do
           def call
@@ -222,14 +222,14 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns Error' do
+      it "returns Error" do
         expect(instance.call).to be_error
       end
     end
   end
 
-  context 'yielding multiple arguments' do
-    context 'success' do
+  context "yielding multiple arguments" do
+    context "success" do
       before do
         klass.class_eval do
           def call
@@ -240,12 +240,12 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'casts the given parameters to an array and traverses it' do
+      it "casts the given parameters to an array and traverses it" do
         expect(instance.call).to eql(Success([1, 2]))
       end
     end
 
-    context 'failure' do
+    context "failure" do
       before do
         klass.class_eval do
           def call
@@ -256,14 +256,14 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns the first failure case' do
+      it "returns the first failure case" do
         expect(instance.call).to eql(Failure(1))
       end
     end
   end
 
-  context 'yielding arrays' do
-    context 'success' do
+  context "yielding arrays" do
+    context "success" do
       before do
         klass.class_eval do
           def call
@@ -274,12 +274,12 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'casts the given array to a list, infers the monad instance and traverses the list' do
+      it "casts the given array to a list, infers the monad instance and traverses the list" do
         expect(instance.call).to eql(Success(List([1, 2])))
       end
     end
 
-    context 'failure' do
+    context "failure" do
       before do
         klass.class_eval do
           def call
@@ -290,13 +290,13 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns the first failure case' do
+      it "returns the first failure case" do
         expect(instance.call).to eql(Failure(1))
       end
     end
   end
 
-  context 'passing procs' do
+  context "passing procs" do
     before do
       class Test::Operation
         def call
@@ -307,15 +307,15 @@ RSpec.describe(Dry::Monads::Do) do
       end
     end
 
-    it 'just calls the passed block, ignoring the do notation' do
+    it "just calls the passed block, ignoring the do notation" do
       expect(
         instance.call { Failure(:foo) }
       ).to eql(Success(Failure(:foo)))
     end
   end
 
-  context 'yielding lists' do
-    context 'success' do
+  context "yielding lists" do
+    context "success" do
       before do
         class Test::Operation
           def call
@@ -326,12 +326,12 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'casts the given array to a list, infers the monad instance and traverses the list' do
+      it "casts the given array to a list, infers the monad instance and traverses the list" do
         expect(instance.call).to eql(Success(List([1, 2])))
       end
     end
 
-    context 'failure' do
+    context "failure" do
       before do
         class Test::Operation
           def call
@@ -342,13 +342,13 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns the first failure case' do
+      it "returns the first failure case" do
         expect(instance.call).to eql(Failure(1))
       end
     end
   end
 
-  context 'implicit conversions' do
+  context "implicit conversions" do
     before do
       class Test::ValidationResult
         def initialize(success)
@@ -373,7 +373,7 @@ RSpec.describe(Dry::Monads::Do) do
       end
     end
 
-    it 'implicitly converts an arbitrary object to a monad' do
+    it "implicitly converts an arbitrary object to a monad" do
       success = Test::ValidationResult.new(true)
       expect(instance.(success)).to eql(Success(:converted))
 
@@ -382,8 +382,8 @@ RSpec.describe(Dry::Monads::Do) do
     end
   end
 
-  context 'with validated' do
-    context 'with successes' do
+  context "with validated" do
+    context "with successes" do
       before do
         class Test::Operation
           def call
@@ -398,12 +398,12 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns a concatenated list of results' do
+      it "returns a concatenated list of results" do
         expect(instance.call).to eql(Success(List([1, 2, 3])))
       end
     end
 
-    context 'with failures' do
+    context "with failures" do
       before do
         class Test::Operation
           def call
@@ -418,20 +418,20 @@ RSpec.describe(Dry::Monads::Do) do
         end
       end
 
-      it 'returns a concatenated list of failures' do
+      it "returns a concatenated list of failures" do
         expect(instance.call).to eql(Invalid(List([2, 3])))
       end
     end
   end
 
-  describe 'Do::Mixin' do
+  describe "Do::Mixin" do
     include Dry::Monads::Do::Mixin
 
     let(:block) do
       lambda do |success|
         self.() do
           value_1 = bind(Success(2))
-          value_2 = bind(success ? Success(3) : Failure('oops'))
+          value_2 = bind(success ? Success(3) : Failure("oops"))
           Success(value_1 + value_2)
         end
       end
@@ -444,22 +444,22 @@ RSpec.describe(Dry::Monads::Do) do
         def test_method(success)
           Dry::Monads::Do.() do
             value_1 = Dry::Monads::Do.bind(Success(2))
-            value_2 = Dry::Monads::Do.bind(success ? Success(3) : Failure('oops'))
+            value_2 = Dry::Monads::Do.bind(success ? Success(3) : Failure("oops"))
             Success(value_1 + value_2)
           end
         end
       end
     end
 
-    context 'successful case' do
-      it 'returns the result of a statement' do
+    context "successful case" do
+      it "returns the result of a statement" do
         expect(block.(true)).to eql(Success(5))
       end
     end
 
-    context 'first failure' do
-      it 'returns failure' do
-        expect(block.(false)).to eql(Failure('oops'))
+    context "first failure" do
+      it "returns failure" do
+        expect(block.(false)).to eql(Failure("oops"))
       end
     end
   end

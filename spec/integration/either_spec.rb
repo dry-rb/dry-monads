@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe 'Dry::Monads::Either', :suppress_deprecations do
-  before { require 'dry/monads/either' }
+RSpec.describe "Dry::Monads::Either", :suppress_deprecations do
+  before { require "dry/monads/either" }
 
   before do
     suppress_warnings do

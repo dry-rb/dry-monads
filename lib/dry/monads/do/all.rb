@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'dry/monads/do'
+require "dry/monads/do"
 
 module Dry
   module Monads
@@ -134,7 +134,7 @@ module Dry
       end
     end
 
-    require 'dry/monads/registry'
+    require "dry/monads/registry"
     register_mixin(:do, Do::All)
   end
 end

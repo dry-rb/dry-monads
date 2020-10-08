@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'concurrent/map'
+require "concurrent/map"
 
 module Dry
   # Common, idiomatic monads for Ruby
@@ -10,16 +10,16 @@ module Dry
     @registry = {}
     @constructors = nil
     @paths = {
-      do: 'dry/monads/do/all',
-      lazy: 'dry/monads/lazy',
-      list: 'dry/monads/list',
-      maybe: 'dry/monads/maybe',
-      task: 'dry/monads/task',
-      try: 'dry/monads/try',
-      validated: 'dry/monads/validated',
+      do: "dry/monads/do/all",
+      lazy: "dry/monads/lazy",
+      list: "dry/monads/list",
+      maybe: "dry/monads/maybe",
+      task: "dry/monads/task",
+      try: "dry/monads/try",
+      validated: "dry/monads/validated",
       result: [
-        'dry/monads/result',
-        'dry/monads/result/fixed'
+        "dry/monads/result",
+        "dry/monads/result/fixed"
       ]
     }.freeze
     @mixins = Concurrent::Map.new

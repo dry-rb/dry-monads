@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'dry/equalizer'
-require 'dry/core/deprecations'
+require "dry/equalizer"
+require "dry/core/deprecations"
 
-require 'dry/monads/right_biased'
-require 'dry/monads/conversion_stubs'
+require "dry/monads/right_biased"
+require "dry/monads/conversion_stubs"
 
 module Dry
   module Monads
@@ -72,7 +72,7 @@ module Dry
         # @param exceptions [Array<Exception>]
         # @return [Try::Value,Try::Error]
         def [](*exceptions, &block)
-          raise ArgumentError, 'At least one exception type required' if exceptions.empty?
+          raise ArgumentError, "At least one exception type required" if exceptions.empty?
 
           run(exceptions, block)
         end
@@ -160,7 +160,7 @@ module Dry
         # @return [String]
         def to_s
           if Unit.equal?(@value)
-            'Try::Value()'
+            "Try::Value()"
           else
             "Try::Value(#{@value.inspect})"
           end
@@ -261,7 +261,7 @@ module Dry
         #
         def Value(value = Undefined, exceptions = DEFAULT_EXCEPTIONS, &block)
           v = Undefined.default(value, block)
-          raise ArgumentError, 'No value given' if !value.nil? && v.nil?
+          raise ArgumentError, "No value given" if !value.nil? && v.nil?
 
           Value.new(exceptions, v)
         end
@@ -278,14 +278,14 @@ module Dry
         #
         def Error(error = Undefined, &block)
           v = Undefined.default(error, block)
-          raise ArgumentError, 'No value given' if v.nil?
+          raise ArgumentError, "No value given" if v.nil?
 
           Try::Error.new(v)
         end
       end
     end
 
-    require 'dry/monads/registry'
+    require "dry/monads/registry"
     register_mixin(:try, Try::Mixin)
   end
 end

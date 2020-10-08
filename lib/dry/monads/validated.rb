@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'dry/monads/conversion_stubs'
-require 'dry/monads/constants'
-require 'dry/monads/right_biased'
+require "dry/monads/conversion_stubs"
+require "dry/monads/constants"
+require "dry/monads/right_biased"
 
 module Dry
   module Monads
@@ -51,7 +51,7 @@ module Dry
       #
       def bind(*)
         # See https://typelevel.org/cats/datatypes/validated.html for details on why
-        raise NotImplementedError, 'Validated is not a monad because it would violate the monad laws'
+        raise NotImplementedError, "Validated is not a monad because it would violate the monad laws"
       end
 
       # Valid result
@@ -123,7 +123,7 @@ module Dry
         # @return [String]
         def inspect
           if Unit.equal?(@value)
-            'Valid()'
+            "Valid()"
           else
             "Valid(#{@value.inspect})"
           end
@@ -250,7 +250,7 @@ module Dry
           #
           def Valid(value = Undefined, &block)
             v = Undefined.default(value, block)
-            raise ArgumentError, 'No value given' if !value.nil? && v.nil?
+            raise ArgumentError, "No value given" if !value.nil? && v.nil?
 
             Valid.new(v)
           end
@@ -267,7 +267,7 @@ module Dry
           #
           def Invalid(value = Undefined, &block)
             v = Undefined.default(value, block)
-            raise ArgumentError, 'No value given' if !value.nil? && v.nil?
+            raise ArgumentError, "No value given" if !value.nil? && v.nil?
 
             Invalid.new(v, RightBiased::Left.trace_caller)
           end
@@ -304,7 +304,7 @@ module Dry
       end
     end
 
-    require 'dry/monads/registry'
+    require "dry/monads/registry"
     register_mixin(:validated, Validated::Mixin)
   end
 end
