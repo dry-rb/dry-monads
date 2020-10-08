@@ -150,6 +150,8 @@ class CreateAccount
 end
 ```
 
+Note that `Do::All` will not automatically pass a block to methods inherited from ancestors, such as included modules or a parent class.
+
 ### Using `Do` methods in other contexts
 
 You can use methods from the `Do` module directly (starting with 1.3):
