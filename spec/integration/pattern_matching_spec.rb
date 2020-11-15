@@ -176,7 +176,9 @@ RSpec.describe 'pattern matching' do
     end
   end
 
-  example 'unit is an empty array' do
-    Dry::Monads::Unit in []
+  if RUBY_VERSION >= '3.0'
+    example 'unit is an empty array' do
+      eval('Dry::Monads::Unit => []')
+    end
   end
 end
