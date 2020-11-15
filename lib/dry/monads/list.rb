@@ -329,7 +329,7 @@ module Dry
 
       # Returns self.
       #
-      # @return [Result::Success, Result::Failure]
+      # @return [List]
       def to_monad
         self
       end

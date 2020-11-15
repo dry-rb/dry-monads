@@ -86,7 +86,6 @@ module Dry
         #   @yieldreturn [Validated::Valid,Validated::Invalid]
         #   @return [Validated::Valid,Validated::Invalid]
         #
-        # @return [Validated::Valid]
         def apply(val = Undefined)
           Undefined.default(val) { yield }.fmap(Curry.(value!))
         end
@@ -297,7 +296,7 @@ module Dry
       class Failure < Result
         # Transforms to Validated
         #
-        # @return [Validated::Valid]
+        # @return [Validated::Invalid]
         def to_validated
           Validated::Invalid.new(failure, trace)
         end

@@ -325,7 +325,7 @@ module Dry
 
     class Result
       class Success < Result
-        # @return [Maybe::Some]
+        # @return [Maybe]
         def to_maybe
           Kernel.warn "Success(nil) transformed to None" if @value.nil?
           Dry::Monads::Maybe(@value)

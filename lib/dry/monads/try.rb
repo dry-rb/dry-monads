@@ -92,7 +92,7 @@ module Dry
 
       # Returns self.
       #
-      # @return [Maybe::Some, Maybe::None]
+      # @return [Try::Value, Try::Error]
       def to_monad
         self
       end
