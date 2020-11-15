@@ -448,7 +448,7 @@ module Dry
       end
 
       class Invalid < Validated
-        # Concerts to Result::Failure
+        # Converts to Result::Failure
         #
         # @return [Result::Failure]
         def to_result

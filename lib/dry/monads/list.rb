@@ -422,10 +422,10 @@ module Dry
       # List of results
       Result = ListBuilder[Result]
 
-      # List of results
+      # List of maybes
       Maybe = ListBuilder[Maybe]
 
-      # List of results
+      # List of tries
       Try = ListBuilder[Try]
 
       # List of validation results
