@@ -301,9 +301,9 @@ module Dry
         # None values are removed
         #
         # @example
-        #   Maybe::Hash.filter(foo: Some(1), bar: Some(2)) # => Some(foo: 1, bar: 2)
-        #   Maybe::Hash.filter(foo: Some(1), bar: None())  # => None()
-        #   Maybe::Hash.filter(foo: None(), bar: Some(2))  # => None()
+        #   Maybe::Hash.filter(foo: Some(1), bar: Some(2)) # => { foo: 1, bar: 2 }
+        #   Maybe::Hash.filter(foo: Some(1), bar: None())  # => { foo: 1 }
+        #   Maybe::Hash.filter(foo: None(), bar: Some(2))  # => { bar: 2 }
         #
         # @param hash [::Hash<Object,Maybe>]
         # @return [::Hash]
