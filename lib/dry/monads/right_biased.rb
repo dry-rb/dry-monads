@@ -302,8 +302,8 @@ module Dry
         # A lifted version of `#or`. This is basically `#or` + `#fmap`.
         #
         # @example
-        #   Dry::Monads.None.or('no value') # => Some("no value")
-        #   Dry::Monads.None.or { Time.now } # => Some(current time)
+        #   Dry::Monads.None.or_fmap('no value') # => Some("no value")
+        #   Dry::Monads.None.or_fmap { Time.now } # => Some(current time)
         #
         # @return [RightBiased::Left, RightBiased::Right]
         def or_fmap(*)

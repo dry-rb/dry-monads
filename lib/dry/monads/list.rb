@@ -329,7 +329,7 @@ module Dry
 
       # Returns self.
       #
-      # @return [Result::Success, Result::Failure]
+      # @return [List]
       def to_monad
         self
       end
@@ -345,7 +345,7 @@ module Dry
       #       Some(n / divisor)
       #     end
       #   end
-      #   # => List[4, 2]
+      #   # => List[2, 4]
       #
       # @example without block
       #   List[Some(5), None(), Some(3)].collect.map { |x| x * 2 }
@@ -422,10 +422,10 @@ module Dry
       # List of results
       Result = ListBuilder[Result]
 
-      # List of results
+      # List of maybes
       Maybe = ListBuilder[Maybe]
 
-      # List of results
+      # List of tries
       Try = ListBuilder[Try]
 
       # List of validation results

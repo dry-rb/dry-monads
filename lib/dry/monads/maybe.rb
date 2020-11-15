@@ -301,9 +301,9 @@ module Dry
         # None values are removed
         #
         # @example
-        #   Maybe::Hash.filter(foo: Some(1), bar: Some(2)) # => Some(foo: 1, bar: 2)
-        #   Maybe::Hash.filter(foo: Some(1), bar: None())  # => None()
-        #   Maybe::Hash.filter(foo: None(), bar: Some(2))  # => None()
+        #   Maybe::Hash.filter(foo: Some(1), bar: Some(2)) # => { foo: 1, bar: 2 }
+        #   Maybe::Hash.filter(foo: Some(1), bar: None())  # => { foo: 1 }
+        #   Maybe::Hash.filter(foo: None(), bar: Some(2))  # => { bar: 2 }
         #
         # @param hash [::Hash<Object,Maybe>]
         # @return [::Hash]
@@ -325,7 +325,7 @@ module Dry
 
     class Result
       class Success < Result
-        # @return [Maybe::Some]
+        # @return [Maybe]
         def to_maybe
           Kernel.warn "Success(nil) transformed to None" if @value.nil?
           Dry::Monads::Maybe(@value)
