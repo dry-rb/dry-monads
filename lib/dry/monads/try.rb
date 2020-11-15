@@ -263,7 +263,7 @@ module Dry
           v = Undefined.default(value, block)
           raise ArgumentError, "No value given" if !value.nil? && v.nil?
 
-          Value.new(exceptions, v)
+          Try::Value.new(exceptions, v)
         end
 
         # Error constructor
