@@ -68,9 +68,10 @@ module Dry
             tracker = self
 
             module_eval do
+              private
+
               define_method(:method_added) do |method|
                 super(method)
-
                 tracker.wrap_method(self, method)
               end
 
@@ -93,20 +94,37 @@ module Dry
           end
 
           def wrap_method(target, method)
-            Do.wrap_method(wrappers[target], method)
+            visibility = Do.method_visibility(target, method)
+            Do.wrap_method(wrappers[target], method, visibility)
           end
         end
 
-        # @api private
-        def self.included(base)
-          super
+        class << self
+          # @api private
+          def included(base)
+            super
 
-          wrappers = ::Hash.new { |h, k| h[k] = ::Module.new }
-          tracker = MethodTracker.new(wrappers)
-          base.extend(tracker)
-          base.instance_methods(false).each { |m| tracker.wrap_method(base, m) }
+            wrappers = ::Hash.new { |h, k| h[k] = ::Module.new }
+            tracker = MethodTracker.new(wrappers)
+            base.extend(tracker)
+            base.extend(InstanceMixin) unless base.is_a?(::Class)
+            wrap_defined_methods(base, wrappers[base])
+          end
 
-          base.extend(InstanceMixin) unless base.is_a?(::Class)
+          # @api private
+          def wrap_defined_methods(klass, target)
+            klass.public_instance_methods(false).each do |m|
+              Do.wrap_method(target, m, :public)
+            end
+
+            klass.protected_instance_methods(false).each do |m|
+              Do.wrap_method(target, m, :protected)
+            end
+
+            klass.private_instance_methods(false).each do |m|
+              Do.wrap_method(target, m, :private)
+            end
+          end
         end
 
         # @api private
@@ -116,17 +134,18 @@ module Dry
             super
 
             wrapper = ::Module.new
-            object.singleton_class.prepend(wrapper)
+            eigenclass = object.singleton_class
+            eigenclass.prepend(wrapper)
             object.define_singleton_method(:singleton_method_added) do |method|
               super(method)
 
               next if method.equal?(:singleton_method_added)
 
-              Do.wrap_method(wrapper, method)
+              visibility = Do.method_visibility(eigenclass, method)
+              Do.wrap_method(wrapper, method, visibility)
             end
-            object.singleton_class.instance_methods(false).each do |m|
-              Do.wrap_method(wrapper, m)
-            end
+
+            All.wrap_defined_methods(eigenclass, wrapper)
           end
         end
 
