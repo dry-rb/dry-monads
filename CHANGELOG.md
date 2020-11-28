@@ -5,6 +5,10 @@
 
 - `Unit` destructures to an empty array (flash-gordon)
 
+### Fixed
+
+- Do notation preserves method visibility (anicholson + flash-gordon)
+
 
 [Compare v1.3.5...master](https://github.com/dry-rb/dry-monads/compare/v1.3.5...master)
 
