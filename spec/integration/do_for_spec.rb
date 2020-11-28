@@ -8,9 +8,11 @@ RSpec.describe(Dry::Monads::Do) do
 
   describe ".for" do
     let(:input_value) { 10 }
-    let(:equation) do
+    let(:mixin) { Dry::Monads::Do.for(:answer, :square, :double) }
+    let(:klass) do
+      spec = self
       klass = Class.new do
-        include Dry::Monads::Do.for(:answer, protected: [:square], private: [:double])
+        include spec.mixin
 
         def initialize(starting_value)
           @starting_value = starting_value
@@ -37,8 +39,10 @@ RSpec.describe(Dry::Monads::Do) do
 
         attr_reader :starting_value
       end
-      klass.tap { |c| c.include(result_mixin) }.new(Success(input_value))
+      klass.include(result_mixin)
     end
+
+    let(:equation) { klass.new(Success(input_value)) }
 
     it "can call a public method" do
       expect { equation.answer }.to_not raise_error
@@ -49,11 +53,41 @@ RSpec.describe(Dry::Monads::Do) do
     end
 
     it "cannot call a protected method directly" do
-      expect { equation.square }.to raise_error(NoMethodError)
+      expect { equation.square }.to raise_error(NoMethodError, /protected method/)
     end
 
     it "cannot call a private method directly" do
-      expect { equation.double }.to raise_error(NoMethodError)
+      expect { equation.double }.to raise_error(NoMethodError, /private method/)
+    end
+
+    context "sharing mixin across classes" do
+      let(:another_class) do
+        spec = self
+
+        Class.new do
+          include spec.mixin
+
+          private
+
+          def initialize(starting_value)
+            @starting_value = starting_value
+          end
+
+          def square
+            s = yield(starting_value) * yield(starting_value)
+            Success(s)
+          end
+        end
+      end
+
+      let(:another_equation) do
+        another_class.new(Success(30))
+      end
+
+      it "keeps visibility separated" do
+        expect { equation.square }.to raise_error(NoMethodError, /protected method/)
+        expect { another_equation.square }.to raise_error(NoMethodError, /private method/)
+      end
     end
   end
 end

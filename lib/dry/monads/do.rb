@@ -14,6 +14,12 @@ module Dry
 
       DELEGATE = ::RUBY_VERSION < "2.7" ? "*" : "..."
 
+      VISIBILITY_WORD = {
+        public: "",
+        private: "private ",
+        protected: "protected "
+      }
+
       # @api private
       class Halt < StandardError
         # @api private
@@ -23,6 +29,25 @@ module Dry
           super()
 
           @result = result
+        end
+      end
+
+      # @api private
+      class MethodTracker < ::Module
+        # @api private
+        def initialize(tracked_methods, base, wrapper)
+          module_eval do
+            private
+
+            define_method(:method_added) do |method|
+              super(method)
+
+              if tracked_methods.include?(method)
+                visibility = Do.method_visibility(base, method)
+                Do.wrap_method(wrapper, method, visibility)
+              end
+            end
+          end
         end
       end
 
@@ -83,22 +108,12 @@ module Dry
         #
         # @param [Array<Symbol>] methods
         # @return [Module]
-        def for(*public_methods, **methods_with_visibility)
-          mod = ::Module.new do
-            public_methods.each do |method_name|
-              Do.wrap_method(self, method_name, nil)
-            end
-
-            methods_with_visibility.each do |visibility, methods|
-              methods.each do |method_name|
-                Do.wrap_method(self, method_name, visibility)
-              end
-            end
-          end
-
+        def for(*methods)
           ::Module.new do
             singleton_class.send(:define_method, :included) do |base|
+              mod = ::Module.new
               base.prepend(mod)
+              base.extend(MethodTracker.new(methods, base, mod))
             end
           end
         end
@@ -113,17 +128,27 @@ module Dry
         end
 
         # @api private
-        def wrap_method(target, method_name, visibility)
+        def wrap_method(target, method, visibility)
           target.module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
-            def #{method_name}(#{DELEGATE})
+            #{VISIBILITY_WORD[visibility]} def #{method}(#{DELEGATE})
               if block_given?
                 super
               else
                 Do.() { super { |*ms| Do.bind(ms) } }
               end
             end
-            #{visibility} :#{method_name}
           RUBY
+        end
+
+        # @api private
+        def method_visibility(mod, method)
+          if mod.public_method_defined?(method)
+            :public
+          elsif mod.private_method_defined?(method)
+            :private
+          else
+            :protected
+          end
         end
 
         # @api private

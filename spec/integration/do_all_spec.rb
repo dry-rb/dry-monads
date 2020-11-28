@@ -4,26 +4,23 @@ require "dry/monads/result"
 require "dry/monads/do/all"
 
 RSpec.describe(Dry::Monads::Do::All) do
-  class VisibilityLeak < StandardError; end
-
   result_mixin = Dry::Monads::Result::Mixin
   include result_mixin
+
+  before { stub_const("VisibilityLeak", Class.new(StandardError)) }
 
   shared_examples_for "Do::All" do
     context "include first" do
       let(:adder) do
         spec = self
-        klass = Class.new do
-          include spec.mixin
+        Class.new {
+          include spec.mixin, result_mixin
 
           def sum(a, b)
             c = yield(a) + yield(b)
             Success(c)
           end
-        end
-
-        klass.include(result_mixin)
-        klass.new
+        }.new
       end
 
       it "wraps arbitrary methods defined _after_ mixing in" do
@@ -40,8 +37,8 @@ RSpec.describe(Dry::Monads::Do::All) do
     context "visibility protection" do
       let(:object) do
         spec = self
-        klass = Class.new do
-          include spec.mixin
+        Class.new {
+          include spec.mixin, result_mixin
 
           protected
 
@@ -54,9 +51,7 @@ RSpec.describe(Dry::Monads::Do::All) do
           def my_private_method
             raise VisibilityLeak, "Should not be able to call a private method"
           end
-        end
-
-        klass.tap { |c| c.include(result_mixin) }.new
+        }.new
       end
 
       it "is preserved for protected methods" do
@@ -132,12 +127,12 @@ RSpec.describe(Dry::Monads::Do::All) do
       it "doesn't care about the order" do
         base = Class.new.include(mixin, result_mixin)
         child = Class.new(base)
-        base.class_eval {
+        base.class_eval do
           def call
             result = yield Success(:success)
             Success(result.to_s)
           end
-        }
+        end
 
         expect(base.new.call).to eql(Success("success"))
         expect(child.new.call).to eql(Success("success"))
