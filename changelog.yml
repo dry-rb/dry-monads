@@ -1,6 +1,8 @@
 ---
 - version: unreleased
-  date: 
+  date:
+  fixed:
+  - Do notation preserves method visibility (anicholson + flash-gordon)
   added:
   - "`Unit` destructures to an empty array (flash-gordon)"
 - version: 1.3.5
