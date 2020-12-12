@@ -34,7 +34,7 @@ RSpec.describe(Dry::Monads::Result) do
 
       let(:division_error) { 1 / 0 rescue $ERROR_INFO }
       let(:no_method_error) { self.missing rescue $ERROR_INFO }
-      let(:runtime_error) { 'foo'.freeze.upcase! rescue $ERROR_INFO }
+      let(:runtime_error) { "foo".freeze.upcase! rescue $ERROR_INFO }
 
       it "passes with known errors" do
         expect(subject.Failure(division_error)).to eql(failure.(division_error))

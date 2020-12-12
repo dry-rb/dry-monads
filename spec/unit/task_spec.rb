@@ -213,8 +213,8 @@ RSpec.describe(Dry::Monads::Task) do
     end
   end
 
-  describe '.failed' do
-    it 'creates a failed task' do
+  describe ".failed" do
+    it "creates a failed task" do
       error = (1 / 0 rescue $ERROR_INFO)
       expect(task.failed(error).to_result).to eql(failure[error])
     end
