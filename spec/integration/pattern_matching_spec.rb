@@ -1,8 +1,8 @@
-RSpec.describe 'pattern matching' do
-  context 'Result' do
+RSpec.describe "pattern matching" do
+  context "Result" do
     include Dry::Monads[:result, :maybe]
 
-    context 'Success' do
+    context "Success" do
       let(:match) { Test::Context.new }
 
       let(:hash_like) do
@@ -21,7 +21,7 @@ RSpec.describe 'pattern matching' do
         end
       end
 
-      specify 'destructuring' do
+      specify "destructuring" do
         class Test::Context
           include Dry::Monads[:result, :maybe]
 
@@ -67,7 +67,7 @@ RSpec.describe 'pattern matching' do
       end
     end
 
-    context 'Failure' do
+    context "Failure" do
       let(:match) { Test::Context.new }
 
       let(:hash_like) do
@@ -78,7 +78,7 @@ RSpec.describe 'pattern matching' do
         end
       end
 
-      specify 'destructuring' do
+      specify "destructuring" do
         class Test::Context
           include Dry::Monads[:result]
 
@@ -102,12 +102,12 @@ RSpec.describe 'pattern matching' do
     end
   end
 
-  context 'Maybe' do
+  context "Maybe" do
     include Dry::Monads[:maybe]
 
     let(:match) { Test::Context.new }
 
-    specify 'destructuring' do
+    specify "destructuring" do
       class Test::Context
         include Dry::Monads[:maybe]
 
@@ -125,7 +125,7 @@ RSpec.describe 'pattern matching' do
       expect(match.(None())).to eql(:nothing)
     end
 
-    specify 'none alt' do
+    specify "none alt" do
       class Test::Context
         include Dry::Monads[:maybe]
 
@@ -140,12 +140,12 @@ RSpec.describe 'pattern matching' do
     end
   end
 
-  context 'List' do
+  context "List" do
     include Dry::Monads[:list, :maybe]
 
     let(:match) { Test::Context.new }
 
-    specify 'destructuring' do
+    specify "destructuring" do
       class Test::Context
         include Dry::Monads[:list, :maybe]
 
@@ -171,14 +171,14 @@ RSpec.describe 'pattern matching' do
       expect(match.(list[Time.now])).to eql(:date_or_time)
       expect(match.(list[Date.today])).to eql(:date_or_time)
       expect(match.(list[:sym])).to eql(:string_or_symbol)
-      expect(match.(list['sym'])).to eql(:string_or_symbol)
+      expect(match.(list["sym"])).to eql(:string_or_symbol)
       expect(match.(list[1, 2, 3, 4, 5])).to eql(5)
     end
   end
 
-  if RUBY_VERSION >= '3.0'
-    example 'unit is an empty array' do
-      eval('Dry::Monads::Unit => []')
+  if RUBY_VERSION >= "3.0"
+    example "unit is an empty array" do
+      eval("Dry::Monads::Unit => []")
     end
   end
 end
