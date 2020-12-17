@@ -37,9 +37,7 @@ module Dry
       module Mixin
         # @api public
         def call
-          yield
-        rescue Halt => e
-          e.result
+          catch(Do::HALT_SIGNAL) { return yield }
         end
 
         # @api public

@@ -12,6 +12,8 @@ module Dry
     module Do
       extend Mixin
 
+      HALT_SIGNAL = :__dry_monads_do_halt__
+
       DELEGATE = ::RUBY_VERSION < "2.7" ? "*" : "..."
 
       VISIBILITY_WORD = {
@@ -19,18 +21,6 @@ module Dry
         private: "private ",
         protected: "protected "
       }
-
-      # @api private
-      class Halt < StandardError
-        # @api private
-        attr_reader :result
-
-        def initialize(result)
-          super()
-
-          @result = result
-        end
-      end
 
       # @api private
       class MethodTracker < ::Module
@@ -169,7 +159,7 @@ module Dry
 
         # @api private
         def halt(result)
-          raise Halt.new(result), "", []
+          throw(Do::HALT_SIGNAL, result)
         end
       end
     end

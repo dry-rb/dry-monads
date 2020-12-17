@@ -107,10 +107,11 @@ RSpec.describe(Dry::Monads::Do) do
           end
 
           def transaction
-            yield
-          rescue StandardError => e
+            error = catch(Dry::Monads::Do::HALT_SIGNAL) { return yield }
+
             @rolled_back = true
-            raise e
+
+            throw(Dry::Monads::Do::HALT_SIGNAL, error)
           end
         end
       end
