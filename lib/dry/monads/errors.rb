@@ -4,7 +4,10 @@ module Dry
   module Monads
     # An unsuccessful result of extracting a value from a monad.
     class UnwrapError < StandardError
+      attr_reader :source
+
       def initialize(ctx)
+        @source = ctx
         super("value! was called on #{ctx.inspect}")
       end
     end
