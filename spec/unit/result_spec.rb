@@ -311,6 +311,14 @@ RSpec.describe(Dry::Monads::Result) do
         expect(success["foo"].either(-> x { x + "foo" }, -> x { x + "bar" })).to eq("foofoo")
       end
     end
+
+    describe "#fold" do
+      it "invokes ok funciton" do
+        ok = ->(x) { "success #{x}" }
+        err = ->(x) { "failure #{x}" }
+        expect(success["foo"].fold(ok, err)).to eq("success foo")
+      end
+    end
   end
 
   describe result::Failure do
@@ -532,6 +540,14 @@ RSpec.describe(Dry::Monads::Result) do
     describe "#either" do
       it "returns second function applied to the value" do
         expect(failure["bar"].either(-> x { x + "foo" }, -> x { x + "bar" })).to eq("barbar")
+      end
+    end
+
+    describe "#fold" do
+      it "invokes err funciton" do
+        ok = ->(x) { "success #{x}" }
+        err = ->(x) { "failure #{x}" }
+        expect(failure["foo"].fold(ok, err)).to eq("failure foo")
       end
     end
   end
