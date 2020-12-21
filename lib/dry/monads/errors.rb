@@ -6,9 +6,9 @@ module Dry
     class UnwrapError < StandardError
       attr_reader :source
 
-      def initialize(ctx)
-        @source = ctx
-        super("value! was called on #{ctx.inspect}")
+      def initialize(source)
+        @source = source
+        super("value! was called on #{source.inspect}")
       end
     end
 
