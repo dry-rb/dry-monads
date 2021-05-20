@@ -20,7 +20,7 @@ module Dry
               if error === value
                 Failure.new(value, RightBiased::Left.trace_caller)
               else
-                raise InvalidFailureTypeError, value
+                raise InvalidFailureTypeError.new(value)
               end
             end
 

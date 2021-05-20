@@ -47,6 +47,21 @@ RSpec.describe(Dry::Monads::Result) do
         expect { subject.Failure(runtime_error) }.to raise_error(Dry::Monads::InvalidFailureTypeError)
       end
     end
+
+    context "errors matching Kernel#raise keyword arguments" do
+      before do
+        module Test
+          class Operation
+            include Dry::Monads::Result(Types::Hash.schema(cause: Types::Symbol).strict)
+          end
+        end
+      end
+
+      it "raises the appropriate error on unexpected type" do
+        expect { subject.Failure({cause: "not a symbol"}) }
+          .to raise_error(Dry::Monads::InvalidFailureTypeError)
+      end
+    end
   end
 
   context "arbitrary objects" do
