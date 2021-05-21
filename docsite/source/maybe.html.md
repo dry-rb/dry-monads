@@ -131,16 +131,3 @@ Some(Some(10)).flatten # => Some(10)
 Some(None()).flatten   # => None()
 None().flatten         # => None()
 ```
-
-### `to_result`
-
-Maybe values can be converted to Result objects:
-
-```ruby
-extend Dry::Monads[:maybe, :result]
-
-Some(10).to_result # => Success(10)
-None().to_result # => Failure()
-None().to_result(:error) # => Failure(:error)
-None().to_result { :block_value } # => Failure(:block_value)
-```
