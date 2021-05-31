@@ -1,8 +1,7 @@
-# this file is managed by dry-rb/devtools project
-
+# This file is synced from dry-rb/template-gem repo
 name: ci
 
-"on":
+on:
   push:
     paths:
       - ".github/workflows/ci.yml"
@@ -26,11 +25,11 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - "3.0"
-          - "2.7"
-          - "2.6"
-          - "2.5"
-          - "jruby"
+        - "3.0"
+        - "2.7"
+        - "2.6"
+        - "2.5"
+        - "jruby"
         include:
           - ruby: "3.0"
             coverage: "true"
