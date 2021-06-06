@@ -12,7 +12,7 @@ sources:
       - "CONTRIBUTING.md"
       - "CODEOWNERS"
       - "LICENSE.erb"
-      - "README.erb"
+      - "README.md.erb"
       - "Gemfile.devtools"
       - ".rspec"
       - ".rubocop.yml"
