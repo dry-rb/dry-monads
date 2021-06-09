@@ -77,11 +77,11 @@ require 'dry/monads/list'
 
 M = Dry::Monads
 
-M::List[M::Success(1), M::Success(2)].typed(M::Result).traverse # => Success([1, 2])
+M::List[M::Success(1), M::Success(2)].typed(M::Result).traverse # => Success(List[1, 2])
 M::List[M::Maybe(1), M::Maybe(nil), M::Maybe(3)].typed(M::Maybe).traverse # => None
 
 # also, you can use fmap with #traverse
 
-M::List[1, 2].fmap { |x| M::Success(x) }.typed(M::Result).traverse # => Success([1, 2])
+M::List[1, 2].fmap { |x| M::Success(x) }.typed(M::Result).traverse # => Success(List[1, 2])
 M::List[1, nil, 3].fmap { |x| M::Maybe(x) }.typed(M::Maybe).traverse # => None
 ```
