@@ -13,7 +13,7 @@ require 'dry/monads/list'
 
 M = Dry::Monads
 
-M::List[1, 2].bind { |x| [x + 1] } # => List[2, 3]
+M::List[1, 2].bind { |x| [x + 1] }  # => List[2, 3]
 M::List[1, 2].bind(-> x { [x, x + 1] }) # => List[1, 2, 2, 3]
 
 M::List[1, nil].bind { |x| [x + 1] } # => error
