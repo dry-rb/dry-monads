@@ -29,7 +29,6 @@ jobs:
         - "3.0"
         - "2.7"
         - "2.6"
-        - "jruby"
         include:
           - ruby: "3.0"
             coverage: "true"
