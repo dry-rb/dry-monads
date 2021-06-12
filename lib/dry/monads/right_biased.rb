@@ -255,7 +255,7 @@ module Dry
         # @private
         # @return [String] Caller location
         def self.trace_caller
-          caller_locations(2, 2)[0].to_s
+          caller_locations(2, 1)[0].to_s
         end
 
         # Raises an error on accessing internal value
