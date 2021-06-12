@@ -17,13 +17,13 @@ class CreateAccount
   include Dry::Monads[:result]
 
   def call(params)
-    validate(params).bind { |values|
-      create_account(values[:account]).bind { |account|
-        create_owner(account, values[:owner]).fmap { |owner|
+    validate(params).bind do |values|
+      create_account(values[:account]).bind do |account|
+        create_owner(account, values[:owner]).fmap do |owner|
           [account, owner]
-        }
-      }
-    }
+        end
+      end
+    end
   end
 
   def validate(params)
