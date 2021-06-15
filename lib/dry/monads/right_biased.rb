@@ -185,6 +185,14 @@ module Dry
           end
         end
 
+        # Maps both the success and failure types differently
+        # success will be invoked in case of Success
+        #
+        # @return [Object]
+        def fold(success, _failure)
+          success.call(@value)
+        end
+
         # Pattern matching
         #
         # @example
@@ -351,6 +359,14 @@ module Dry
         # @return [RightBiased::Left]
         def and(_)
           self
+        end
+
+        # Maps both the success and failure types differently
+        # failure will be invoked in case of Failure
+        #
+        # @return [Object]
+        def fold(_success, failure)
+          failure.call(@value)
         end
 
         # Pattern matching
