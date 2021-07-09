@@ -489,7 +489,11 @@ RSpec.describe(Dry::Monads::Result) do
 
     describe "#value!" do
       it "raises an error" do
-        expect { subject.value! }.to raise_error(Dry::Monads::UnwrapError, 'value! was called on Failure("bar")')
+        expect { subject.value! }.to(raise_error { |error|
+          expect(error).to be_a Dry::Monads::UnwrapError
+          expect(error.message).to match 'value! was called on Failure("bar")'
+          expect(error.source).to eq subject
+        })
       end
     end
 
