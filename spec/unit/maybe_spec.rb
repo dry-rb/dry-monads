@@ -268,6 +268,15 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(some["foo"].and(none)).to eql(none)
       end
     end
+
+    describe "#filter" do
+      it "returns None when block evaluates to false" do
+        expect(some[4].filter(&:odd?)).to eql(none)
+        expect(some[3].filter(&:odd?)).to eql(some[3])
+        expect(some[4].filter(:odd?.to_proc)).to eql(none)
+        expect(some[3].filter(:odd?.to_proc)).to eql(some[3])
+      end
+    end
   end
 
   describe maybe::None do
@@ -482,6 +491,14 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(none.and(some["foo"]) { raise }).to eql(none)
         expect(none.and(some["foo"])).to eql(none)
         expect(none.and(none)).to eql(none)
+      end
+    end
+
+    describe "#filter" do
+      it "always returns self" do
+        expect(none.filter(&:odd?)).to eql(none)
+        expect(none.filter(:odd?.to_proc)).to eql(none)
+        expect(none.filter).to eql(none)
       end
     end
   end
