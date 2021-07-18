@@ -15,7 +15,7 @@ RSpec.describe "JSON serialization" do
     }
   end
 
-  subject { JSON.load(JSON.dump(example_structure)) }
+  subject { JSON.load(JSON.dump(example_structure)) } # rubocop:disable Security/JSONLoad
 
   it "should rebuild the example structure" do
     is_expected.to eql(example_structure)
