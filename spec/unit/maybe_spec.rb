@@ -230,6 +230,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
+    # rubocop:disable Style/CaseEquality
     describe "#===" do
       it "matches on the wrapped value" do
         expect(some["foo"]).to be === some["foo"]
@@ -238,6 +239,7 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(some[10..50]).to be === some[42]
       end
     end
+    # rubocop:enable Style/CaseEquality
 
     describe "#discard" do
       it "nullifies the value" do
@@ -454,6 +456,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
     end
 
+    # rubocop:disable Style/CaseEquality
     describe "#===" do
       it "matches against other None" do
         expect(none).to be === maybe::None.new
@@ -463,6 +466,7 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(none).not_to be === some["foo"]
       end
     end
+    # rubocop:enable Style/CaseEquality
 
     describe "#discard" do
       it "returns self back" do

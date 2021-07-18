@@ -38,10 +38,12 @@ RSpec.describe(Dry::Monads::Result) do
       expect(match.(Success(-1))).to eql(:else)
     end
 
+    # rubocop:disable Style/CaseEquality
     it "works with nested values" do
       expect(Success(Some(Integer))).to be === Success(Some(5))
       expect(Success(Some(Integer))).not_to be === Success(None())
     end
+    # rubocop:enable Style/CaseEquality
   end
 
   context ".to_proc" do

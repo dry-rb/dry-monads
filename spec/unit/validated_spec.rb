@@ -90,6 +90,7 @@ RSpec.describe(Dry::Monads::Validated) do
       end
     end
 
+    # rubocop:disable Style/CaseEquality
     describe "#===" do
       it "matches on the wrapped value" do
         expect(valid["foo"]).to be === valid["foo"]
@@ -98,6 +99,7 @@ RSpec.describe(Dry::Monads::Validated) do
         expect(valid[10..50]).to be === valid[42]
       end
     end
+    # rubocop:enable Style/CaseEquality
   end
 
   describe validated::Invalid do
@@ -168,6 +170,7 @@ RSpec.describe(Dry::Monads::Validated) do
       end
     end
 
+    # rubocop:disable Style/CaseEquality
     describe "#===" do
       it "matches on the wrapped value" do
         expect(invalid["foo"]).to be === invalid["foo"]
@@ -176,6 +179,7 @@ RSpec.describe(Dry::Monads::Validated) do
         expect(invalid[10..50]).to be === invalid[42]
       end
     end
+    # rubocop:enable Style/CaseEquality
   end
 
   describe "#bind" do
