@@ -89,6 +89,7 @@ module Dry
       class Some < Maybe
         include Dry::Equalizer(:value!)
         include RightBiased::Right
+        include Core::Deprecations[:"dry-monads"]
 
         # Shortcut for Some([...])
         #
@@ -123,9 +124,34 @@ module Dry
         # @return [Maybe::Some, Maybe::None] Wrapped result, i.e. nil will be mapped to None,
         #                                    other values will be wrapped with Some
         def fmap(*args, &block)
+          next_value = bind(*args, &block)
+
+          if next_value.nil?
+            warn(
+              "Blocked passed to Some#fmap returned `nil` and was chained to None. "\
+              "This is literally an unlawful behavior and it will not be supported in "\
+              "dry-monads 2. \nPlease, switch to Some#maybe in places where you expect `nil`s."
+            )
+            None()
+          else
+            Some.new(next_value)
+          end
+        end
+
+        # Does the same thing as #bind except it also wraps the value
+        # in an instance of the Maybe monad. This allows for easier
+        # chaining of calls.
+        #
+        # @example
+        #   Dry::Monads.Some(4).maybe(&:succ).maybe(->(n) { n**2 }) # => Some(25)
+        #   Dry::Monads.Some(4).maybe(&:succ).maybe(->(_) { nil }) # => None()
+        #
+        # @param args [Array<Object>] arguments will be transparently passed through to #bind
+        # @return [Maybe::Some, Maybe::None] Wrapped result, i.e. nil will be mapped to None,
+        #                                    other values will be wrapped with Some
+        def maybe(*args, &block)
           Maybe.coerce(bind(*args, &block))
         end
-        alias_method :maybe, :fmap
 
         # @return [String]
         def to_s
@@ -330,8 +356,8 @@ module Dry
       class Success < Result
         # @return [Maybe]
         def to_maybe
-          Kernel.warn "Success(nil) transformed to None" if @value.nil?
-          Dry::Monads::Maybe(@value)
+          ::Kernel.warn "Success(nil) transformed to None" if @value.nil?
+          ::Dry::Monads::Maybe(@value)
         end
       end
 
