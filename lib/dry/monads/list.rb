@@ -136,14 +136,14 @@ module Dry
       end
 
       # Maps a block over the list. Acts as `Array#map`.
-      # Note that this method returns an Array instance, not a List
+      # If called without a block, this method returns an enumerator, not a List
       #
       # @return [List,Enumerator]
       def map(&block)
-        if block
+        if block_given?
           fmap(block)
         else
-          value.map(&block)
+          value.map
         end
       end
 
