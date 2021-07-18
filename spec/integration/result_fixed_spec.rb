@@ -35,7 +35,7 @@ RSpec.describe(Dry::Monads::Result) do
       end
 
       let(:division_error) { 1 / 0 rescue $ERROR_INFO }
-      let(:no_method_error) { self.missing rescue $ERROR_INFO }
+      let(:no_method_error) { self.missing rescue $ERROR_INFO } # rubocop:disable Style/RedundantSelf
       let(:runtime_error) { "foo".upcase! rescue $ERROR_INFO }
 
       it "passes with known errors" do

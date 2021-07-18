@@ -61,6 +61,8 @@ module Dry
         include Dry::Equalizer(:value!)
 
         def initialize(value)
+          super()
+
           @value = value
         end
 
@@ -133,7 +135,7 @@ module Dry
         # @param other [Object]
         # @return [Boolean]
         def ===(other)
-          self.class == other.class && value! === other.value!
+          other.instance_of?(self.class) && value! === other.value!
         end
       end
 
@@ -154,6 +156,8 @@ module Dry
         include Dry::Equalizer(:error)
 
         def initialize(error, trace = RightBiased::Left.trace_caller)
+          super()
+
           @error = error
           @trace = trace
         end
@@ -220,7 +224,7 @@ module Dry
         # @param other [Object]
         # @return [Boolean]
         def ===(other)
-          self.class == other.class && error === other.error
+          other.instance_of?(self.class) && error === other.error
         end
       end
 

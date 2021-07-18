@@ -48,9 +48,11 @@ module Dry
         # @example using a predefined executor
         #    Task[:fast] { do_quick_task }
         #
-        # @param executor [Concurrent::AbstractExecutorService,Symbol] Either an executor instance
-        #                                                              or a name of predefined global
-        #                                                              from concurrent-ruby
+        # @param executor [Concurrent::AbstractExecutorService,Symbol]
+        #   Either an executor instance
+        #   or a name of predefined global
+        #   from concurrent-ruby
+        #
         # @return [Task]
         def [](executor, &block)
           new(Promise.execute(executor: executor, &block))

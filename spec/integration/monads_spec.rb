@@ -68,7 +68,7 @@ RSpec.describe(Dry::Monads) do
         class Foo
           include Dry::Monads
 
-          def get_list
+          def make_list
             List[1, 2, 3]
           end
         end
@@ -78,7 +78,7 @@ RSpec.describe(Dry::Monads) do
     end
 
     it "builds a list with List[]" do
-      expect(instance.get_list).to eql(list[1, 2, 3])
+      expect(instance.make_list).to eql(list[1, 2, 3])
     end
   end
 

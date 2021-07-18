@@ -110,6 +110,8 @@ module Dry
         # @param exceptions [Array<Exception>] list of exceptions to be rescued
         # @param value [Object] the value to be stored in the monad
         def initialize(exceptions, value)
+          super()
+
           @catchable = exceptions
           @value = value
         end
@@ -179,6 +181,8 @@ module Dry
 
         # @param exception [Exception]
         def initialize(exception)
+          super()
+
           @exception = exception
         end
 

@@ -129,7 +129,7 @@ module Dry
         # @param other [Object]
         # @return [Boolean]
         def ===(other)
-          self.class == other.class && value! === other.value!
+          other.instance_of?(self.class) && value! === other.value!
         end
 
         # Maps the value to Dry::Monads::Unit, useful when you don't care

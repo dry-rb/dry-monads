@@ -220,7 +220,8 @@ module Dry
         # otherwise simply returns the first argument.
         #
         # @example
-        #   Dry::Monads.Failure(ArgumentError.new('error message')).or(&:message) # => "error message"
+        #   Dry::Monads.Failure(ArgumentError.new('error message')).or(&:message)
+        #   # => "error message"
         #
         # @param args [Array<Object>] arguments that will be passed to a block
         #                             if one was given, otherwise the first
@@ -234,7 +235,8 @@ module Dry
           end
         end
 
-        # A lifted version of `#or`. Wraps the passed value or the block result with Result::Success.
+        # A lifted version of `#or`. Wraps the passed value or the block
+        # result with Result::Success.
         #
         # @example
         #   Dry::Monads.Failure.new('no value').or_fmap('value') # => Success("value")

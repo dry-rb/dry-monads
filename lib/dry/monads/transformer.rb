@@ -27,7 +27,8 @@ module Dry
       # Lifts a block/proc over the 3-level nested structure.
       #
       # @example
-      #   List[Right(Some(1)), Left(Some(1))].fmap3 { |x| x + 1 } # => List[Right(Some(2)), Left(Some(1))]
+      #   List[Right(Some(1)), Left(Some(1))].fmap3 { |x| x + 1 }
+      #   # => List[Right(Some(2)), Left(Some(1))]
       #   Right(None).fmap3 { |x| x + 1 } # => Right(None)
       #
       # @param args [Array<Object>] arguments will be passed to the block or the proc
