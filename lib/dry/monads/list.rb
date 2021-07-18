@@ -83,7 +83,7 @@ module Dry
         end
       end
 
-      extend Dry::Core::Deprecations[:'dry-monads']
+      extend Dry::Core::Deprecations[:"dry-monads"]
 
       include Dry::Equalizer(:value, :type)
       include Transformer
@@ -192,8 +192,8 @@ module Dry
       #
       # @param initial [Object] Initial value
       # @return [Object]
-      def fold_left(initial)
-        value.reduce(initial) { |acc, v| yield(acc, v) }
+      def fold_left(initial, &block)
+        value.reduce(initial, &block)
       end
       alias_method :foldl, :fold_left
       alias_method :reduce, :fold_left
@@ -224,8 +224,8 @@ module Dry
       # Filters elements with a block
       #
       # @return [List]
-      def filter
-        coerce(value.select { |e| yield(e) })
+      def filter(&block)
+        coerce(value.select(&block))
       end
       alias_method :select, :filter
 
@@ -315,8 +315,8 @@ module Dry
       #
       # @param list [List]
       # @return [List]
-      def apply(list = Undefined)
-        v = Undefined.default(list) { yield }
+      def apply(list = Undefined, &block)
+        v = Undefined.default(list, &block)
         fmap(Curry).bind { |f| v.fmap { |x| f.(x) } }
       end
 

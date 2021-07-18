@@ -51,7 +51,8 @@ module Dry
       #
       def bind(*)
         # See https://typelevel.org/cats/datatypes/validated.html for details on why
-        raise NotImplementedError, "Validated is not a monad because it would violate the monad laws"
+        raise NotImplementedError,
+              "Validated is not a monad because it would violate the monad laws"
       end
 
       # Valid result
@@ -86,8 +87,8 @@ module Dry
         #   @yieldreturn [Validated::Valid,Validated::Invalid]
         #   @return [Validated::Valid,Validated::Invalid]
         #
-        def apply(val = Undefined)
-          Undefined.default(val) { yield }.fmap(Curry.(value!))
+        def apply(val = Undefined, &block)
+          Undefined.default(val, &block).fmap(Curry.(value!))
         end
 
         # Lifts a block/proc over Valid
@@ -167,9 +168,9 @@ module Dry
         #   @yieldreturn [Validated::Valid,Validated::Invalid]
         #   @return [Validated::Invalid]
         #
-        def apply(val = Undefined)
+        def apply(val = Undefined, &block)
           Undefined
-            .default(val) { yield }
+            .default(val, &block)
             .alt_map { |v| @error + v }
             .fmap { return self }
         end

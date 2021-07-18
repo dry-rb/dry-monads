@@ -118,12 +118,12 @@ module Dry
         #   create_user.apply(name) # => Failure(:name_missing)
         #
         # @return [RightBiased::Left,RightBiased::Right]
-        def apply(val = Undefined)
+        def apply(val = Undefined, &block)
           unless @value.respond_to?(:call)
             raise TypeError, "Cannot apply #{val.inspect} to #{@value.inspect}"
           end
 
-          Undefined.default(val) { yield }.fmap { |unwrapped| curry.(unwrapped) }
+          Undefined.default(val, &block).fmap { |unwrapped| curry.(unwrapped) }
         end
 
         # @param other [Object]

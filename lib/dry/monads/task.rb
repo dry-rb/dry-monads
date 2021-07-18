@@ -164,14 +164,12 @@ module Dry
         )
 
         promise.on_error do |v|
-          begin
-            inner = block.(v).promise
-            inner.execute
-            inner.on_success { |r| child.on_fulfill(r) }
-            inner.on_error { |e| child.on_reject(e) }
-          rescue StandardError => e
-            child.on_reject(e)
-          end
+          inner = block.(v).promise
+          inner.execute
+          inner.on_success { |r| child.on_fulfill(r) }
+          inner.on_error { |e| child.on_reject(e) }
+        rescue StandardError => e
+          child.on_reject(e)
         end
         promise.on_success { |v| child.on_fulfill(v) }
 
@@ -236,8 +234,8 @@ module Dry
       #
       # @param val [Task]
       # @return [Task]
-      def apply(val = Undefined)
-        arg = Undefined.default(val) { yield }
+      def apply(val = Undefined, &block)
+        arg = Undefined.default(val, &block)
         bind { |f| arg.fmap { |v| curry(f).(v) } }
       end
 

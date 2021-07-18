@@ -299,11 +299,9 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       it "throws NoMethodError on everything else" do
-        begin
-          described_class.garbage
-        rescue StandardError => e
-          expect(e.class).to be(NoMethodError)
-        end
+        described_class.garbage
+      rescue StandardError => e
+        expect(e.class).to be(NoMethodError)
       end
     end
 

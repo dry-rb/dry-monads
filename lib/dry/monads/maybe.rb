@@ -17,7 +17,7 @@ module Dry
       include Transformer
 
       class << self
-        extend Core::Deprecations[:'dry-monads']
+        extend Core::Deprecations[:"dry-monads"]
 
         # Wraps the given value with into a Maybe object.
         #

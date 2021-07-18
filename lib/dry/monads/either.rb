@@ -2,7 +2,7 @@
 
 require "dry/core/deprecations"
 
-Dry::Core::Deprecations.warn("Either monad was renamed to Result", tag: :'dry-monads')
+Dry::Core::Deprecations.warn("Either monad was renamed to Result", tag: :"dry-monads")
 
 require "dry/monads/result"
 
@@ -12,7 +12,7 @@ module Dry
     deprecate_constant :Either
 
     class Result
-      extend Dry::Core::Deprecations[:'dry-monads']
+      extend Dry::Core::Deprecations[:"dry-monads"]
 
       deprecate :to_either, :to_result
 
@@ -24,7 +24,7 @@ module Dry
 
       module Mixin
         module Constructors
-          extend Dry::Core::Deprecations[:'dry-monads']
+          extend Dry::Core::Deprecations[:"dry-monads"]
 
           Right = Success
           Left = Failure
@@ -51,13 +51,13 @@ module Dry
 
     class Try
       class Value
-        extend Dry::Core::Deprecations[:'dry-monads']
+        extend Dry::Core::Deprecations[:"dry-monads"]
 
         deprecate :to_either, :to_result
       end
 
       class Error
-        extend Dry::Core::Deprecations[:'dry-monads']
+        extend Dry::Core::Deprecations[:"dry-monads"]
 
         deprecate :to_either, :to_result
       end

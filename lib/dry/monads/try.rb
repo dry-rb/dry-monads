@@ -22,7 +22,7 @@ module Dry
       attr_reader :exception
 
       class << self
-        extend Core::Deprecations[:'dry-monads']
+        extend Core::Deprecations[:"dry-monads"]
 
         # Invokes a callable and if successful stores the result in the
         # {Try::Value} type, but if one of the specified exceptions was raised it stores
