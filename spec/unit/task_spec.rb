@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/RescueStandardError
 # rubocop:disable Style/RescueModifier
 
 require "English"
@@ -245,4 +244,3 @@ RSpec.describe(Dry::Monads::Task) do
 end
 
 # rubocop:enable Style/RescueModifier
-# rubocop:enable Style/RescueStandardError

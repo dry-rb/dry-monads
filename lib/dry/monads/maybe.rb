@@ -106,6 +106,7 @@ module Dry
 
         def initialize(value = Undefined)
           raise ArgumentError, "nil cannot be some" if value.nil?
+
           super()
 
           @value = Undefined.default(value, Unit)
