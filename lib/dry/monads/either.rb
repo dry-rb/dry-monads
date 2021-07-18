@@ -12,7 +12,7 @@ module Dry
     deprecate_constant :Either
 
     class Result
-      extend Dry::Core::Deprecations[:"dry-monads"]
+      extend ::Dry::Core::Deprecations[:"dry-monads"]
 
       deprecate :to_either, :to_result
 

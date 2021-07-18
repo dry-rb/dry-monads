@@ -2,6 +2,7 @@
 
 require "concurrent/promise"
 
+require "dry/core/deprecations"
 require "dry/monads/task"
 
 module Dry
@@ -11,6 +12,8 @@ module Dry
     # computation is evaluated not more than once (compare with the built-in
     # lazy assignement ||= which does not guarantee this).
     class Lazy < Task
+      extend ::Dry::Core::Deprecations[:"dry-monads"]
+
       class << self
         # @private
         def new(promise = nil, &block)
@@ -40,6 +43,14 @@ module Dry
         @promise.execute
         self
       end
+
+      # @return [Boolean]
+      def evaluated?
+        @promise.complete?
+      end
+      deprecate :complete?, :evaluated?
+
+      undef_method :wait
 
       # @return [String]
       def to_s
