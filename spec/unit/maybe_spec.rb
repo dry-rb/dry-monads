@@ -138,8 +138,8 @@ RSpec.describe(Dry::Monads::Maybe) do
     end
 
     describe "#maybe" do
-      it "is an alias for fmap" do
-        expect(subject.method(:maybe)).to eql(subject.method(:fmap))
+      it "maps nil values returned from block to None" do
+        expect(subject.maybe { nil }).to eql(none)
       end
     end
 
