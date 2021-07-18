@@ -20,7 +20,10 @@ module Dry
               if error === value
                 Failure.new(value, RightBiased::Left.trace_caller)
               else
+                # rubocop:disable Style/RaiseArgs
+                # per https://github.com/dry-rb/dry-monads/pull/142
                 raise InvalidFailureTypeError.new(value)
+                # rubocop:enable Style/RaiseArgs
               end
             end
 
