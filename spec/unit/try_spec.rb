@@ -196,6 +196,12 @@ RSpec.describe(Dry::Monads::Try) do
       end
     end
     # rubocop:enable Style/CaseEquality
+
+    describe "#handle" do
+      it "is a no-op for Value" do
+        expect(subject.handle(ZeroDivisionError) { raise }).to be(subject)
+      end
+    end
   end
 
   describe(try::Error) do
@@ -315,6 +321,15 @@ RSpec.describe(Dry::Monads::Try) do
       end
     end
     # rubocop:enable Style/CaseEquality
+
+    describe "#handle" do
+      it "works similar to rescuer" do
+        expect(subject.handle(ZeroDivisionError) { 999 }).to eql(value[[ZeroDivisionError], 999])
+        expect(subject.handle(StandardError) { 888 }).to eql(value[[ZeroDivisionError], 888])
+        expect(subject.handle { 777 }).to eql(value[[ZeroDivisionError], 777])
+        expect(subject.handle(ArgumentError)).to be(subject)
+      end
+    end
   end
 
   describe try::Mixin do

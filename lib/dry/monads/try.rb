@@ -168,6 +168,15 @@ module Dry
           end
         end
         alias_method :inspect, :to_s
+
+        # Ignores values and returns self, see {Error#handle}
+        #
+        # @param errors [Class] List of Exception subclasses
+        #
+        # @return [Try::Value]
+        def handle(*_errors)
+          self
+        end
       end
 
       # Represents a result of a failed execution.
@@ -214,6 +223,26 @@ module Dry
         # @return [Boolean]
         def ===(other)
           Error === other && exception === other.exception
+        end
+
+        # Acts in a similar way to `rescue`. It checks if
+        # {exception} is one of {errors} and yields the block if so.
+        #
+        # @param errors [Class] List of Exception subclasses
+        #
+        # @return [Try::Value]
+        def handle(*errors)
+          if errors.empty?
+            classes = DEFAULT_EXCEPTIONS
+          else
+            classes = errors
+          end
+
+          if classes.any? { |c| c === exception }
+            Value.new([exception.class], yield(exception))
+          else
+            self
+          end
         end
       end
 
