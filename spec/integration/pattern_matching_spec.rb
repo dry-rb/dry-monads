@@ -1,3 +1,4 @@
+# rubocop:disable Lint/Syntax
 RSpec.describe "pattern matching" do
   context "Result" do
     include Dry::Monads[:result, :maybe]

@@ -310,7 +310,7 @@ RSpec.describe(Dry::Monads::Result) do
 
     describe "#either" do
       it "returns first function applied to the value" do
-        expect(success["foo"].either(-> x { x + "foo" }, -> x { x + "bar" })).to eq("foofoo")
+        expect(success["foo"].either(-> x { "#{x}foo" }, -> x { "#{x}bar" })).to eq("foofoo")
       end
     end
   end
@@ -478,7 +478,7 @@ RSpec.describe(Dry::Monads::Result) do
       end
 
       it "executes a block" do
-        expect(subject.value_or { |bar| "foo" + bar }).to eql("foobar")
+        expect(subject.value_or { |bar| "foo#{bar}" }).to eql("foobar")
       end
     end
 
@@ -535,7 +535,7 @@ RSpec.describe(Dry::Monads::Result) do
 
     describe "#either" do
       it "returns second function applied to the value" do
-        expect(failure["bar"].either(-> x { x + "foo" }, -> x { x + "bar" })).to eq("barbar")
+        expect(failure["bar"].either(-> x { "#{x}foo" }, -> x { "#{x}bar" })).to eq("barbar")
       end
     end
   end
