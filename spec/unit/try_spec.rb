@@ -355,3 +355,6 @@ RSpec.describe(Dry::Monads::Try) do
     end
   end
 end
+
+# rubocop:enable Style/RescueModifier
+# rubocop:enable Style/RescueStandardError
