@@ -148,6 +148,13 @@ module Dry
         def flip
           Failure.new(@value, RightBiased::Left.trace_caller)
         end
+
+        # Ignores values and returns self, see {Failure#alt_map}
+        #
+        # @return [Result::Success]
+        def alt_map(_ = nil)
+          self
+        end
       end
 
       # Represents a value of a failed operation.
@@ -290,6 +297,21 @@ module Dry
         # @return [Any] Return value of `g`
         def either(_, g)
           g.(failure)
+        end
+
+        # Lifts a block/proc over Failure
+        #
+        # @overload alt_map(proc)
+        #   @param proc [#call]
+        #   @return [Result::Failure]
+        #
+        # @overload alt_map
+        #   @param block [Proc]
+        #   @return [Result::Failure]
+        #
+        def alt_map(proc = Undefined, &block)
+          f = Undefined.default(proc, block)
+          self.class.new(f.(failure), RightBiased::Left.trace_caller)
         end
       end
 

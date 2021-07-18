@@ -313,6 +313,17 @@ RSpec.describe(Dry::Monads::Result) do
         expect(success["foo"].either(-> x { "#{x}foo" }, -> x { "#{x}bar" })).to eq("foofoo")
       end
     end
+
+    describe "#alt_map" do
+      it "is a no-op" do
+        expect(success.("foo").alt_map { raise }).to eql(
+          success.("foo")
+        )
+        expect(success.("foo").alt_map(proc { raise })).to eql(
+          success.("foo")
+        )
+      end
+    end
   end
 
   describe result::Failure do
@@ -575,6 +586,17 @@ RSpec.describe(Dry::Monads::Result) do
 
       it "tracks the caller" do
         expect(subject.Failure("fail").trace).to include("spec/unit/result_spec.rb")
+      end
+    end
+
+    describe "#alt_map" do
+      it "map over the failure value" do
+        expect(failure.("foo").alt_map(&:upcase)).to eql(
+          failure.("FOO")
+        )
+        expect(subject.Failure("foo").alt_map(:upcase.to_proc)).to eql(
+          failure.("FOO")
+        )
       end
     end
   end
