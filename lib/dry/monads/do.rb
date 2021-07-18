@@ -18,7 +18,7 @@ module Dry
         public: "",
         private: "private ",
         protected: "protected "
-      }
+      }.freeze
 
       # @api private
       class Halt < StandardError
@@ -130,13 +130,13 @@ module Dry
         # @api private
         def wrap_method(target, method, visibility)
           target.module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
-            #{VISIBILITY_WORD[visibility]} def #{method}(#{DELEGATE})
-              if block_given?
-                super
-              else
-                Do.() { super { |*ms| Do.bind(ms) } }
-              end
-            end
+            #{VISIBILITY_WORD[visibility]} def #{method}(#{DELEGATE}) # private def create_acccount(...)
+              if block_given?                                         #   if block_given?
+                super                                                 #     super
+              else                                                    #   else
+                Do.() { super { |*ms| Do.bind(ms) } }                 #     Do.() { super { |*ms| Do.bind(ms) } }
+              end                                                     #   end
+            end                                                       # end
           RUBY
         end
 

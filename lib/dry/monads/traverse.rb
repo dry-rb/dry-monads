@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop:disable Naming/ConstantName
+# rubocop:disable Style/MutableConstant
+
 require "dry/monads/validated"
 
 module Dry
@@ -20,3 +23,6 @@ module Dry
     Traverse.freeze
   end
 end
+
+# rubocop:enable Style/MutableConstant
+# rubocop:enable Naming/ConstantName

@@ -86,6 +86,7 @@ module Dry
 
         # @param value [Object] a value of a successful operation
         def initialize(value)
+          super()
           @value = value
         end
 
@@ -188,6 +189,7 @@ module Dry
         # @param value [Object] failure value
         # @param trace [String] caller line
         def initialize(value, trace = RightBiased::Left.trace_caller)
+          super()
           @value = value
           @trace = trace
         end

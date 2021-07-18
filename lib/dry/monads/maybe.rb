@@ -106,6 +106,7 @@ module Dry
 
         def initialize(value = Undefined)
           raise ArgumentError, "nil cannot be some" if value.nil?
+          super()
 
           @value = Undefined.default(value, Unit)
         end
@@ -146,7 +147,7 @@ module Dry
         singleton_class.send(:attr_reader, :instance)
 
         # @api private
-        def self.method_missing(m, *)
+        def self.method_missing(m, *) # rubocop:disable Style/MissingRespondToMissing
           if (instance.methods(true) - methods(true)).include?(m)
             raise ConstructorNotAppliedError.new(m, :None)
           else
@@ -161,6 +162,7 @@ module Dry
         attr_reader :trace
 
         def initialize(trace = RightBiased::Left.trace_caller)
+          super()
           @trace = trace
         end
 
