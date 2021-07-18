@@ -55,10 +55,7 @@ RSpec.describe(Dry::Monads::Maybe) do
     describe ".call" do
       it "is an alias for new" do
         expect(maybe::Some.("foo")).to eql(subject)
-
-        if RUBY_VERSION > "2.6"
-          expect((-> x { x.downcase } >> maybe::Some).("FOO")).to eql(subject)
-        end
+        expect((-> x { x.downcase } >> maybe::Some).("FOO")).to eql(subject)
       end
     end
 
