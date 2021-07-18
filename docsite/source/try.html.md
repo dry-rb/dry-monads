@@ -12,7 +12,6 @@ require 'dry/monads'
 class ExceptionalLand
   include Dry::Monads[:try]
 
-
   def call
     res = Try { 10 / 2 }
     res.value! if res.value?
