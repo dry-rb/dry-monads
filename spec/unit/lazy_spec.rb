@@ -83,4 +83,10 @@ RSpec.describe(Dry::Monads::Lazy) do
       expect(Lazy { 1 }.discard.value!).to be mixin::Unit
     end
   end
+
+  describe "#evaluated?" do
+    it "checks if the value is computed" do
+      expect(subject.evaluated?).to be(false)
+    end
+  end
 end
