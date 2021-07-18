@@ -153,6 +153,25 @@ module Dry
           Maybe.coerce(bind(*args, &block))
         end
 
+        # Accepts a block and runs it against the wrapped value.
+        # If the block returns a trurhy value the result is self,
+        # otherwise None. If no block is given, the value serves
+        # and its result.
+        #
+        # @param with [#call] positional block
+        # @param block [Proc] block
+        #
+        # @return [Maybe::None, Maybe::Some]
+        def filter(with = Undefined, &block)
+          block = Undefined.default(with, block || IDENTITY)
+
+          if block.(@value)
+            self
+          else
+            Monads::None()
+          end
+        end
+
         # @return [String]
         def to_s
           if Unit.equal?(@value)
@@ -258,6 +277,13 @@ module Dry
         # @api private
         def deconstruct
           EMPTY_ARRAY
+        end
+
+        # @see Maybe::Some#filter
+        #
+        # @return [Maybe::None]
+        def filter(_ = Undefined)
+          self
         end
       end
 
