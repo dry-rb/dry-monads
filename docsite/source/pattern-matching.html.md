@@ -14,11 +14,11 @@ Ruby 2.7 introduces pattern matching, it is nicely supported by dry-monads 1.3+.
 case value
 in Success(Integer => x)
   # x is bound to an integer
-in Success[:created, user] # alternatively: Success([:created, user])
+in Success[:created, user]
   # user is bound to the second member
 in Success(Date | Time)
   # date or time object
-in Success([1, *])
+in Success[1, *]
   # any array starting with 1
 in Success(String => s) if s.size < 100
   # only if `s` is short enough
@@ -33,7 +33,7 @@ in Success()
 in Success(_)
   # general success
 in Failure[:user_not_found]
-  # Failure([:user_not_found])
+  # matches Failure([:user_not_found]) or Failure[:user_not_found]
 in Failure[error_code, *payload]
   # ...
 end
