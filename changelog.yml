@@ -34,7 +34,7 @@
         error.recover(KeyError) { 'default' } # => Try::Value("default")
         ```
     - |-
-      `Maybe#filter` runs a predicate against the wrapped value. Returns `None` if the results is false (flash-gordon)
+      `Maybe#filter` runs a predicate against the wrapped value. Returns `None` if the result is false (flash-gordon)
         ```ruby
         Some(3).filter(&:odd?)  # => Some(3)
         Some(3).filter(&:even?) # => None
