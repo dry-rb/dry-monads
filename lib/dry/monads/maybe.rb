@@ -2,6 +2,7 @@
 
 require "dry/core/equalizer"
 require "dry/core/deprecations"
+require "dry/core/class_attributes"
 
 require "dry/monads/right_biased"
 require "dry/monads/transformer"
@@ -15,6 +16,10 @@ module Dry
     # @api public
     class Maybe
       include Transformer
+      extend Core::ClassAttributes
+
+      defines :warn_on_implicit_nil_coercion
+      warn_on_implicit_nil_coercion true
 
       class << self
         extend Core::Deprecations[:"dry-monads"]
@@ -127,11 +132,16 @@ module Dry
           next_value = bind(*args, &block)
 
           if next_value.nil?
-            self.class.warn(
-              "Blocked passed to Some#fmap returned `nil` and was chained to None. "\
-              "This is literally an unlawful behavior and it will not be supported in "\
-              "dry-monads 2. \nPlease, switch to Some#maybe in places where you expect `nil`s."
-            )
+            if self.class.warn_on_implicit_nil_coercion
+              self.class.warn(
+                "Block passed to Some#fmap returned `nil` and was chained to None. "\
+                "This is literally an unlawful behavior and it will not be supported in "\
+                "dry-monads 2. \nPlease, replace `.fmap` with `.maybe` in places where you "\
+                "expect `nil` as block result.\n"\
+                "You can opt out of these warnings with\n"\
+                "Dry::Monads::Maybe.warn_on_implicit_nil_coercion false"
+              )
+            end
             Monads.None()
           else
             Some.new(next_value)
