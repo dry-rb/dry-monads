@@ -169,12 +169,12 @@ module Dry
         end
         alias_method :inspect, :to_s
 
-        # Ignores values and returns self, see {Error#handle}
+        # Ignores values and returns self, see {Try::Error#recover}
         #
         # @param errors [Class] List of Exception subclasses
         #
         # @return [Try::Value]
-        def handle(*_errors)
+        def recover(*_errors)
           self
         end
       end
@@ -231,7 +231,7 @@ module Dry
         # @param errors [Class] List of Exception subclasses
         #
         # @return [Try::Value]
-        def handle(*errors)
+        def recover(*errors)
           if errors.empty?
             classes = DEFAULT_EXCEPTIONS
           else

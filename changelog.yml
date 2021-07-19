@@ -28,10 +28,10 @@
         Failure("oops").alt_map(&:upcase) # => Failure("OOPS")
         ```
     - |-
-      `Try#handle` "recovers from errors" (flash-gordon)
+      `Try#recover` recovers from errors (flash-gordon)
         ```ruby
         error = Try { Hash.new.fetch(:missing) }
-        error.handle(KeyError) { 'default' } # => Try::Value("default")
+        error.recover(KeyError) { 'default' } # => Try::Value("default")
         ```
     - |-
       `Maybe#filter` runs a predicate against the wrapped value. Returns `None` if the results is false (flash-gordon)
