@@ -6,11 +6,48 @@
 ### Added
 
 - `Unit` destructures to an empty array (flash-gordon)
+- When `.value!` called on a `Failure` value the error references to the value (rewritten + flash-gordon)
+  ```ruby
+  begin
+    Failure("oops").value!
+  rescue => error
+    error.receiver # => Failure("oops")
+  end
+  ```
+- `Result#alt_map` for mapping failure values (flash-gordon)
+  ```ruby
+  Failure("oops").alt_map(&:upcase) # => Failure("OOPS")
+  ```
+- `Try#handle` "recovers from errors" (flash-gordon)
+  ```ruby
+  error = Try { Hash.new.fetch(:missing) }
+  error.handle(KeyError) { 'default' } # => Try::Value("default")
+  ```
+- `Maybe#filter` runs a predicate against the wrapped value. Returns `None` if the results is false (flash-gordon)
+  ```ruby
+  Some(3).filter(&:odd?)  # => Some(3)
+  Some(3).filter(&:even?) # => None
+  # no block given
+  Some(3 == 5).filter     # => None
+  ```
+- `RightBiased#|` is an alias for `#or` (flash-gordon)
+  ```ruby
+  None() | Some(6) | Some(7) # => Some(6)
+  Failure() | Success("one") | Success("two") # => Success("one")
+  ```
 
 ### Fixed
 
 - Do notation preserves method visibility (anicholson + flash-gordon)
 
+### Changed
+
+- Coercing `nil` values to `None` with `Some#fmap` is officially deprecated. (flash-gordon)
+Switch to `Some#maybe` when you expect `nil`.
+This behavior will be dropped in 2.0 but you can opt out of warnings for the time being
+  ```ruby
+  Dry::Monads::Maybe.warn_on_implicit_nil_coercion false
+  ```
 
 [Compare v1.3.5...master](https://github.com/dry-rb/dry-monads/compare/v1.3.5...master)
 
