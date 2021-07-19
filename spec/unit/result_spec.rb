@@ -599,5 +599,13 @@ RSpec.describe(Dry::Monads::Result) do
         )
       end
     end
+
+    describe "#|" do
+      it "chooses the right value" do
+        expect(failure.("foo") | failure.("bar") | success.("baz")).to eql(success.("baz"))
+        expect(failure.("foo") | failure.("bar") | failure.("baz")).to eql(failure.("baz"))
+        expect(success.("baz") | failure.("foo") | failure.("bar")).to eql(success.("baz"))
+      end
+    end
   end
 end

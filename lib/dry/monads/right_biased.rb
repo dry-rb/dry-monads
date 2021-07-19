@@ -12,7 +12,7 @@ module Dry
       # Right part
       #
       # @api public
-      module Right
+      module Right # rubocop:disable Metrics/ModuleLength
         # @private
         def self.included(m)
           super
@@ -87,6 +87,16 @@ module Dry
         #
         # @return [RightBiased::Right]
         def or(*)
+          self
+        end
+
+        # Ignores arguments and returns self. It exists to keep the interface
+        # identical to that of {RightBiased::Left}.
+        #
+        # @param _alt [RightBiased::Right, RightBiased::Left]
+        #
+        # @return [RightBiased::Right]
+        def |(_alt)
           self
         end
 
@@ -297,6 +307,15 @@ module Dry
         # @return [Object]
         def or(*)
           raise NotImplementedError
+        end
+
+        # Returns the passed value. Works in pair with {RightBiased::Right#|}.
+        #
+        # @param alt [RightBiased::Right, RightBiased::Left]
+        #
+        # @return [RightBiased::Right, RightBiased::Left]
+        def |(alt)
+          self.or(alt)
         end
 
         # A lifted version of `#or`. This is basically `#or` + `#fmap`.

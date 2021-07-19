@@ -501,6 +501,14 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(none.filter).to eql(none)
       end
     end
+
+    describe "#|" do
+      it "chooses the right value" do
+        expect(none | none | some[3]).to eql(some[3])
+        expect(none | some[3] | none | some[3]).to eql(some[3])
+        expect(none | none | none).to eql(none)
+      end
+    end
   end
 
   describe maybe::Mixin do
