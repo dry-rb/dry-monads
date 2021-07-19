@@ -89,7 +89,7 @@ module Dry
       class Some < Maybe
         include Dry::Equalizer(:value!)
         include RightBiased::Right
-        include Core::Deprecations[:"dry-monads"]
+        extend Core::Deprecations[:"dry-monads"]
 
         # Shortcut for Some([...])
         #
@@ -127,12 +127,12 @@ module Dry
           next_value = bind(*args, &block)
 
           if next_value.nil?
-            warn(
+            self.class.warn(
               "Blocked passed to Some#fmap returned `nil` and was chained to None. "\
               "This is literally an unlawful behavior and it will not be supported in "\
               "dry-monads 2. \nPlease, switch to Some#maybe in places where you expect `nil`s."
             )
-            None()
+            Monads.None()
           else
             Some.new(next_value)
           end
@@ -168,7 +168,7 @@ module Dry
           if block.(@value)
             self
           else
-            Monads::None()
+            Monads.None()
           end
         end
 
@@ -380,9 +380,11 @@ module Dry
 
     class Result
       class Success < Result
+        extend Core::Deprecations[:"dry-monads"]
+
         # @return [Maybe]
         def to_maybe
-          ::Kernel.warn "Success(nil) transformed to None" if @value.nil?
+          warn "Success(nil) transformed to None" if @value.nil?
           ::Dry::Monads::Maybe(@value)
         end
       end

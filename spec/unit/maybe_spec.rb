@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
+require "tempfile"
+require "dry/core/deprecations"
+
 RSpec.describe(Dry::Monads::Maybe) do
+  before(:all) do
+    Dry::Core::Deprecations.set_logger!(Tempfile.new("dry_deprecations"))
+  end
+
   maybe = described_class
   some = maybe::Some.method(:new)
   none = maybe::None.new
@@ -134,6 +141,10 @@ RSpec.describe(Dry::Monads::Maybe) do
         result = subject.fmap(proc, :foo, :bar)
 
         expect(result).to eql(some[true])
+      end
+
+      it "coerces nil to None but it's deprecated" do
+        expect(subject.fmap { nil }).to eql(none)
       end
     end
 
