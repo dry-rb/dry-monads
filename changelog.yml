@@ -1,6 +1,6 @@
 ---
 - version: 1.4.0
-  date:
+  date: 2021-07-20
   fixed:
     - Do notation preserves method visibility (anicholson + flash-gordon)
   changed:
@@ -11,6 +11,7 @@
         ```ruby
         Dry::Monads::Maybe.warn_on_implicit_nil_coercion false
         ```
+    - Minimal Ruby version is 2.6
   added:
     - "`Unit` destructures to an empty array (flash-gordon)"
     - |-
