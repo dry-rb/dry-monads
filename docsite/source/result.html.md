@@ -157,6 +157,13 @@ Success(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 2
 Failure(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 3
 ```
 
+### `alt_map`
+
+`alt_map` channels failure values, it's an `fmap` for `Failure`:
+
+```ruby
+Failure("oops").alt_map(&:upcase) # => Failure("OOPS")
+```
 
 ### Adding constraints to `Failure` values.
 You can add type constraints to values passed to `Failure`. This will raise an exception if value doesn't meet the constraints:

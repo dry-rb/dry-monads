@@ -73,3 +73,31 @@ Use `value!` for unwrapping a `Success` and `exception` for getting error object
 ### `to_result` and `to_maybe`
 
 `Try`'s `Value` and `Error` can be transformed to `Success` and `Failure` correspondingly by calling `to_result` and to `Some` and `None` by calling `to_maybe`. Keep in mind that by transforming `Try` to `Maybe` you lose the information about an exception so be sure that you've processed the error before doing so.
+
+### `recover`
+
+Recovers from an error:
+
+```ruby
+extend Dry::Monads[:try]
+
+Try { 10 / 0 }.recover(ZeroDivisionError) { 1 } # => Try::Value(1)
+```
+
+No explicit list of exceptions required, StandardError will be the default:
+```ruby
+extend Dry::Monads[:try]
+Try { Hash.new.fetch(:missing) }.recover { :found } # => Try::Value(:found)
+```
+
+Of course, it's a no-op on values:
+```ruby
+Try { 10 }.recover { 1 } # => Try::Value(10)
+```
+
+Multiple exception types are allowed:
+```ruby
+extend Dry::Monads[:try]
+
+Try { bang! }.recover(KeyError, ArgumentError) { :failsafe }
+```

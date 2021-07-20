@@ -105,6 +105,14 @@ Maybe(nil).bind(add_two).or(Some(0)) # => Some(0)
 Maybe(nil).bind(add_two).or { Some(0) } # => Some(0)
 ```
 
+There's an alias operator for `or`:
+
+```ruby
+extend Dry::Monads[:maybe]
+
+None() | Some(1) | Some(2) # => Some(1)
+```
+
 ### `and`
 
 Two values can be chained using `.and`:
@@ -143,4 +151,15 @@ Some(10).to_result # => Success(10)
 None().to_result # => Failure()
 None().to_result(:error) # => Failure(:error)
 None().to_result { :block_value } # => Failure(:block_value)
+```
+
+### `filter`
+
+`Maybe#filter` runs a predicate against the wrapped value. Returns `None` if the result is false:
+
+```ruby
+Some(3).filter(&:odd?)  # => Some(3)
+Some(3).filter(&:even?) # => None
+# no block given
+Some(3 == 5).filter     # => None
 ```
