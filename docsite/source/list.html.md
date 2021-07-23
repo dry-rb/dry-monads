@@ -8,6 +8,7 @@ name: dry-monads
 
 Lifts a block/proc and runs it against each member of the list. The block must return a value coercible to a list. As in other monads if no block given the first argument will be treated as callable and used instead.
 
+
 ```ruby
 require 'dry/monads/list'
 
