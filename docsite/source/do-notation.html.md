@@ -102,6 +102,53 @@ end
 
 Since `yield` internally uses exceptions to control the flow, the exception will be detected by the `transaction` call and the whole operation will be rolled back. No more garbage in your database, yay!
 
+One point worth noting is that uncaught exceptions within a `yield`-ed method will still raise an error and won't return `Failure`. For instance:
+
+```ruby
+require 'dry/monads'
+require 'dry/monads/do'
+
+class SimpleExample
+  include Dry::Monads[:result]
+  include Dry::Monads::Do.for(:call)
+
+  def call()
+    value = yield method_that_raises_an_error
+    Success(value)
+  end
+  
+  def method_that_raises_an_error
+    raise "Oh no"
+  end
+end
+```
+
+You might intuit based on the transaction safety of `Do` that `SimpleExample.new.call` would return `Failure()`, but what you'll actually see is something like `in 'call_method': Oh no (RuntimeError)`. This can cause some confusion if, for example, you're using an exception-raising method of a popular <abbr title="Object-Relational Mapping">ORM</abbr> tool, and your desire is to handle `Failure()` and not to catch exceptions. 
+
+The right approach here is to either use non-raising methods and return `Failure` yourself if the methods don't succeed, or to catch errors and convert them into Failures either by using `Try#to_result` or by hand. In the above example, for instance:
+
+```ruby
+require 'dry/monads'
+require 'dry/monads/do'
+require 'dry/monads/try'
+
+class SimpleExample
+  include Dry::Monads[:result, :try]
+  include Dry::Monads::Do.for(:call)
+
+  def call()
+    value = yield method_that_used_to_raise_an_error
+    Success(value)
+  end
+  
+  def method_that_used_to_raise_an_error
+    Try[RuntimeError] { raise "Oh no" }.to_result
+  end
+end
+```
+
+Now calling `SimpleExample.new.call` will return `Failure(#<RuntimeError: Oh No>)`.
+
 ### Limitations
 
 `Do` only works with single-value monads, i.e. most of them. At the moment, there is no way to make it work with `List`, though.
