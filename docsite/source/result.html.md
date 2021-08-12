@@ -8,7 +8,7 @@ The `Result` monad is useful to express a series of computations that might
 return an error object with additional information.
 
 The `Result` mixin has two type constructors: `Success` and `Failure`. The `Success`
-can be thought of as "everything went success" and the `Failure` is used when
+can be thought of as "everything went successfully" and the `Failure` is used when
 "something has gone wrong".
 
 ### `bind`
@@ -68,7 +68,7 @@ else
   Failure("wrong")
 end.fmap { |x| x * 2 }
 
-# If everything went success
+# If everything went successfully
 result # => Success(20)
 # If it did not
 result # => Failure("wrong")
@@ -138,7 +138,7 @@ else
   Failure("wrong")
 end.to_maybe
 
-# If everything went success
+# If everything went successfully
 result # => Some(10)
 # If it did not
 result # => None()
