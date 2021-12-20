@@ -13,7 +13,7 @@ group :tools do
 end
 
 group :docs do
-  gem "redcarpet"
+  gem "redcarpet", platform: :mri
   gem "yard"
   gem "yard-junk"
 end
