@@ -19,6 +19,42 @@ M::List[1, 2].bind(-> x { [x, x + 1] }) # => List[1, 2, 2, 3]
 M::List[1, nil].bind { |x| [x + 1] } # => error
 ```
 
+### `collect`
+
+Works differently than `Enumerable#collect`: the block must return `Maybe` types, `Some` values are retained and `None` is discarded. As in other monads if no block given the first argument will be treated as callable and used instead.
+
+```ruby
+require 'dry/monads/list'
+
+M = Dry::Monads
+
+n = 20
+M::List[10, 5, 0].collect do |divisor|
+  if divisor.zero?
+    M::None()
+  else
+    M::Some(n / divisor)
+  end
+end
+# => List[2, 4]
+
+M::List[M::Some(1), M::None(), M::Some(2), M::None(), M::Some(3)].collect # => List[1, 2, 3]
+
+leap_year = proc do |year|
+  if year % 400 == 0
+    M::Some(year)
+  elsif year % 100 == 0
+    M::None()
+  elsif year % 4 == 0
+    M::Some(year)
+  else
+    M::None()
+  end
+end
+
+M::List[2020, 2021, 2022, 2023, 2024].collect(leap_year) # => List[2020, 2024]
+```
+
 ### `fmap`
 
 Maps a block over the list. Acts as `Array#map`. As in other monads, if no block given the first argument will be treated as callable and used instead.
