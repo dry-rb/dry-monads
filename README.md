@@ -8,7 +8,7 @@
 # dry-monads [![Join the chat at https://dry-rb.zulipchat.com](https://img.shields.io/badge/dry--rb-join%20chat-%23346b7a.svg)][chat]
 
 [![Gem Version](https://badge.fury.io/rb/dry-monads.svg)][gem]
-[![CI Status](https://github.com/dry-rb/dry-monads/workflows/CI/badge.svg)][actions]
+[![CI Status](https://github.com/dry-rb/dry-monads/workflows/ci/badge.svg)][actions]
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f2eed41bf7f04b38b0a7691c2cf6e73c)][codacy]
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/f2eed41bf7f04b38b0a7691c2cf6e73c)][codacy]
 [![Inline docs](http://inch-ci.org/github/dry-rb/dry-monads.svg?branch=master)][inchpages]
