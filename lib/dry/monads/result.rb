@@ -155,6 +155,28 @@ module Dry
         def alt_map(_ = nil)
           self
         end
+
+        # Runs a callback if the result is a Success.
+        #
+        # @example
+        #   Dry::Monads.Success("Yay!")
+        #     .on_failure { raise "This won't run" }
+        #     .on_success { |result| puts result.value! } # => Success("Yay!")
+        #   # prints "Yay!"
+        #
+        # @return [Result::Success]
+        def on_success
+          yield(self) if block_given?
+
+          self
+        end
+
+        # Ignores the given block and returns self, see {Failure#on_failure}
+        #
+        # @return [Result::Success]
+        def on_failure(&_block)
+          self
+        end
       end
 
       # Represents a value of a failed operation.
@@ -312,6 +334,28 @@ module Dry
         def alt_map(proc = Undefined, &block)
           f = Undefined.default(proc, block)
           self.class.new(f.(failure), RightBiased::Left.trace_caller)
+        end
+
+        # Ignores the given block and returns self, see {Success#on_success}
+        #
+        # @return [Result::Failure]
+        def on_success(&_block)
+          self
+        end
+
+        # Runs a callback if the result is a Failure.
+        #
+        # @example
+        #   Dry::Monads.Failure("Whoops!")
+        #     .on_success { raise "This won't run" }
+        #     .on_failure { |result| puts result.value! } # => Failure("Whoops!")
+        #   # prints "Whoops!"
+        #
+        # @return [Result::Failure]
+        def on_failure
+          yield(self) if block_given?
+
+          self
         end
       end
 

@@ -324,6 +324,27 @@ RSpec.describe(Dry::Monads::Result) do
         )
       end
     end
+
+    describe "#on_success" do
+      it "returns the original result" do
+        expect(success[123].on_success { failure["foo"] }).to eql(success[123])
+      end
+
+      it "yields itself to a block" do
+        count = 0
+        success[123].on_success { |r| count += r.success }
+
+        expect(count).to eql(123)
+      end
+    end
+
+    describe "#on_failure" do
+      it "always return itself" do
+        expect(success[123].on_failure { failure["foo"] }).to eql(success[123])
+        expect(success[123].on_failure { raise }).to eql(success[123])
+        expect(success[123].on_failure).to eql(success[123])
+      end
+    end
   end
 
   describe result::Failure do
@@ -542,6 +563,27 @@ RSpec.describe(Dry::Monads::Result) do
         expect(failure[123].and(success["foo"]) { raise }).to eql(failure[123])
         expect(failure[123].and(success["foo"])).to eql(failure[123])
         expect(failure[123].and(failure["foo"])).to eql(failure[123])
+      end
+    end
+
+    describe "#on_success" do
+      it "always return itself" do
+        expect(failure[123].on_success { success["foo"] }).to eql(failure[123])
+        expect(failure[123].on_success { raise }).to eql(failure[123])
+        expect(failure[123].on_success).to eql(failure[123])
+      end
+    end
+
+    describe "#on_failure" do
+      it "returns the original result" do
+        expect(failure[123].on_failure { success["foo"] }).to eql(failure[123])
+      end
+
+      it "yields itself to a block" do
+        count = 0
+        failure[123].on_failure { |r| count += r.failure }
+
+        expect(count).to eql(123)
       end
     end
 
