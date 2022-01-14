@@ -54,13 +54,13 @@ module Dry
         path = @paths.fetch(name) {
           raise ArgumentError, "#{name.inspect} is not a known monad"
         }
-        Array(path).each { |p| require p }
+        Array(path).each { require _1 }
       end
 
       # @private
       def constructors
-        @constructors ||= registry.values.map { |m|
-          m::Constructors if m.const_defined?(:Constructors)
+        @constructors ||= registry.values.map {
+          _1::Constructors if _1.const_defined?(:Constructors)
         }.compact
       end
 

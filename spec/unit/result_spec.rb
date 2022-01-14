@@ -217,8 +217,8 @@ RSpec.describe(Dry::Monads::Result) do
         end
 
         it "doesn't use destructuring if it's not needed" do
-          expect(success.(struct).bind { |x| x }.class).to be(struct.class)
-          expect(success.(struct).bind(nil, bar: 1) { |x| x }.class).to be(struct.class)
+          expect(success.(struct).bind { _1 }.class).to be(struct.class)
+          expect(success.(struct).bind(nil, bar: 1) { _1 }.class).to be(struct.class)
         end
       end
     end
@@ -486,7 +486,7 @@ RSpec.describe(Dry::Monads::Result) do
       end
 
       it "executes a block" do
-        expect(subject.value_or { |bar| "foo#{bar}" }).to eql("foobar")
+        expect(subject.value_or { "foo#{_1}" }).to eql("foobar")
       end
     end
 
@@ -553,7 +553,7 @@ RSpec.describe(Dry::Monads::Result) do
   end
 
   describe result::Mixin do
-    subject(:context) { Object.new.tap { |o| o.extend(result::Mixin) } }
+    subject(:context) { Object.new.tap { _1.extend(result::Mixin) } }
 
     describe "#Success" do
       example "with plain value" do

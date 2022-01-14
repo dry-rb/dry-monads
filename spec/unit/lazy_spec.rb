@@ -41,7 +41,7 @@ RSpec.describe(Dry::Monads::Lazy) do
 
   describe "#fmap" do
     it "transforms the underlying value" do
-      expect(subject.fmap { |x| x * 2 }.value!).to be(6)
+      expect(subject.fmap { _1 * 2 }.value!).to be(6)
     end
 
     it "guarantees a single run" do

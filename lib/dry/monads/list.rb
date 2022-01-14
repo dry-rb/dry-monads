@@ -110,10 +110,10 @@ module Dry
       # @return [List]
       def bind(*args)
         if block_given?
-          List.coerce(value.map { |v| yield(v, *args) }.reduce([], &:+))
+          List.coerce(value.map { yield(_1, *args) }.reduce([], &:+))
         else
           obj, *rest = args
-          List.coerce(value.map { |v| obj.(v, *rest) }.reduce([], &:+))
+          List.coerce(value.map { obj.(_1, *rest) }.reduce([], &:+))
         end
       end
 
@@ -128,10 +128,10 @@ module Dry
       # @return [List]
       def fmap(*args)
         if block_given?
-          List.new(value.map { |v| yield(v, *args) })
+          List.new(value.map { yield(_1, *args) })
         else
           obj, *rest = args
-          List.new(value.map { |v| obj.(v, *rest) })
+          List.new(value.map { obj.(_1, *rest) })
         end
       end
 
@@ -270,7 +270,7 @@ module Dry
             self.class.warn(
               "Automatic monad inference is deprecated, pass a type explicitly "\
               "or use a predefined constant, e.g. List::Result\n"\
-              "#{caller.find { |l| l !~ %r{(lib/dry/monads)|(gems)} }}"
+              "#{caller.find { _1 !~ %r{(lib/dry/monads)|(gems)} }}"
             )
             self.class.new(value, value[0].monad)
           end
@@ -317,7 +317,7 @@ module Dry
       # @return [List]
       def apply(list = Undefined, &block)
         v = Undefined.default(list, &block)
-        fmap(Curry).bind { |f| v.fmap { |x| f.(x) } }
+        fmap(Curry).bind { |f| v.fmap { f.(_1) } }
       end
 
       # Returns the List monad.
@@ -362,7 +362,7 @@ module Dry
           List.new(collected)
         else
           Enumerator.new do |g|
-            value.each { |x| g << x.value! if x.some? }
+            value.each { g << _1.value! if _1.some? }
           end
         end
       end

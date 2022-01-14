@@ -60,7 +60,7 @@ RSpec.describe(Dry::Monads::Try) do
   end
 
   context "fmap success" do
-    let(:try) { Try { 10 / 5 }.fmap { |x| x * 2 } }
+    let(:try) { Try { 10 / 5 }.fmap { _1 * 2 } }
 
     example do
       expect(try.value!).to eql(4)
@@ -68,7 +68,7 @@ RSpec.describe(Dry::Monads::Try) do
   end
 
   context "fmap failure" do
-    let(:try) { Try { 10 / 0 }.fmap { |x| x * 2 } }
+    let(:try) { Try { 10 / 0 }.fmap { _1 * 2 } }
 
     example do
       expect(try.exception).to be_kind_of(ZeroDivisionError)
@@ -140,10 +140,10 @@ RSpec.describe(Dry::Monads::Try) do
         when Value(42) then :int_match
         when Value(10..50) then :int_range
         when Value(-> x { x > 9000 }) then :int_proc_arg
-        when Value { |x| x > 100 } then :int_proc_block
+        when Value { _1 > 100 } then :int_proc_block
         when Error(10) then :ten_eql
         when Error(/\w+/) then :failure_rg
-        when Error { |x| x > 90 } then :failure_block
+        when Error { _1 > 90 } then :failure_block
         else
           :else
         end

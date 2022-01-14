@@ -129,7 +129,7 @@ RSpec.describe(Dry::Monads::List) do
 
   describe "#bind" do
     it "binds a block" do
-      expect(subject.bind { |x| [x * 2] }).to eql(list[2, 4, 6])
+      expect(subject.bind { [_1 * 2] }).to eql(list[2, 4, 6])
     end
 
     it "binds a proc" do
@@ -139,7 +139,7 @@ RSpec.describe(Dry::Monads::List) do
 
   describe "#fmap" do
     it "maps a block" do
-      expect(subject.fmap { |x| x * 2 }).to eql(list[2, 4, 6])
+      expect(subject.fmap { _1 * 2 }).to eql(list[2, 4, 6])
     end
 
     it "maps a proc" do
@@ -149,12 +149,12 @@ RSpec.describe(Dry::Monads::List) do
 
   describe "#map" do
     it "maps a block over a list" do
-      expect(subject.map { |x| x * 2 }).to eql(list[2, 4, 6])
+      expect(subject.map { _1 * 2 }).to eql(list[2, 4, 6])
     end
 
     it "returns an enumerator if no block given" do
       expect(subject.map).to be_a(Enumerator)
-      expect(subject.map.with_index { |el, idx| [el, idx] })
+      expect(subject.map.with_index { [_1, _2] })
         .to eql([[1, 0], [2, 1], [3, 2]])
     end
   end
@@ -185,23 +185,23 @@ RSpec.describe(Dry::Monads::List) do
     end
 
     it "folds from the left" do
-      expect(subject.fold_left(0) { |x, y| x - y }).to eql(-6)
+      expect(subject.fold_left(0) { _1 - _2 }).to eql(-6)
     end
   end
 
   describe "#foldl" do
     it "is an ailas for fold_left" do
-      expect(subject.foldl(0) { |x, y| x - y }).to eql(-6)
+      expect(subject.foldl(0) { _1 - _2 }).to eql(-6)
     end
   end
 
   describe "#reduce" do
     it "is an ailas for fold_left" do
-      expect(subject.reduce(0) { |x, y| x - y }).to eql(-6)
+      expect(subject.reduce(0) { _1 - _2 }).to eql(-6)
     end
 
     it "acts as Array#reduce" do
-      expect(subject.reduce(0) { |x, y| x - y }).to eql([1, 2, 3].reduce(0) { |x, y| x - y })
+      expect(subject.reduce(0) { _1 - _2 }).to eql([1, 2, 3].reduce(0) { _1 - _2 })
     end
   end
 
@@ -211,13 +211,13 @@ RSpec.describe(Dry::Monads::List) do
     end
 
     it "folds from the right" do
-      expect(subject.fold_right(0) { |x, y| x - y }).to eql(2)
+      expect(subject.fold_right(0) { _1 - _2 }).to eql(2)
     end
   end
 
   describe "#foldr" do
     it "is an ailas for fold_right" do
-      expect(subject.foldr(0) { |x, y| x - y }).to eql(2)
+      expect(subject.foldr(0) { _1 - _2 }).to eql(2)
     end
   end
 
@@ -290,16 +290,16 @@ RSpec.describe(Dry::Monads::List) do
       subject { list[1, 2, 3].typed(result) }
 
       it "flips Successes" do
-        expect(subject.traverse { |x| success.(x + 1) }).to eql(success.(list[2, 3, 4]))
+        expect(subject.traverse { success.(_1 + 1) }).to eql(success.(list[2, 3, 4]))
       end
 
       it "halts on Failure" do
-        expect(subject.traverse { |i| i == 2 ? failure.(i) : success.(i) })
+        expect(subject.traverse { _1.eql?(2) ? failure.(_1) : success.(_1) })
           .to eql(failure.(2))
       end
 
       it "halts on first Failure" do
-        expect(subject.traverse { |i| i > 1 ? failure.(i) : success.(i) })
+        expect(subject.traverse { _1 > 1 ? failure.(_1) : success.(_1) })
           .to eql(failure.(2))
       end
 
@@ -312,16 +312,16 @@ RSpec.describe(Dry::Monads::List) do
       subject { list[1, 2, 3].typed(maybe) }
 
       it "flips Somes" do
-        expect(subject.traverse { |x| some.(x + 1) }).to eql(some.(list[2, 3, 4]))
+        expect(subject.traverse { some.(_1 + 1) }).to eql(some.(list[2, 3, 4]))
       end
 
       it "halts on None" do
-        expect(subject.traverse { |i| i == 2 ? none : some.(i) })
+        expect(subject.traverse { _1.eql?(2) ? none : some.(_1) })
           .to eql(none)
       end
 
       it "halts on first None" do
-        expect(subject.traverse { |i| i == 1 ? none : raise })
+        expect(subject.traverse { _1.eql?(1) ? none : raise })
           .to eql(none)
       end
     end
@@ -330,10 +330,10 @@ RSpec.describe(Dry::Monads::List) do
       subject { list[1, 2].typed(list) }
 
       it "flips a list" do
-        expect(subject.traverse { |x| list[x] })
+        expect(subject.traverse { list[_1] })
           .to eql(list[list[1, 2]].typed(list))
 
-        expect(subject.traverse { |x| list[x, x + 1] })
+        expect(subject.traverse { list[_1, _1 + 1] })
           .to eql(list[list[1, 2], list[1, 3], list[2, 2], list[2, 3]].typed(list))
       end
     end

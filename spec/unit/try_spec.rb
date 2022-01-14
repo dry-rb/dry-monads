@@ -333,7 +333,7 @@ RSpec.describe(Dry::Monads::Try) do
   end
 
   describe try::Mixin do
-    subject(:obj) { Object.new.tap { |o| o.extend(try::Mixin) } }
+    subject(:obj) { Object.new.tap { _1.extend(try::Mixin) } }
 
     describe "#Value" do
       example "with plain value" do

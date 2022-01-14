@@ -40,7 +40,7 @@ RSpec.describe(Dry::Monads::Task) do
 
   describe "#fmap" do
     it "chains transformations" do
-      chain = subject.fmap { |v| v * 2 }
+      chain = subject.fmap { _1 * 2 }
 
       expect(chain.value!).to be 2
     end
@@ -237,7 +237,7 @@ RSpec.describe(Dry::Monads::Task) do
     end
 
     it "can be used via pure with block" do
-      lifted = task.pure { |x, y| x * y * 2 }
+      lifted = task.pure { _1 * _2 * 2 }
       expect(lifted.apply(two).apply(three).to_result).to eql(success[12])
     end
   end

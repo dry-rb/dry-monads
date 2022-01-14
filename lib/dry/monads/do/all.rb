@@ -104,7 +104,7 @@ module Dry
           def included(base)
             super
 
-            wrappers = ::Hash.new { |h, k| h[k] = ::Module.new }
+            wrappers = ::Hash.new { _1[_2] = ::Module.new }
             tracker = MethodTracker.new(wrappers)
             base.extend(tracker)
             base.extend(InstanceMixin) unless base.is_a?(::Class)
@@ -113,16 +113,16 @@ module Dry
 
           # @api private
           def wrap_defined_methods(klass, target)
-            klass.public_instance_methods(false).each do |m|
-              Do.wrap_method(target, m, :public)
+            klass.public_instance_methods(false).each do
+              Do.wrap_method(target, _1, :public)
             end
 
-            klass.protected_instance_methods(false).each do |m|
-              Do.wrap_method(target, m, :protected)
+            klass.protected_instance_methods(false).each do
+              Do.wrap_method(target, _1, :protected)
             end
 
-            klass.private_instance_methods(false).each do |m|
-              Do.wrap_method(target, m, :private)
+            klass.private_instance_methods(false).each do
+              Do.wrap_method(target, _1, :private)
             end
           end
         end

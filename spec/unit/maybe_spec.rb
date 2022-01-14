@@ -267,7 +267,7 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     describe "#and" do
       it "joins two maybe values with a block" do
-        expect(some["foo"].and(some["bar"]) { |foo, bar| [foo, bar] }).to eql(some[%w[foo bar]])
+        expect(some["foo"].and(some["bar"]) { [_1, _2] }).to eql(some[%w[foo bar]])
       end
 
       it "returns none if argument is none" do
@@ -523,7 +523,7 @@ RSpec.describe(Dry::Monads::Maybe) do
   end
 
   describe maybe::Mixin do
-    subject(:obj) { Object.new.tap { |o| o.extend(maybe::Mixin) } }
+    subject(:obj) { Object.new.tap { _1.extend(maybe::Mixin) } }
 
     describe "#Some" do
       example "with plain value" do

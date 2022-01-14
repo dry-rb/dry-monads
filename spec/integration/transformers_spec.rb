@@ -32,7 +32,7 @@ RSpec.describe(Dry::Monads::Transformer) do
       subject(:value) { list[some.(2), none] }
 
       example "using fmap2 for lifting the block" do
-        expect(value.fmap2 { |v| v + 1 })
+        expect(value.fmap2 { _1 + 1 })
           .to eql(list[some.(3), none])
       end
     end

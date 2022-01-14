@@ -124,7 +124,7 @@ module Dry
       #                     and returns another task
       # @return [Task]
       def bind(&block)
-        self.class.new(promise.flat_map { |value| block.(value).promise })
+        self.class.new(promise.flat_map { block.(_1).promise })
       end
       alias_method :then, :bind
 
@@ -168,12 +168,12 @@ module Dry
         promise.on_error do |v|
           inner = block.(v).promise
           inner.execute
-          inner.on_success { |r| child.on_fulfill(r) }
-          inner.on_error { |e| child.on_reject(e) }
+          inner.on_success { child.on_fulfill(_1) }
+          inner.on_error { child.on_reject(_1) }
         rescue StandardError => e
           child.on_reject(e)
         end
-        promise.on_success { |v| child.on_fulfill(v) }
+        promise.on_success { child.on_fulfill(_1) }
 
         self.class.new(child)
       end
@@ -238,7 +238,7 @@ module Dry
       # @return [Task]
       def apply(val = Undefined, &block)
         arg = Undefined.default(val, &block)
-        bind { |f| arg.fmap { |v| curry(f).(v) } }
+        bind { |f| arg.fmap { curry(f).(_1) } }
       end
 
       # Maps a successful result to Unit, effectively discards it

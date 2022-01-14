@@ -29,7 +29,7 @@ RSpec.describe(Dry::Monads::Maybe) do
 
   context "bind some" do
     example "using named method with block" do
-      expect(some.bind { |x| x * 2 }).to eql(6)
+      expect(some.bind { _1 * 2 }).to eql(6)
     end
 
     example "using named method with lambda" do
@@ -39,7 +39,7 @@ RSpec.describe(Dry::Monads::Maybe) do
 
   context "bind none" do
     example "using named method with block" do
-      expect(none.bind { |x| x * 2 }).to eql(None())
+      expect(none.bind { _1 * 2 }).to eql(None())
     end
 
     example "using named method with proc" do
@@ -50,7 +50,7 @@ RSpec.describe(Dry::Monads::Maybe) do
   context "mapping" do
     context "some" do
       example "using block" do
-        expect(some.fmap { |x| x * 2 }).to eql(Some(6))
+        expect(some.fmap { _1 * 2 }).to eql(Some(6))
       end
 
       example "using proc" do
@@ -60,7 +60,7 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     context "none" do
       example "using block" do
-        expect(none.fmap { |x| x * 2 }).to eql(None())
+        expect(none.fmap { _1 * 2 }).to eql(None())
       end
 
       example "using proc" do
@@ -79,12 +79,12 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       example "using lambda without lifting" do
-        expect(some.bind(&maybe_inc).bind { |x| maybe_inc[x] }.or(0)).to eql(Some(5))
+        expect(some.bind(&maybe_inc).bind { maybe_inc[_1] }.or(0)).to eql(Some(5))
       end
 
       example "using block" do
-        result = some.bind { |x|
-          Some(inc[x])
+        result = some.bind {
+          Some(inc[_1])
         }.or(0)
 
         expect(result).to eql(Some(4))
@@ -184,7 +184,7 @@ RSpec.describe(Dry::Monads::Maybe) do
         when Some(42) then :int_match
         when Some(10..50) then :int_range
         when Some(-> x { x > 9000 }) then :int_proc_arg
-        when Some { |x| x > 100 } then :int_proc_block
+        when Some { _1 > 100 } then :int_proc_block
         when None() then :none
         else
           :else

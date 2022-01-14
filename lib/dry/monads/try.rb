@@ -238,7 +238,7 @@ module Dry
             classes = errors
           end
 
-          if classes.any? { |c| c === exception }
+          if classes.any? { _1 === exception }
             Value.new([exception.class], yield(exception))
           else
             self

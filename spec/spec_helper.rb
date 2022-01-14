@@ -34,16 +34,16 @@ end
 
 module TestHelpers
   def re_require(*paths)
-    paths.each { |p| Dry::Monads.unload_monad(p) }
+    paths.each { Dry::Monads.unload_monad(_1) }
     all_paths = paths + %w[all]
 
     $LOADED_FEATURES.delete_if { |feature|
-      all_paths.any? { |path| feature.include?("dry/monads/#{path}.rb") }
+      all_paths.any? { feature.include?("dry/monads/#{_1}.rb") }
     }
 
     suppress_warnings do
-      all_paths.each do |path|
-        require "dry/monads/#{path}"
+      all_paths.each do
+        require "dry/monads/#{_1}"
       end
     end
   end
@@ -52,7 +52,7 @@ end
 module Dry::Monads
   def self.unload_monad(name)
     if registry.key?(name.to_sym)
-      self.registry = registry.reject { |k, _| k == name.to_sym }
+      self.registry = registry.reject { |k, _| k.eql?(name.to_sym) }
     end
   end
 end

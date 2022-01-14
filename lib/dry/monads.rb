@@ -49,8 +49,8 @@ module Dry
     def self.[](*monads)
       monads.sort!
       @mixins.fetch_or_store(monads.hash) do
-        monads.each { |m| load_monad(m) }
-        mixins = monads.map { |m| registry.fetch(m) }
+        monads.each { load_monad(_1) }
+        mixins = monads.map { registry.fetch(_1) }
         ::Module.new { include(*mixins) }.freeze
       end
     end

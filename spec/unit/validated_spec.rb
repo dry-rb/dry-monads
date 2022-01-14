@@ -42,7 +42,7 @@ RSpec.describe(Dry::Monads::Validated) do
 
     describe "#fmap" do
       it "lifts a block" do
-        expect(subject.fmap { |value| (value + 1).to_s }).to eql(valid.("2"))
+        expect(subject.fmap { (_1+ 1).to_s }).to eql(valid.("2"))
       end
     end
 
@@ -127,7 +127,7 @@ RSpec.describe(Dry::Monads::Validated) do
       end
 
       it "traces the caller" do
-        expect(subject.alt_map { |x| x }.trace).to include("validated_spec.rb")
+        expect(subject.alt_map { _1 }.trace).to include("validated_spec.rb")
       end
     end
 

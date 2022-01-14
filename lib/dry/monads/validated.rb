@@ -175,7 +175,7 @@ module Dry
         def apply(val = Undefined, &block)
           Undefined
             .default(val, &block)
-            .alt_map { |v| @error + v }
+            .alt_map { @error + _1 }
             .fmap { return self }
         end
 

@@ -17,7 +17,7 @@ RSpec.describe(Dry::Monads::Result) do
         when Success { |x| x > 100 } then :int_proc_block
         when Failure(10) then :ten_eql
         when Failure(/\w+/) then :failure_rg
-        when Failure { |x| x > 90 } then :failure_block
+        when Failure { _1 > 90 } then :failure_block
         else
           :else
         end

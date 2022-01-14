@@ -133,7 +133,7 @@ module Dry
             raise TypeError, "Cannot apply #{val.inspect} to #{@value.inspect}"
           end
 
-          Undefined.default(val, &block).fmap { |unwrapped| curry.(unwrapped) }
+          Undefined.default(val, &block).fmap { curry.(_1) }
         end
 
         # @param other [Object]

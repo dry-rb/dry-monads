@@ -30,7 +30,7 @@ RSpec.describe(Dry::Monads::Do::All) do
       end
 
       it "removes uses a given block" do
-        expect(adder.sum(1, 2) { |x| x }).to eql(Success(3))
+        expect(adder.sum(1, 2) { _1 }).to eql(Success(3))
       end
     end
 

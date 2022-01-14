@@ -95,7 +95,7 @@ RSpec.describe(Dry::Monads::Result) do
     end
 
     it "captures a block" do
-      proc = proc { |x| x * 2 }
+      proc = proc { _1 * 2 }
       expect(subject.Success(&proc)).to eql(success[proc])
     end
   end
