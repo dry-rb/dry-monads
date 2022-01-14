@@ -70,8 +70,8 @@ module Dry
         #
         # @param [Array<Object>] args arguments will be transparently passed through to #bind
         # @return [RightBiased::Right]
-        def tee(*args, &block)
-          bind(*args, &block).bind { self }
+        def tee(...)
+          bind(...).bind { self }
         end
 
         # Abstract method for lifting a block over the monad type.

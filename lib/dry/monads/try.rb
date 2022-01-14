@@ -135,7 +135,7 @@ module Dry
         #                             object and the rest of args will be passed
         #                             to this object along with the internal value
         # @return [Object, Try::Error]
-        def bind(*args)
+        def bind(...)
           super
         rescue *catchable => e
           Error.new(e)
@@ -153,8 +153,8 @@ module Dry
         # @param args [Array<Object>] extra arguments for the block, arguments are being processes
         #                             just as in #bind
         # @return [Try::Value, Try::Error]
-        def fmap(*args, &block)
-          Value.new(catchable, bind_call(*args, &block))
+        def fmap(...)
+          Value.new(catchable, bind_call(...))
         rescue *catchable => e
           Error.new(e)
         end

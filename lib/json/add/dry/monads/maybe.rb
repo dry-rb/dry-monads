@@ -26,8 +26,8 @@ module Dry
 
       # Stores class name (Dry::Monads::Maybe::Some or Dry::Monads::Maybe::None)
       # with the monad value as JSON string
-      def to_json(*args)
-        as_json.to_json(*args)
+      def to_json(...)
+        as_json.to_json(...)
       end
     end
   end

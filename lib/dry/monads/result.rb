@@ -116,8 +116,8 @@ module Dry
         #
         # @param args [Array<Object>] arguments will be transparently passed through to #bind
         # @return [Result::Success]
-        def fmap(*args, &block)
-          Success.new(bind(*args, &block))
+        def fmap(...)
+          Success.new(bind(...))
         end
 
         # Returns result of applying first function to the internal value.
@@ -251,8 +251,8 @@ module Dry
         #
         # @param args [Array<Object>] arguments will be passed to the underlying `#or` call
         # @return [Result::Success] Wrapped value
-        def or_fmap(*args, &block)
-          Success.new(self.or(*args, &block))
+        def or_fmap(...)
+          Success.new(self.or(...))
         end
 
         # @return [String]

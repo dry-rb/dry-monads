@@ -127,8 +127,8 @@ module Dry
         # @param args [Array<Object>] arguments will be transparently passed through to #bind
         # @return [Maybe::Some, Maybe::None] Wrapped result, i.e. nil will be mapped to None,
         #                                    other values will be wrapped with Some
-        def fmap(*args, &block)
-          next_value = bind(*args, &block)
+        def fmap(...)
+          next_value = bind(...)
 
           if next_value.nil?
             if self.class.warn_on_implicit_nil_coercion
@@ -160,8 +160,8 @@ module Dry
         # @param args [Array<Object>] arguments will be transparently passed through to #bind
         # @return [Maybe::Some, Maybe::None] Wrapped result, i.e. nil will be mapped to None,
         #                                    other values will be wrapped with Some
-        def maybe(*args, &block)
-          Maybe.coerce(bind(*args, &block))
+        def maybe(...)
+          Maybe.coerce(bind(...))
         end
 
         # Accepts a block and runs it against the wrapped value.
@@ -255,8 +255,8 @@ module Dry
         # @param args [Array<Object>] arguments will be passed to the underlying `#or` call
         # @return [Maybe::Some, Maybe::None] Lifted `#or` result, i.e. nil will be mapped to None,
         #                                    other values will be wrapped with Some
-        def or_fmap(*args, &block)
-          Maybe.coerce(self.or(*args, &block))
+        def or_fmap(...)
+          Maybe.coerce(self.or(...))
         end
 
         # @return [String]
