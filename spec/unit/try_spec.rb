@@ -187,7 +187,6 @@ RSpec.describe(Dry::Monads::Try) do
       end
     end
 
-    # rubocop:disable Style/CaseEquality
     describe "#===" do
       it "matches on the wrapped value" do
         expect(div_value[10]).to be === div_value[10]
@@ -195,8 +194,6 @@ RSpec.describe(Dry::Monads::Try) do
         expect(div_value[String]).not_to be === div_value[10]
       end
     end
-    # rubocop:enable Style/CaseEquality
-
     describe "#recover" do
       it "is a no-op for Value" do
         expect(subject.recover(ZeroDivisionError) { raise }).to be(subject)
@@ -313,15 +310,12 @@ RSpec.describe(Dry::Monads::Try) do
       end
     end
 
-    # rubocop:disable Style/CaseEquality
     describe "#===" do
       it "matches using the error value" do
         expect(error[division_error]).to be === error[division_error]
         expect(error[ZeroDivisionError]).to be === error[division_error]
       end
     end
-    # rubocop:enable Style/CaseEquality
-
     describe "#recover" do
       it "works similar to rescuer" do
         expect(subject.recover(ZeroDivisionError) { 999 }).to eql(value[[ZeroDivisionError], 999])

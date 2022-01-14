@@ -265,7 +265,6 @@ RSpec.describe(Dry::Monads::Result) do
       end
     end
 
-    # rubocop:disable Style/CaseEquality
     describe "#===" do
       it "matches on the wrapped value" do
         expect(success["foo"]).to be === success["foo"]
@@ -274,8 +273,6 @@ RSpec.describe(Dry::Monads::Result) do
         expect(success[10..50]).to be === success[42]
       end
     end
-    # rubocop:enable Style/CaseEquality
-
     describe "#discard" do
       it "nullifies the value" do
         expect(success["foo"].discard).to eql(success[unit])
@@ -507,7 +504,6 @@ RSpec.describe(Dry::Monads::Result) do
       end
     end
 
-    # rubocop:disable Style/CaseEquality
     describe "#===" do
       it "matches using the error value" do
         expect(failure["bar"]).to be === subject
@@ -516,8 +512,6 @@ RSpec.describe(Dry::Monads::Result) do
         expect(failure["foo"]).not_to be === subject
       end
     end
-    # rubocop:enable Style/CaseEquality
-
     describe "#to_validated" do
       it "returns Invalid" do
         expect(subject.to_validated).to eql(invalid.("bar"))

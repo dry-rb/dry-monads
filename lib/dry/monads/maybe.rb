@@ -140,7 +140,7 @@ module Dry
                 "You can opt out of these warnings with\n"\
                 "Dry::Monads::Maybe.warn_on_implicit_nil_coercion false",
                 uplevel: 0,
-                tag: :'dry-monads'
+                tag: :"dry-monads"
               )
             end
             Monads.None()

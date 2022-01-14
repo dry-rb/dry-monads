@@ -1,4 +1,3 @@
-# rubocop:disable Lint/Syntax
 RSpec.describe "pattern matching" do
   context "Result" do
     include Dry::Monads[:result, :maybe]
@@ -9,7 +8,7 @@ RSpec.describe "pattern matching" do
       let(:hash_like) do
         Object.new.tap do |o|
           def o.deconstruct_keys(_)
-            { code: 101 }
+            {code: 101}
           end
         end
       end
@@ -53,8 +52,8 @@ RSpec.describe "pattern matching" do
         expect(match.(Success(400))).to eql(400)
         expect(match.(Success([:code, 600]))).to eql(600)
         expect(match.(Success([:status, 600]))).to eql(600)
-        expect(match.(Success({ status: 404 }))).to eql(404)
-        expect(match.(Success({ code: 204 }))).to eql(204)
+        expect(match.(Success({status: 404}))).to eql(404)
+        expect(match.(Success({code: 204}))).to eql(204)
         expect(match.(Success(code: 301))).to eql(:redirect)
         expect(match.(Success(code: 302))).to eql(:redirect)
         expect(match.(Success(hash_like))).to eql(:switch_protocol)
@@ -74,7 +73,7 @@ RSpec.describe "pattern matching" do
       let(:hash_like) do
         Object.new.tap do |o|
           def o.deconstruct_keys(_)
-            { error: :extracted }
+            {error: :extracted}
           end
         end
       end
