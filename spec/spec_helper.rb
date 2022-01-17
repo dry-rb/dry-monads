@@ -60,10 +60,6 @@ end
 Dry::Core::Deprecations.set_logger!(Logger.new($stdout))
 
 RSpec.configure do |config|
-  unless RUBY_VERSION >= "2.7"
-    config.exclude_pattern = "**/pattern_matching_spec.rb"
-  end
-
   config.include TestHelpers
 
   config.before do
