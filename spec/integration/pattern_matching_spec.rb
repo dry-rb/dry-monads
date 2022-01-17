@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "pattern matching" do
   context "Result" do
     include Dry::Monads[:result, :maybe]
@@ -178,7 +180,7 @@ RSpec.describe "pattern matching" do
 
   if RUBY_VERSION >= "3.0"
     example "unit is an empty array" do
-      eval("Dry::Monads::Unit => []")
+      eval("Dry::Monads::Unit => []", TOPLEVEL_BINDING, __FILE__, __LINE__)
     end
   end
 end
