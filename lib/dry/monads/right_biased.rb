@@ -12,7 +12,7 @@ module Dry
       # Right part
       #
       # @api public
-      module Right # rubocop:disable Metrics/ModuleLength
+      module Right
         # @private
         def self.included(m)
           super

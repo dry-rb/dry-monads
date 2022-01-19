@@ -267,8 +267,8 @@ module Dry
       # @api private
       def compare_promises(x, y)
         x.equal?(y) ||
-          x.fulfilled? && y.fulfilled? && x.value == y.value ||
-          x.rejected? && y.rejected? && x.reason == y.reason
+          (x.fulfilled? && y.fulfilled? && x.value == y.value) ||
+          (x.rejected? && y.rejected? && x.reason == y.reason)
       end
 
       # Task constructors.
