@@ -42,9 +42,7 @@ module TestHelpers
     }
 
     suppress_warnings do
-      all_paths.each do
-        require "dry/monads/#{_1}"
-      end
+      all_paths.each { require "dry/monads/#{_1}" }
     end
   end
 end

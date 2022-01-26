@@ -83,9 +83,7 @@ RSpec.describe(Dry::Monads::Maybe) do
       end
 
       example "using block" do
-        result = some.bind {
-          Some(inc[_1])
-        }.or(0)
+        result = some.bind { Some(inc[_1]) }.or(0)
 
         expect(result).to eql(Some(4))
       end

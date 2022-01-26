@@ -113,16 +113,16 @@ module Dry
 
           # @api private
           def wrap_defined_methods(klass, target)
-            klass.public_instance_methods(false).each do
-              Do.wrap_method(target, _1, :public)
+            klass.public_instance_methods(false).each do |m|
+              Do.wrap_method(target, m, :public)
             end
 
-            klass.protected_instance_methods(false).each do
-              Do.wrap_method(target, _1, :protected)
+            klass.protected_instance_methods(false).each do |m|
+              Do.wrap_method(target, m, :protected)
             end
 
-            klass.private_instance_methods(false).each do
-              Do.wrap_method(target, _1, :private)
+            klass.private_instance_methods(false).each do |m|
+              Do.wrap_method(target, m, :private)
             end
           end
         end
