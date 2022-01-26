@@ -20,7 +20,7 @@ module Dry
           def m.to_proc
             @to_proc ||= method(:new).to_proc
           end
-          m.singleton_class.send(:alias_method, :call, :new)
+          m.singleton_class.alias_method(:call, :new)
         end
 
         # Unwraps the underlying value

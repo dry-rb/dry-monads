@@ -108,7 +108,7 @@ module Dry
         # @return [Module]
         def for(*methods)
           ::Module.new do
-            singleton_class.send(:define_method, :included) do |base|
+            singleton_class.define_method(:included) do |base|
               mod = ::Module.new
               base.prepend(mod)
               base.extend(MethodTracker.new(methods, base, mod))

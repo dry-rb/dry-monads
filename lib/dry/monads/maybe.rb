@@ -201,7 +201,7 @@ module Dry
         include RightBiased::Left
 
         @instance = new.freeze
-        singleton_class.send(:attr_reader, :instance)
+        singleton_class.attr_reader(:instance)
 
         # @api private
         def self.method_missing(m, *) # rubocop:disable Style/MissingRespondToMissing

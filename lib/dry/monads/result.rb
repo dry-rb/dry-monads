@@ -164,7 +164,7 @@ module Dry
         include RightBiased::Left
         include Dry::Equalizer(:failure)
 
-        singleton_class.send(:alias_method, :call, :new)
+        singleton_class.alias_method(:call, :new)
 
         # Shortcut for Failure([...])
         #
