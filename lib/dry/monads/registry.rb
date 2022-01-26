@@ -59,9 +59,9 @@ module Dry
 
       # @private
       def constructors
-        @constructors ||= registry.values.map { |m|
+        @constructors ||= registry.values.filter_map { |m|
           m::Constructors if m.const_defined?(:Constructors)
-        }.compact
+        }
       end
 
       # @private
