@@ -74,7 +74,20 @@ class CreateAccount
 end
 ```
 
-Both snippets do the same thing yet the second one is a lot easier to deal with. All what `Do` does here is prepending `CreateAccount` with a module which passes a block to `CreateAccount#call`. That simple.
+Both snippets do the same thing yet the second one is a lot easier to deal with. All what `Do` does here is prepending `CreateAccount` with a module which passes a block to `CreateAccount#call`.
+
+#### yield
+A little more on `yield`. It will accept a `Result` (remember that's either a Success or Failure object) and **if** the `Result` is a Success object, then yield will unpack it.
+
+For example, in the above `Do` code snippet (repeated below for clarify), if `create_account` returns Success("account created") then the `yield` part will unpack the value of Success and simply return "account created"
+
+```ruby
+account = yield create_account(values[:account])
+```
+
+It's worth mentioning that if `create_account` returns a Failure then yield won't unpack that but instead short circuit the execution.
+
+That simple.
 
 ### Transaction safety
 
