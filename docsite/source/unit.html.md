@@ -32,5 +32,5 @@ extend Dry::Monads[:result]
 
 result = create_user # returns Success(#<User...>) or Failure(...)
 
-result.discard # => Maps Success(#<User ...>) to Success() but lefts Failure(...) intact
+result.discard # => Maps Success(#<User ...>) to Success() but leaves Failure(...) intact
 ```
