@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "tempfile"
-require "dry/core/deprecations"
 
 RSpec.describe(Dry::Monads::Maybe) do
   before(:all) do

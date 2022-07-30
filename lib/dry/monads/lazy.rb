@@ -2,7 +2,6 @@
 
 require "concurrent/promise"
 
-require "dry/core/deprecations"
 require "dry/monads/task"
 
 module Dry

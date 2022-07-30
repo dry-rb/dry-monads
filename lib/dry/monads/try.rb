@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/core/equalizer"
-require "dry/core/deprecations"
-
 require "dry/monads/right_biased"
 require "dry/monads/conversion_stubs"
 

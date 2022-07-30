@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/core/equalizer"
-
 require "dry/monads/constants"
 require "dry/monads/right_biased"
 require "dry/monads/transformer"

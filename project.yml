@@ -11,4 +11,4 @@ gemspec:
     - [dry-types, ">= 0.1.2"]
   runtime_dependencies:
     - [concurrent-ruby, "~> 1.0"]
-    - [dry-core, "~> 0.7"]
+    - [dry-core, ">= 0.9"]

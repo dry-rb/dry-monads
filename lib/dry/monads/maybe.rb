@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/core/equalizer"
-require "dry/core/deprecations"
-require "dry/core/class_attributes"
-
 require "dry/monads/right_biased"
 require "dry/monads/transformer"
 require "dry/monads/unit"

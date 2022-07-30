@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "dry/core/constants"
+require "dry/core"
 require "dry/monads/registry"
 
 module Dry

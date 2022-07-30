@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/core/equalizer"
-
 require "dry/monads/maybe"
 require "dry/monads/task"
 require "dry/monads/result"
