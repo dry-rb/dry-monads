@@ -21,7 +21,8 @@ module Dry
         loader.push_dir(root)
         loader.ignore(
           "#{root}/dry-monads.rb",
-          "#{root}/dry/monads/{all,constants,errors,registry,version}.rb"
+          "#{root}/dry/monads/{all,constants,errors,registry,version}.rb",
+          "#{root}/json/**/*.rb"
         )
       end
     end
