@@ -52,8 +52,8 @@ module Dry
         constants = @constants.fetch(name) {
           raise ::ArgumentError, "#{name.inspect} is not a known monad"
         }
-        Array(constants).each do |name|
-          name.split("::").reduce(Monads) { |mod, const| mod.const_get(const) }
+        Array(constants).each do |const_name|
+          const_name.split("::").reduce(Monads) { |mod, const| mod.const_get(const) }
         end
       end
 

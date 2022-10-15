@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop: disable Lint/DuplicateBranch
 RSpec.describe "pattern matching" do
   context "Result" do
     include Dry::Monads[:result, :maybe]
@@ -185,4 +184,3 @@ RSpec.describe "pattern matching" do
     end
   end
 end
-# rubocop: enable Lint/DuplicateBranch
