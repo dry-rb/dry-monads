@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require "concurrent/map"
+require "zeitwerk"
 require "dry/core"
+require "dry/monads/constants"
+require "dry/monads/errors"
 require "dry/monads/registry"
 
 module Dry
@@ -8,6 +12,20 @@ module Dry
   #
   # @api public
   module Monads
+    # @api private
+    def self.loader
+      @loader ||= Zeitwerk::Loader.new.tap do |loader|
+        root = File.expand_path("..", __dir__)
+        loader.tag = "dry-monads"
+        loader.inflector = Zeitwerk::GemInflector.new("#{root}/dry-monads.rb")
+        loader.push_dir(root)
+        loader.ignore(
+          "#{root}/dry-monads.rb",
+          "#{root}/dry/monads/{all,constants,errors,registry,version}.rb"
+        )
+      end
+    end
+
     # @private
     def self.included(base)
       if all_loaded?
@@ -54,5 +72,7 @@ module Dry
         ::Module.new { include(*mixins) }.freeze
       end
     end
+
+    loader.setup
   end
 end

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "concurrent/map"
-
 module Dry
   # Common, idiomatic monads for Ruby
   #
@@ -9,20 +7,20 @@ module Dry
   module Monads
     @registry = {}
     @constructors = nil
-    @paths = {
-      do: "dry/monads/do/all",
-      lazy: "dry/monads/lazy",
-      list: "dry/monads/list",
-      maybe: "dry/monads/maybe",
-      task: "dry/monads/task",
-      try: "dry/monads/try",
-      validated: "dry/monads/validated",
+    @constants = {
+      do: "Do::All",
+      lazy: "Lazy",
+      list: "List",
+      maybe: "Maybe",
+      task: "Task",
+      try: "Try",
+      validated: "Validated",
       result: [
-        "dry/monads/result",
-        "dry/monads/result/fixed"
+        "Result",
+        "Result::Fixed"
       ]
     }.freeze
-    @mixins = Concurrent::Map.new
+    @mixins = ::Concurrent::Map.new
 
     class << self
       private
@@ -46,15 +44,17 @@ module Dry
 
       # @private
       def known_monads
-        @paths.keys
+        @constants.keys
       end
 
       # @private
       def load_monad(name)
-        path = @paths.fetch(name) {
-          raise ArgumentError, "#{name.inspect} is not a known monad"
+        constants = @constants.fetch(name) {
+          raise ::ArgumentError, "#{name.inspect} is not a known monad"
         }
-        Array(path).each { require _1 }
+        Array(constants).each do |name|
+          name.split("::").reduce(Monads) { |mod, const| mod.const_get(const) }
+        end
       end
 
       # @private
@@ -66,7 +66,7 @@ module Dry
 
       # @private
       def all_loaded?
-        registry.size == @paths.size
+        registry.size.eql?(@constants.size)
       end
     end
   end

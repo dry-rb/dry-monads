@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/monads/right_biased"
-require "dry/monads/transformer"
-require "dry/monads/unit"
-require "dry/monads/constants"
-
 module Dry
   module Monads
     # Represents a value which can exist or not, i.e. it could be nil.

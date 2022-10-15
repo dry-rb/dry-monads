@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/monads/constants"
-require "dry/monads/unit"
-require "dry/monads/curry"
-require "dry/monads/errors"
-
 module Dry
   module Monads
     # A common module for right-biased monads, such as Result/Either, Maybe, and Try.

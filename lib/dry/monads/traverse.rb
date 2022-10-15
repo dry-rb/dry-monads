@@ -3,8 +3,6 @@
 # rubocop:disable Naming/ConstantName
 # rubocop:disable Style/MutableConstant
 
-require "dry/monads/validated"
-
 module Dry
   module Monads
     to_list = List::Validated.method(:pure)

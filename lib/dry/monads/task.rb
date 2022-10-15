@@ -2,10 +2,6 @@
 
 require "concurrent/promise"
 
-require "dry/monads/unit"
-require "dry/monads/curry"
-require "dry/monads/conversion_stubs"
-
 module Dry
   module Monads
     # The Task monad represents an async computation. The implementation

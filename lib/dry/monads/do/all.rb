@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/monads/do"
-
 module Dry
   module Monads
     module Do

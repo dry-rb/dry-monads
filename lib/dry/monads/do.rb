@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/monads/list"
-require "dry/monads/do/mixin"
-require "dry/monads/constants"
-
 module Dry
   module Monads
     # An implementation of do-notation.

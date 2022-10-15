@@ -2,8 +2,6 @@
 
 require "concurrent/promise"
 
-require "dry/monads/task"
-
 module Dry
   module Monads
     # Lazy is a twin of Task which is always executed on the current thread.

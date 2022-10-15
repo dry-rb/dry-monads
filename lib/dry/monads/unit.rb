@@ -18,7 +18,7 @@ module Dry
     #   Maybe(Unit)
     #   => Some(Unit)
     #
-    Unit = Object.new.tap do |unit|
+    Unit = ::Object.new.tap do |unit|
       def unit.to_s
         "Unit"
       end
@@ -30,6 +30,8 @@ module Dry
       def unit.deconstruct
         EMPTY_ARRAY
       end
+
+      unit.freeze
     end
   end
 end

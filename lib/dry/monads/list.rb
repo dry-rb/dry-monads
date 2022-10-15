@@ -1,13 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/monads/maybe"
-require "dry/monads/task"
-require "dry/monads/result"
-require "dry/monads/try"
-require "dry/monads/validated"
-require "dry/monads/transformer"
-require "dry/monads/curry"
-
 module Dry
   module Monads
     # The List monad.
