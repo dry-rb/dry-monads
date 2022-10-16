@@ -63,8 +63,10 @@ RSpec.describe(Dry::Monads::Task) do
   end
 
   describe "#then" do
-    it "is an alias of #bind" do
-      expect(subject.method(:then)).to eql(subject.method(:bind))
+    it "is an alias of #bind", :suppress_deprecations do
+      chain = subject.then { |v| task { v * 2 } }
+
+      expect(chain.value!).to be 2
     end
   end
 

@@ -11,7 +11,7 @@ module Dry
     # @api public
     class Task
       # @api private
-      class Promise < Concurrent::Promise
+      class Promise < ::Concurrent::Promise
         public :on_fulfill, :on_reject
       end
       private_constant :Promise
@@ -79,6 +79,7 @@ module Dry
       end
 
       include ConversionStubs[:to_maybe, :to_result]
+      extend ::Dry::Core::Deprecations[:"dry-monads"]
 
       # @api private
       attr_reader :promise
@@ -122,7 +123,7 @@ module Dry
       def bind(&block)
         self.class.new(promise.flat_map { block.(_1).promise })
       end
-      alias_method :then, :bind
+      deprecate :then, :bind
 
       # @return [String]
       def to_s
