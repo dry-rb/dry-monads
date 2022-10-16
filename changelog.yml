@@ -5,6 +5,7 @@
     - "Use zeitwerk for auto-loading dry-monads classes (@flash-gordon)"
     - "`Task#then` is deprecated in favor of `Task#bind` (@flash-gordon)"
     - "Minimal Ruby version is now 2.7 (@flash-gordon)"
+    - "Either (old name of Result) was removed (@flash-gordon)"
 - version: 1.4.0
   date: 2021-07-20
   fixed:
