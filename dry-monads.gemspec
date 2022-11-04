@@ -34,7 +34,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "zeitwerk", "~> 2.6"
 
   spec.add_development_dependency "bundler"
-  spec.add_development_dependency "dry-types", ">= 0.1.2"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
 end

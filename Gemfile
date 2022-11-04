@@ -7,6 +7,7 @@ eval_gemfile "Gemfile.devtools"
 gemspec
 
 gem "dry-core", github: "dry-rb/dry-core", branch: "main"
+gem "dry-types", github: "dry-rb/dry-types", branch: "main"
 
 group :tools do
   gem "benchmark-ips"
