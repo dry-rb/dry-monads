@@ -12,6 +12,34 @@ M = Dry::Monads
 # (If you use this, don't forget to add pry to your Gemfile!)
 require "pry"
 
+class Foo
+  include Dry::Monads[:result, :do]
+
+  def self.unwrap(method_name)
+    meth = instance_method(method_name)
+    undef_method(method_name)
+
+    define_method(method_name) do |value|
+      meth.bind_call(self, **value)
+    end
+  end
+
+  def first(a)
+    Success(x: a)
+  end
+
+  unwrap \
+  def second(x:)
+    Success(:anything)
+  end
+
+  def call(a)
+    first(a).bind(&method(:second))
+  end
+end
+
+obj = Foo.new
+
 binding.pry
 
 p
