@@ -30,6 +30,8 @@ in Success(user: User, account: Account => user_account)
   # user_account is bound to the value of the `:account` key
 in Success()
   # corresponds to Success(Unit)
+in Success(user: user, **rest)
+  # matches Success(user: User.new, other_key: 'value")
 in Success(_)
   # general success
 in Failure[:user_not_found]
