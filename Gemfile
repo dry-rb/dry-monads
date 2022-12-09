@@ -8,8 +8,6 @@ gemspec
 
 group :tools do
   gem "benchmark-ips"
-  gem "pry", platform: :jruby
-  gem "pry-byebug", platform: :mri
 end
 
 group :docs do
