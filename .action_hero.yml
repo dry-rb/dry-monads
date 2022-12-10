@@ -10,7 +10,6 @@ sources:
       - "spec/support/*"
       - "CODE_OF_CONDUCT.md"
       - "CONTRIBUTING.md"
-      - "CODEOWNERS"
       - "LICENSE.erb"
       - "README.md.erb"
       - "Gemfile.devtools"
