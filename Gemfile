@@ -15,3 +15,7 @@ group :docs do
   gem "yard"
   gem "yard-junk"
 end
+
+group :test do
+  gem "dry-types"
+end
