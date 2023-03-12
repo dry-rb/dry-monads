@@ -174,7 +174,7 @@ require 'dry/monads/do'
 require 'dry/monads/result'
 
 # some random place in your code
-Dry::Monads.Do.() do
+Dry::Monads::Do.() do
   user = Dry::Monads::Do.bind create_user
   account = Dry::Monads::Do.bind create_account(user)
 
