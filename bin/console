@@ -29,7 +29,7 @@ class Foo
   end
 
   unwrap \
-  def second(x:)
+    def second(x:) # rubocop:disable Lint/UnusedMethodArgument
     Success(:anything)
   end
 

@@ -27,6 +27,7 @@ RSpec.describe "pattern matching" do
         class Test::Context
           include Dry::Monads[:result, :maybe]
 
+          # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           def call(value)
             case value
             in Failure(_) then :failure
@@ -46,6 +47,7 @@ RSpec.describe "pattern matching" do
             in Success([_, _, _] => captured) then captured
             end
           end
+          # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         end
 
         expect(match.(Success(10))).to eql(:ten)
