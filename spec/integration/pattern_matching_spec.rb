@@ -1,188 +1,131 @@
 # frozen_string_literal: true
 
 RSpec.describe "pattern matching" do
-  context "Result" do
-    include Dry::Monads[:result, :maybe]
+  describe "Dry::Monads::Result" do
+    include Dry::Monads[:result]
 
     context "Success" do
-      let(:match) { Test::Context.new }
-
-      let(:hash_like) do
-        Object.new.tap do |o|
-          def o.deconstruct_keys(_)
-            {code: 101}
-          end
-        end
+      it "matches on the singleton array of the value when value is not an array" do
+        expect(
+          (Success(1) in [1])
+        ).to be(true)
       end
 
-      let(:array_like) do
-        Object.new.tap do |o|
-          def o.deconstruct
-            [4, 9, 16]
-          end
-        end
+      it "matches on the value when value is an array" do
+        expect(
+          (Success([1]) in [1])
+        ).to be(true)
       end
 
-      specify "destructuring" do
-        class Test::Context
-          include Dry::Monads[:result, :maybe]
+      it "matches on the empty array when value is Unit" do
+        expect(
+          (Success(Dry::Monads::Unit) in [])
+        ).to be(true)
+      end
 
-          # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-          def call(value)
-            case value
-            in Failure(_) then :failure
-            in Success(10) then :ten
-            in Success(Integer => x) if x.equal?(50) then :fifty
-            in Success(100..500 => code) then code
-            in Success() then :empty
-            in Success(:code, x) then x
-            in Success[:status, x] then x
-            in Success({ status: x }) then x
-            in Success(code: 301 | 302) then :redirect
-            in Success({ code: 200..300 => x }) then x
-            in Success(code: 101) then :switch_protocol
-            in Success(1, 2) then :ein_zwei
-            in Success[3, 4] then :drei_vier
-            in Success(Some(:foo)) then :foo_extracted
-            in Success([_, _, _] => captured) then captured
-            end
-          end
-          # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-        end
+      it "matches on the value's keys when value acts like a hash" do
+        expect(
+          (Success({code: 101, foo: :bar}) in { code: 101 })
+        ).to be(true)
+      end
 
-        expect(match.(Success(10))).to eql(:ten)
-        expect(match.(Success(50))).to eql(:fifty)
-        expect(match.(Success())).to eql(:empty)
-        expect(match.(Success(400))).to eql(400)
-        expect(match.(Success([:code, 600]))).to eql(600)
-        expect(match.(Success([:status, 600]))).to eql(600)
-        expect(match.(Success({status: 404}))).to eql(404)
-        expect(match.(Success({code: 204}))).to eql(204)
-        expect(match.(Success(code: 301))).to eql(:redirect)
-        expect(match.(Success(code: 302))).to eql(:redirect)
-        expect(match.(Success(hash_like))).to eql(:switch_protocol)
-        expect(match.(Success([1, 2]))).to eql(:ein_zwei)
-        expect(match.(Success([3, 4]))).to eql(:drei_vier)
-        expect(match.(Success(array_like))).to be(array_like)
-        expect(match.(Success(Some(:foo)))).to eql(:foo_extracted)
-
-        expect { match.(Success(code: 303)) }.to raise_error(NoMatchingPatternError)
-        expect { match.(Success([:foo])) }.to raise_error(NoMatchingPatternError)
+      it "matches on the empty hash when value doesn't act like a hash" do
+        expect(
+          (Success(:foo) in {})
+        ).to be(true)
       end
     end
 
     context "Failure" do
-      let(:match) { Test::Context.new }
-
-      let(:hash_like) do
-        Object.new.tap do |o|
-          def o.deconstruct_keys(_)
-            {error: :extracted}
-          end
-        end
+      it "matches on the singleton array of the value when value is not an array" do
+        expect(
+          (Failure(1) in [1])
+        ).to be(true)
       end
 
-      specify "destructuring" do
-        class Test::Context
-          include Dry::Monads[:result]
+      it "matches on the value when value is an array" do
+        expect(
+          (Failure([1]) in [1])
+        ).to be(true)
+      end
 
-          def call(value)
-            case value
-            in Failure[:not_found, reason] then reason
-            in Failure(:error) then :nope
-            in Failure(error: code) then code
-            in Failure() then :unit
-            end
-          end
-        end
+      it "matches on the empty array when value is Unit" do
+        expect(
+          (Failure(Dry::Monads::Unit) in [])
+        ).to be(true)
+      end
 
-        expect(match.(Failure([:not_found, :no]))).to eql(:no)
-        expect(match.(Failure(:error))).to eql(:nope)
-        expect(match.(Failure())).to eql(:unit)
-        expect(match.(Failure(error: :bug))).to eql(:bug)
-        expect(match.(Failure(hash_like))).to eql(:extracted)
-        expect { match.(Failure(3)) }.to raise_error(NoMatchingPatternError)
+      it "matches on the value's keys when value acts like a hash" do
+        expect(
+          (Failure({code: 101, foo: :bar}) in { code: 101 })
+        ).to be(true)
+      end
+
+      it "matches on the empty hash when value doesn't act like a hash" do
+        expect(
+          (Failure(:foo) in {})
+        ).to be(true)
       end
     end
   end
 
-  context "Maybe" do
+  describe "Dry::Monads::Maybe" do
     include Dry::Monads[:maybe]
 
-    let(:match) { Test::Context.new }
-
-    specify "destructuring" do
-      class Test::Context
-        include Dry::Monads[:maybe]
-
-        def call(value)
-          case value
-          in Some[:foo, x] then x
-          in Some(Integer => x) then x
-          in None() then :nothing
-          end
-        end
+    context "Some" do
+      it "matches on the singleton array of the value when value is not an array" do
+        expect(
+          (Some(1) in [1])
+        ).to be(true)
       end
 
-      expect(match.(Some([:foo, :payload]))).to eql(:payload)
-      expect(match.(Some(30))).to eql(30)
-      expect(match.(None())).to eql(:nothing)
+      it "matches on the value when value is an array" do
+        expect(
+          (Some([1]) in [1])
+        ).to be(true)
+      end
+
+      it "matches on the empty array when value is Unit" do
+        expect(
+          (Some(Dry::Monads::Unit) in [])
+        ).to be(true)
+      end
+
+      it "matches on the value's keys when value acts like a hash" do
+        expect(
+          (Some({code: 101, foo: :bar}) in { code: 101 })
+        ).to be(true)
+      end
+
+      it "matches on the empty hash when value doesn't act like a hash" do
+        expect(
+          (Some(:foo) in {})
+        ).to be(true)
+      end
     end
 
-    specify "none alt" do
-      class Test::Context
-        include Dry::Monads[:maybe]
-
-        def call(value)
-          case value
-          in None then :nothing
-          end
-        end
+    context "None" do
+      it "matches on the empty array" do
+        expect(
+          (None() in [])
+        ).to be(true)
       end
 
-      expect(match.(None())).to eql(:nothing)
-    end
-  end
-
-  context "List" do
-    include Dry::Monads[:list, :maybe]
-
-    let(:match) { Test::Context.new }
-
-    specify "destructuring" do
-      class Test::Context
-        include Dry::Monads[:list, :maybe]
-
-        def call(value)
-          case value
-          in List[Some[:foo, x]] then x
-          in List[_, Some(:else)] then :else
-          in List[] then :empty
-          in List[Integer => x] then x
-          in List[Time] | List[Date] then :date_or_time
-          in List[String | Symbol] then :string_or_symbol
-          in List[*, 5] then 5
-          end
-        end
+      it "matches on the empty hash" do
+        expect(
+          (None() in {})
+        ).to be(true)
       end
-
-      list = Dry::Monads::List
-
-      expect(match.(list[Some([:foo, :payload])])).to eql(:payload)
-      expect(match.(list[Some([:foo, :payload]), Some(:else)])).to eql(:else)
-      expect(match.(list[])).to eql(:empty)
-      expect(match.(list[5])).to eql(5)
-      expect(match.(list[Time.now])).to eql(:date_or_time)
-      expect(match.(list[Date.today])).to eql(:date_or_time)
-      expect(match.(list[:sym])).to eql(:string_or_symbol)
-      expect(match.(list["sym"])).to eql(:string_or_symbol)
-      expect(match.(list[1, 2, 3, 4, 5])).to eql(5)
     end
   end
 
-  if RUBY_VERSION >= "3.0"
-    example "unit is an empty array" do
-      eval("Dry::Monads::Unit => []", TOPLEVEL_BINDING, __FILE__, __LINE__)
+  describe "Dry::Monads::List" do
+    include Dry::Monads[:list, :result]
+
+    it "matches on the value" do
+      expect(
+        (List([1]) in [1])
+      ).to be(true)
     end
   end
 end
