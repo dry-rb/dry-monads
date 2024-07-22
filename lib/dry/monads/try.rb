@@ -186,7 +186,7 @@ module Dry
         def initialize(exception)
           super()
 
-          @exception = exception
+          @exception = @value = exception
         end
 
         # @return [String]
