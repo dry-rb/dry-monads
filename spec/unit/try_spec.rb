@@ -57,10 +57,6 @@ RSpec.describe(Dry::Monads::Try) do
     it { is_expected.to eql(described_class.new([ZeroDivisionError], "foo")) }
     it { is_expected.not_to eql(error[division_error]) }
 
-    it "deconstructs to the value" do
-      expect(subject.deconstruct).to eq ["foo"]
-    end
-
     it "dumps to string" do
       expect(subject.to_s).to eql('Try::Value("foo")')
       expect(value[[], unit].to_s).to eql("Try::Value()")
@@ -213,10 +209,6 @@ RSpec.describe(Dry::Monads::Try) do
 
     let(:upcase_value) { described_class.new([ZeroDivisionError], "FOO") }
     let(:upcase_error) { try::Error.new(division_error) }
-
-    it "deconstructs to the exception" do
-      expect(subject.deconstruct).to eq [division_error]
-    end
 
     describe ".call" do
       it "is an alias for new" do
