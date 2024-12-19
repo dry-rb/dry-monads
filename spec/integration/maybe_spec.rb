@@ -16,7 +16,7 @@ RSpec.describe(Dry::Monads::Maybe) do
 
       it "returns a new instance" do
         expect(none).to eql(None())
-        expect(none.trace).to include("spec/integration/maybe_spec.rb:9:in `block")
+        expect(none.trace).to match(%r{rspec/integration/maybe_spec.rb:9:in `|'block})
       end
     end
 
