@@ -153,5 +153,18 @@ module Dry
 
     require "dry/monads/registry"
     register_mixin(:do, Do::All)
+
+    if ::Gem::Version.new(::RUBY_VERSION) >= ::Gem::Version.new("3.4.0")
+      ::Warning.prepend(Module.new {
+        def warn(message)
+          if message.include?("dry-monads/lib/dry/monads/do.rb") &&
+            message.include?("warning: the block passed to")
+            nil
+          else
+            super
+          end
+        end
+      })
+    end
   end
 end
