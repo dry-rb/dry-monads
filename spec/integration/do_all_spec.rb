@@ -230,6 +230,22 @@ RSpec.describe(Dry::Monads::Do::All) do
         end
       end
     end
+
+    context "warnings" do
+      let(:klass) do
+        Class.new do
+          include Dry::Monads[:do, :result]
+
+          def without
+            Success()
+          end
+        end
+      end
+
+      it "doesn't produce warnings in methods what don't yield block" do
+        expect { klass.new.without }.to_not output.to_stderr
+      end
+    end
   end
 
   context "Do" do
