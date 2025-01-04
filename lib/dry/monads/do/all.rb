@@ -156,7 +156,7 @@ module Dry
 
     if ::Gem::Version.new(::RUBY_VERSION) >= ::Gem::Version.new("3.4.0")
       ::Warning.prepend(Module.new {
-        def warn(message)
+        def warn(message, category: nil)
           if message.include?("lib/dry/monads/do.rb") &&
             message.include?("warning: the block passed to")
             nil
