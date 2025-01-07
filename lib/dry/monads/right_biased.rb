@@ -73,7 +73,7 @@ module Dry
         # Must be implemented for a right-biased monad.
         #
         # @return [RightBiased::Right]
-        def fmap(*)
+        def fmap(...)
           raise NotImplementedError
         end
 
@@ -81,7 +81,7 @@ module Dry
         # identical to that of {RightBiased::Left}.
         #
         # @return [RightBiased::Right]
-        def or(*)
+        def or(...)
           self
         end
 
@@ -99,7 +99,7 @@ module Dry
         # that is returns itselt.
         #
         # @return [RightBiased::Right]
-        def or_fmap(*)
+        def or_fmap(...)
           self
         end
 
@@ -265,7 +265,7 @@ module Dry
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def bind(*)
+        def bind(...)
           self
         end
 
@@ -273,7 +273,7 @@ module Dry
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def tee(*)
+        def tee(...)
           self
         end
 
@@ -281,7 +281,7 @@ module Dry
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def fmap(*)
+        def fmap(...)
           self
         end
 
@@ -293,7 +293,7 @@ module Dry
         #   Dry::Monads.None.or { Time.now } # => current time
         #
         # @return [Object]
-        def or(*)
+        def or(...)
           raise NotImplementedError
         end
 
@@ -313,7 +313,7 @@ module Dry
         #   Dry::Monads.None.or_fmap { Time.now } # => Some(current time)
         #
         # @return [RightBiased::Left, RightBiased::Right]
-        def or_fmap(*)
+        def or_fmap(...)
           raise NotImplementedError
         end
 
@@ -332,7 +332,7 @@ module Dry
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def apply(*)
+        def apply(...)
           self
         end
 

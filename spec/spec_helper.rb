@@ -22,6 +22,8 @@ require "dry/monads/all"
 
 Dir["./spec/shared/**/*.rb"].each { |f| require f }
 
+Warning.process { raise _1 }
+
 module Kernel
   def suppress_warnings
     original_verbosity = $VERBOSE

@@ -17,7 +17,7 @@ module Dry
 
       # Returns a hash, that will be turned into a JSON object and represent this
       # object.
-      def as_json(*)
+      def as_json(*, **)
         {
           JSON.create_id => self.class.name,
           value: none? ? nil : @value
