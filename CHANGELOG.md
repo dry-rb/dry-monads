@@ -3,6 +3,10 @@
 ## 1.7.0 2025-01-07
 
 
+### Fixed
+
+- Fix pattern matching for `Try` values (@alexkalderimis)
+
 ### Changed
 
 - Set 3.1 as minimum Ruby version (@flash-gordon)
