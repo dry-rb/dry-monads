@@ -2,7 +2,7 @@
 [gem]: https://rubygems.org/gems/dry-monads
 [actions]: https://github.com/dry-rb/dry-monads/actions
 
-# dry-monads [![Gem Version](https://badge.fury.io/rb/dry-monads.svg)][gem] [![CI Status](https://github.com/dry-rb/dry-monads/workflows/ci/badge.svg)][actions]
+# dry-monads [![Gem Version](https://badge.fury.io/rb/dry-monads.svg)][gem] [![CI Status](https://github.com/dry-rb/dry-monads/workflows/CI/badge.svg)][actions]
 
 ## Links
 
@@ -14,7 +14,7 @@
 
 This library officially supports the following Ruby versions:
 
-* MRI `>= 3.0.0`
+* MRI `>= 3.1`
 * jruby `>= 9.4` (not tested on CI)
 
 ## License
