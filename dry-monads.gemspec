@@ -21,15 +21,16 @@ Gem::Specification.new do |spec|
   spec.executables   = []
   spec.require_paths = ["lib"]
 
-  spec.metadata["allowed_push_host"] = "https://rubygems.org"
-  spec.metadata["changelog_uri"]     = "https://github.com/dry-rb/dry-monads/blob/main/CHANGELOG.md"
-  spec.metadata["source_code_uri"]   = "https://github.com/dry-rb/dry-monads"
-  spec.metadata["bug_tracker_uri"]   = "https://github.com/dry-rb/dry-monads/issues"
+  spec.metadata["allowed_push_host"]     = "https://rubygems.org"
+  spec.metadata["changelog_uri"]         = "https://github.com/dry-rb/dry-monads/blob/main/CHANGELOG.md"
+  spec.metadata["source_code_uri"]       = "https://github.com/dry-rb/dry-monads"
+  spec.metadata["bug_tracker_uri"]       = "https://github.com/dry-rb/dry-monads/issues"
+  spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.required_ruby_version = ">= 3.1.0"
 
   # to update dependencies edit project.yml
-  spec.add_runtime_dependency "concurrent-ruby", "~> 1.0"
-  spec.add_runtime_dependency "dry-core", "~> 1.1"
-  spec.add_runtime_dependency "zeitwerk", "~> 2.6"
+  spec.add_dependency "concurrent-ruby", "~> 1.0"
+  spec.add_dependency "dry-core", "~> 1.1"
+  spec.add_dependency "zeitwerk", "~> 2.6"
 end
