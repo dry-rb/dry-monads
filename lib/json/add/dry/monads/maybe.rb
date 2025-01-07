@@ -1,6 +1,6 @@
 # frozen_string_literal: false
 
-require "json" unless defined?(::JSON::JSON_LOADED) && ::JSON::JSON_LOADED
+require "json" unless defined?(JSON::JSON_LOADED) && JSON::JSON_LOADED
 
 require "dry/monads"
 

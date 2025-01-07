@@ -23,7 +23,7 @@ module Dry
     class ConstructorNotAppliedError < ::NoMethodError
       def initialize(method_name, constructor_name)
         super(
-          "For calling .#{method_name} on #{constructor_name}() build a value "\
+          "For calling .#{method_name} on #{constructor_name}() build a value " \
           "by appending parens: #{constructor_name}()"
         )
       end

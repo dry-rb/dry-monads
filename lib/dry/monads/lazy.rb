@@ -13,11 +13,11 @@ module Dry
 
       class << self
         # @private
-        def new(promise = nil, &block)
+        def new(promise = nil, &)
           if promise
             super(promise)
           else
-            super(Concurrent::Promise.new(executor: :immediate, &block))
+            super(Concurrent::Promise.new(executor: :immediate, &))
           end
         end
 
@@ -79,8 +79,8 @@ module Dry
           #
           # @param block [Proc]
           # @return [Lazy]
-          def Lazy(&block)
-            Lazy.new(&block)
+          def Lazy(&)
+            Lazy.new(&)
           end
         end
 

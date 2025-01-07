@@ -124,11 +124,11 @@ module Dry
           if next_value.nil?
             if self.class.warn_on_implicit_nil_coercion
               Core::Deprecations.warn(
-                "Block passed to Some#fmap returned `nil` and was chained to None. "\
-                "This is literally an unlawful behavior and it will not be supported in "\
-                "dry-monads 2. \nPlease, replace `.fmap` with `.maybe` in places where you "\
-                "expect `nil` as block result.\n"\
-                "You can opt out of these warnings with\n"\
+                "Block passed to Some#fmap returned `nil` and was chained to None. " \
+                "This is literally an unlawful behavior and it will not be supported in " \
+                "dry-monads 2. \nPlease, replace `.fmap` with `.maybe` in places where you " \
+                "expect `nil` as block result.\n" \
+                "You can opt out of these warnings with\n" \
                 "Dry::Monads::Maybe.warn_on_implicit_nil_coercion false",
                 uplevel: 0,
                 tag: :"dry-monads"

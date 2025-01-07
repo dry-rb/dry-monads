@@ -85,8 +85,8 @@ module Dry
         #   @yieldreturn [Validated::Valid,Validated::Invalid]
         #   @return [Validated::Valid,Validated::Invalid]
         #
-        def apply(val = Undefined, &block)
-          Undefined.default(val, &block).fmap(Curry.(value!))
+        def apply(val = Undefined, &)
+          Undefined.default(val, &).fmap(Curry.(value!))
         end
 
         # Lifts a block/proc over Valid

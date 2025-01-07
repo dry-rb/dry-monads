@@ -20,7 +20,7 @@ $VERBOSE = true
 
 require "dry/monads/all"
 
-Dir["./spec/shared/**/*.rb"].sort.each { |f| require f }
+Dir["./spec/shared/**/*.rb"].each { |f| require f }
 
 module Kernel
   def suppress_warnings
@@ -50,7 +50,7 @@ end
 module Dry::Monads
   def self.unload_monad(name)
     if registry.key?(name.to_sym)
-      self.registry = registry.reject { |k, _| k.eql?(name.to_sym) }
+      self.registry = registry.except(name.to_sym)
     end
   end
 end

@@ -27,11 +27,11 @@ module Dry
         #   @param block [Proc] a task to run
         #   @return [Task]
         #
-        def new(promise = nil, &block)
+        def new(promise = nil, &)
           if promise
             super(promise)
           else
-            super(Promise.execute(&block))
+            super(Promise.execute(&))
           end
         end
 
@@ -50,8 +50,8 @@ module Dry
         #   from concurrent-ruby
         #
         # @return [Task]
-        def [](executor, &block)
-          new(Promise.execute(executor: executor, &block))
+        def [](executor, &)
+          new(Promise.execute(executor: executor, &))
         end
 
         # Returns a completed task from the given value
@@ -110,8 +110,8 @@ module Dry
       # @param block [Proc]
       # @return [Task]
       # @api public
-      def fmap(&block)
-        self.class.new(promise.then(&block))
+      def fmap(&)
+        self.class.new(promise.then(&))
       end
 
       # Composes two tasks to run one after another.
@@ -148,8 +148,8 @@ module Dry
       #
       # @param block [Proc]
       # @return [Task]
-      def or_fmap(&block)
-        self.class.new(promise.rescue(&block))
+      def or_fmap(&)
+        self.class.new(promise.rescue(&))
       end
 
       # Rescues the error with a block that returns another task.
@@ -180,8 +180,8 @@ module Dry
       #
       # @param block [Proc]
       # @return [Object]
-      def value_or(&block)
-        promise.rescue(&block).wait.value
+      def value_or(&)
+        promise.rescue(&).wait.value
       end
 
       # Blocks the current thread until the task is complete.
@@ -233,8 +233,8 @@ module Dry
       #
       # @param val [Task]
       # @return [Task]
-      def apply(val = Undefined, &block)
-        arg = Undefined.default(val, &block)
+      def apply(val = Undefined, &)
+        arg = Undefined.default(val, &)
         bind { |f| arg.fmap { curry(f).(_1) } }
       end
 
@@ -302,8 +302,8 @@ module Dry
           #
           # @param block [Proc]
           # @return Task
-          def Task(&block)
-            Task.new(&block)
+          def Task(&)
+            Task.new(&)
           end
         end
 

@@ -182,8 +182,8 @@ module Dry
       #
       # @param initial [Object] Initial value
       # @return [Object]
-      def fold_left(initial, &block)
-        value.reduce(initial, &block)
+      def fold_left(initial, &)
+        value.reduce(initial, &)
       end
       alias_method :foldl, :fold_left
       alias_method :reduce, :fold_left
@@ -214,8 +214,8 @@ module Dry
       # Filters elements with a block
       #
       # @return [List]
-      def filter(&block)
-        coerce(value.select(&block))
+      def filter(&)
+        coerce(value.select(&))
       end
       alias_method :select, :filter
 
@@ -258,8 +258,8 @@ module Dry
             raise ArgumentError, "Cannot infer a monad for an empty list"
           else
             self.class.warn(
-              "Automatic monad inference is deprecated, pass a type explicitly "\
-              "or use a predefined constant, e.g. List::Result\n"\
+              "Automatic monad inference is deprecated, pass a type explicitly " \
+              "or use a predefined constant, e.g. List::Result\n" \
               "#{caller.find { _1 !~ %r{(lib/dry/monads)|(gems)} }}"
             )
             self.class.new(value, value[0].monad)
@@ -305,8 +305,8 @@ module Dry
       #
       # @param list [List]
       # @return [List]
-      def apply(list = Undefined, &block)
-        v = Undefined.default(list, &block)
+      def apply(list = Undefined, &)
+        v = Undefined.default(list, &)
         fmap(Curry).bind { |f| v.fmap { f.(_1) } }
       end
 
