@@ -1,6 +1,8 @@
 ---
 - version: 1.7.0
   date: 2025-01-07
+  fixed:
+    - "Fix pattern matching for `Try` values (@alexkalderimis)"
   changed:
     - "Set 3.1 as minimum Ruby version (@flash-gordon)"
 - version: 1.6.0
