@@ -27,9 +27,7 @@ module Dry
       # Forces the compution and returns its value.
       #
       # @return [Object]
-      def value!
-        @promise.execute.value!
-      end
+      def value! = @promise.execute.value!
       alias_method :force!, :value!
 
       # Forces the computation. Note that if the computation
@@ -42,23 +40,22 @@ module Dry
       end
 
       # @return [Boolean]
-      def evaluated?
-        @promise.complete?
-      end
+      def evaluated? = @promise.complete?
       deprecate :complete?, :evaluated?
 
       undef_method :wait
 
       # @return [String]
       def to_s
-        state = case promise.state
-                when :fulfilled
-                  value!.inspect
-                when :rejected
-                  "!#{promise.reason.inspect}"
-                else
-                  "?"
-                end
+        state =
+          case promise.state
+          when :fulfilled
+            value!.inspect
+          when :rejected
+            "!#{promise.reason.inspect}"
+          else
+            "?"
+          end
 
         "Lazy(#{state})"
       end
@@ -79,9 +76,7 @@ module Dry
           #
           # @param block [Proc]
           # @return [Lazy]
-          def Lazy(&)
-            Lazy.new(&)
-          end
+          def Lazy(&) = Lazy.new(&)
         end
 
         include Constructors

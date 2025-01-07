@@ -73,23 +73,17 @@ module Dry
       end
 
       # Returns true for an instance of a {Try::Value} monad.
-      def value?
-        is_a?(Value)
-      end
+      def value? = is_a?(Value)
       alias_method :success?, :value?
 
       # Returns true for an instance of a {Try::Error} monad.
-      def error?
-        is_a?(Error)
-      end
+      def error? = is_a?(Error)
       alias_method :failure?, :error?
 
       # Returns self.
       #
       # @return [Try::Value, Try::Error]
-      def to_monad
-        self
-      end
+      def to_monad = self
 
       # Represents a result of a successful execution.
       #
@@ -168,9 +162,7 @@ module Dry
         # @param errors [Class] List of Exception subclasses
         #
         # @return [Try::Value]
-        def recover(*_errors)
-          self
-        end
+        def recover(*_errors) = self
       end
 
       # Represents a result of a failed execution.
@@ -190,9 +182,7 @@ module Dry
         end
 
         # @return [String]
-        def to_s
-          "Try::Error(#{exception.class}: #{exception.message})"
-        end
+        def to_s = "Try::Error(#{exception.class}: #{exception.message})"
         alias_method :inspect, :to_s
 
         # If a block is given passes internal value to it and returns the result,
@@ -215,9 +205,7 @@ module Dry
 
         # @param other [Try]
         # @return [Boolean]
-        def ===(other)
-          Error === other && exception === other.exception
-        end
+        def ===(other) = Error === other && exception === other.exception
 
         # Acts in a similar way to `rescue`. It checks if
         # {exception} is one of {errors} and yields the block if so.

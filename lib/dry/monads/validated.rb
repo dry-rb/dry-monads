@@ -39,9 +39,7 @@ module Dry
       # Returns self.
       #
       # @return [Validated::Valid, Validated::Invalid]
-      def to_monad
-        self
-      end
+      def to_monad = self
 
       # Bind/flat_map is not implemented
       #
@@ -65,9 +63,7 @@ module Dry
         # Extracts the value
         #
         # @return [Object]
-        def value!
-          @value
-        end
+        def value! = @value
 
         # Applies another Valid to the stored function
         #
@@ -107,16 +103,12 @@ module Dry
         # Ignores values and returns self, see {Invalid#alt_map}
         #
         # @return [Validated::Valid]
-        def alt_map(_ = nil)
-          self
-        end
+        def alt_map(_ = nil) = self
 
         # Ignores arguments, returns self
         #
         # @return [Validated::Valid]
-        def or(_ = nil)
-          self
-        end
+        def or(_ = nil) = self
 
         # @return [String]
         def inspect
@@ -193,9 +185,7 @@ module Dry
         # Ignores the passed argument and returns self
         #
         # @return [Validated::Invalid]
-        def fmap(_ = nil)
-          self
-        end
+        def fmap(_ = nil) = self
 
         # Yields the given callable and returns the result
         #
@@ -212,9 +202,7 @@ module Dry
         end
 
         # @return [String]
-        def inspect
-          "Invalid(#{@error.inspect})"
-        end
+        def inspect = "Invalid(#{@error.inspect})"
         alias_method :to_s, :inspect
 
         # @param other [Object]
@@ -289,18 +277,14 @@ module Dry
         # Transforms to Validated
         #
         # @return [Validated::Valid]
-        def to_validated
-          Validated::Valid.new(value!)
-        end
+        def to_validated = Validated::Valid.new(value!)
       end
 
       class Failure < Result
         # Transforms to Validated
         #
         # @return [Validated::Invalid]
-        def to_validated
-          Validated::Invalid.new(failure, trace)
-        end
+        def to_validated = Validated::Invalid.new(failure, trace)
       end
     end
 

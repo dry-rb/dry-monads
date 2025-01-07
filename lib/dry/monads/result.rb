@@ -34,31 +34,25 @@ module Dry
       # Returns self, added to keep the interface compatible with other monads.
       #
       # @return [Result::Success, Result::Failure]
-      def to_result
-        self
-      end
+      def to_result = self
 
       # Returns self.
       #
       # @return [Result::Success, Result::Failure]
-      def to_monad
-        self
-      end
+      def to_monad = self
 
       # Returns the Result monad.
       # This is how we're doing polymorphism in Ruby 😕
       #
       # @return [Monad]
-      def monad
-        Result
-      end
+      def monad = Result
 
       # Represents a value of a successful operation.
       #
       # @api public
       class Success < Result
         include RightBiased::Right
-        include Dry::Equalizer(:value!)
+        include ::Dry::Equalizer(:value!)
 
         # Shortcut for Success([...])
         #
@@ -70,9 +64,7 @@ module Dry
         #    end
         #
         # @api public
-        def self.[](*value)
-          new(value)
-        end
+        def self.[](*value) = new(value)
 
         alias_method :success, :value!
 
@@ -85,19 +77,13 @@ module Dry
         # Apply the second function to value.
         #
         # @api public
-        def result(_, f)
-          f.(@value)
-        end
+        def result(_, f) = f.(@value)
 
         # Returns false
-        def failure?
-          false
-        end
+        def failure? = false
 
         # Returns true
-        def success?
-          true
-        end
+        def success? = true
 
         # Does the same thing as #bind except it also wraps the value
         # in an instance of Result::Success monad. This allows for easier
@@ -108,9 +94,7 @@ module Dry
         #
         # @param args [Array<Object>] arguments will be transparently passed through to #bind
         # @return [Result::Success]
-        def fmap(...)
-          Success.new(bind(...))
-        end
+        def fmap(...) = Success.new(bind(...))
 
         # Returns result of applying first function to the internal value.
         #
@@ -120,9 +104,7 @@ module Dry
         # @param f [#call] Function to apply
         # @param _ [#call] Ignored
         # @return [Any] Return value of `f`
-        def either(f, _)
-          f.(success)
-        end
+        def either(f, _) = f.(success)
 
         # @return [String]
         def to_s
@@ -144,9 +126,7 @@ module Dry
         # Ignores values and returns self, see {Failure#alt_map}
         #
         # @return [Result::Success]
-        def alt_map(_ = nil)
-          self
-        end
+        def alt_map(_ = nil) = self
       end
 
       # Represents a value of a failed operation.
@@ -154,7 +134,7 @@ module Dry
       # @api public
       class Failure < Result
         include RightBiased::Left
-        include Dry::Equalizer(:failure)
+        include ::Dry::Equalizer(:failure)
 
         singleton_class.alias_method(:call, :new)
 
@@ -194,26 +174,18 @@ module Dry
         end
 
         # @private
-        def failure
-          @value
-        end
+        def failure = @value
 
         # Apply the first function to value.
         #
         # @api public
-        def result(f, _)
-          f.(@value)
-        end
+        def result(f, _) = f.(@value)
 
         # Returns true
-        def failure?
-          true
-        end
+        def failure? = true
 
         # Returns false
-        def success?
-          false
-        end
+        def success? = false
 
         # If a block is given passes internal value to it and returns the result,
         # otherwise simply returns the first argument.
@@ -243,9 +215,7 @@ module Dry
         #
         # @param args [Array<Object>] arguments will be passed to the underlying `#or` call
         # @return [Result::Success] Wrapped value
-        def or_fmap(...)
-          Success.new(self.or(...))
-        end
+        def or_fmap(...) = Success.new(self.or(...))
 
         # @return [String]
         def to_s
@@ -260,9 +230,7 @@ module Dry
         # Transform to a Success instance
         #
         # @return [Result::Success]
-        def flip
-          Success.new(@value)
-        end
+        def flip = Success.new(@value)
 
         # @see RightBiased::Left#value_or
         def value_or(val = nil)
@@ -287,9 +255,7 @@ module Dry
         # @param _ [#call] Ignored
         # @param g [#call] Function to call
         # @return [Any] Return value of `g`
-        def either(_, g)
-          g.(failure)
-        end
+        def either(_, g) = g.(failure)
 
         # Lifts a block/proc over Failure
         #
@@ -405,9 +371,7 @@ module Dry
         # @param fail [#call] Fallback value
         # @param block [Proc] Fallback block
         # @return [Success<Any>]
-        def to_result(_fail = Unit)
-          Result::Success.new(@value)
-        end
+        def to_result(_fail = Unit) = Result::Success.new(@value)
       end
 
       class None < Maybe
@@ -442,9 +406,7 @@ module Dry
     class Try
       class Value < Try
         # @return [Result::Success]
-        def to_result
-          Dry::Monads::Result::Success.new(@value)
-        end
+        def to_result = ::Dry::Monads::Result::Success.new(@value)
       end
 
       class Error < Try
@@ -460,9 +422,7 @@ module Dry
         # Converts to Result::Success
         #
         # @return [Result::Success]
-        def to_result
-          Result.pure(value!)
-        end
+        def to_result = Result.pure(value!)
       end
 
       class Invalid < Validated

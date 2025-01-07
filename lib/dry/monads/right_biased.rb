@@ -21,9 +21,7 @@ module Dry
         # Unwraps the underlying value
         #
         # @return [Object]
-        def value!
-          @value
-        end
+        def value! = @value
 
         # Calls the passed in Proc object with value stored in self
         # and returns the result.
@@ -65,25 +63,19 @@ module Dry
         #
         # @param [Array<Object>] args arguments will be transparently passed through to #bind
         # @return [RightBiased::Right]
-        def tee(...)
-          bind(...).bind { self }
-        end
+        def tee(...) = bind(...).bind { self }
 
         # Abstract method for lifting a block over the monad type.
         # Must be implemented for a right-biased monad.
         #
         # @return [RightBiased::Right]
-        def fmap(...)
-          raise NotImplementedError
-        end
+        def fmap(...) = bind(...)
 
         # Ignores arguments and returns self. It exists to keep the interface
         # identical to that of {RightBiased::Left}.
         #
         # @return [RightBiased::Right]
-        def or(...)
-          self
-        end
+        def or(...) = self
 
         # Ignores arguments and returns self. It exists to keep the interface
         # identical to that of {RightBiased::Left}.
@@ -91,24 +83,18 @@ module Dry
         # @param _alt [RightBiased::Right, RightBiased::Left]
         #
         # @return [RightBiased::Right]
-        def |(_alt)
-          self
-        end
+        def |(_alt) = self
 
         # A lifted version of `#or`. For {RightBiased::Right} acts in the same way as `#or`,
         # that is returns itselt.
         #
         # @return [RightBiased::Right]
-        def or_fmap(...)
-          self
-        end
+        def or_fmap(...) = self
 
         # Returns value. It exists to keep the interface identical to that of RightBiased::Left
         #
         # @return [Object]
-        def value_or(_val = nil)
-          @value
-        end
+        def value_or(_val = nil) = @value
 
         # Applies the stored value to the given argument if the argument has type of Right,
         # otherwise returns the argument.
@@ -145,9 +131,7 @@ module Dry
         #   # => Success(Unit)
         #
         # @return [RightBiased::Right]
-        def discard
-          fmap { Unit }
-        end
+        def discard = fmap { Unit }
 
         # Removes one level of monad structure by joining two values.
         #
@@ -158,9 +142,7 @@ module Dry
         #   Failure(:not_a_number).flatten # => Failure(:not_a_number)
         #
         # @return [RightBiased::Right,RightBiased::Left]
-        def flatten
-          bind(&:itself)
-        end
+        def flatten = bind(&:itself)
 
         # Combines the wrapped value with another monadic value.
         # If both values are right-sided, yields a block and passes a tuple
@@ -252,38 +234,28 @@ module Dry
       module Left
         # @private
         # @return [String] Caller location
-        def self.trace_caller
-          caller_locations(2, 1)[0].to_s
-        end
+        def self.trace_caller = caller_locations(2, 1)[0].to_s
 
         # Raises an error on accessing internal value
-        def value!
-          raise UnwrapError, self
-        end
+        def value! = raise UnwrapError, self
 
         # Ignores the input parameter and returns self. It exists to keep the interface
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def bind(...)
-          self
-        end
+        def bind(...) = self
 
         # Ignores the input parameter and returns self. It exists to keep the interface
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def tee(...)
-          self
-        end
+        def tee(...) = self
 
         # Ignores the input parameter and returns self. It exists to keep the interface
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def fmap(...)
-          self
-        end
+        def fmap(...) = self
 
         # Left-biased #bind version.
         #
@@ -293,18 +265,14 @@ module Dry
         #   Dry::Monads.None.or { Time.now } # => current time
         #
         # @return [Object]
-        def or(...)
-          raise NotImplementedError
-        end
+        def or(...) = raise NotImplementedError
 
         # Returns the passed value. Works in pair with {RightBiased::Right#|}.
         #
         # @param alt [RightBiased::Right, RightBiased::Left]
         #
         # @return [RightBiased::Right, RightBiased::Left]
-        def |(alt)
-          self.or(alt)
-        end
+        def |(alt) = self.or(alt)
 
         # A lifted version of `#or`. This is basically `#or` + `#fmap`.
         #
@@ -313,9 +281,7 @@ module Dry
         #   Dry::Monads.None.or_fmap { Time.now } # => Some(current time)
         #
         # @return [RightBiased::Left, RightBiased::Right]
-        def or_fmap(...)
-          raise NotImplementedError
-        end
+        def or_fmap(...) = raise NotImplementedError
 
         # Returns the passed value
         #
@@ -332,33 +298,25 @@ module Dry
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def apply(...)
-          self
-        end
+        def apply(...) = self
 
         # Returns self back. It exists to keep the interface
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def discard
-          self
-        end
+        def discard = self
 
         # Returns self back. It exists to keep the interface
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def flatten
-          self
-        end
+        def flatten = self
 
         # Returns self back. It exists to keep the interface
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def and(_)
-          self
-        end
+        def and(_) = self
 
         # Pattern matching
         #

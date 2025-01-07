@@ -9,9 +9,7 @@ module Dry
         #
         # @param values [Array<Object>] List elements
         # @return [List]
-        def [](*values)
-          new(values)
-        end
+        def [](*values) = new(values)
 
         # Coerces a value to a list. `nil` will be coerced to an empty list.
         #
@@ -144,9 +142,7 @@ module Dry
       #
       # @param other [List] Other list
       # @return [List]
-      def +(other)
-        List.new(to_ary + other.to_ary)
-      end
+      def +(other) = List.new(to_ary + other.to_ary)
 
       # Returns a string representation of the list.
       #
@@ -167,24 +163,18 @@ module Dry
       # Returns the first element.
       #
       # @return [Object]
-      def first
-        value.first
-      end
+      def first = value.first
 
       # Returns the last element.
       #
       # @return [Object]
-      def last
-        value.last
-      end
+      def last = value.last
 
       # Folds the list from the left.
       #
       # @param initial [Object] Initial value
       # @return [Object]
-      def fold_left(initial, &)
-        value.reduce(initial, &)
-      end
+      def fold_left(initial, &) = value.reduce(initial, &)
       alias_method :foldl, :fold_left
       alias_method :reduce, :fold_left
 
@@ -200,52 +190,38 @@ module Dry
       # Whether the list is empty.
       #
       # @return [TrueClass, FalseClass]
-      def empty?
-        value.empty?
-      end
+      def empty? = value.empty?
 
       # Sorts the list.
       #
       # @return [List]
-      def sort
-        coerce(value.sort)
-      end
+      def sort = coerce(value.sort)
 
       # Filters elements with a block
       #
       # @return [List]
-      def filter(&)
-        coerce(value.select(&))
-      end
+      def filter(&) = coerce(value.select(&))
       alias_method :select, :filter
 
       # List size.
       #
       # @return [Integer]
-      def size
-        value.size
-      end
+      def size = value.size
 
       # Reverses the list.
       #
       # @return [List]
-      def reverse
-        coerce(value.reverse)
-      end
+      def reverse = coerce(value.reverse)
 
       # Returns the first element wrapped with a `Maybe`.
       #
       # @return [Maybe<Object>]
-      def head
-        Monads::Maybe.coerce(value.first)
-      end
+      def head = Monads::Maybe.coerce(value.first)
 
       # Returns list's tail.
       #
       # @return [List]
-      def tail
-        coerce(value.drop(1))
-      end
+      def tail = coerce(value.drop(1))
 
       # Turns the list into a typed one.
       # Type is required for some operations like .traverse.
@@ -272,9 +248,7 @@ module Dry
       # Whether the list is types
       #
       # @return [Boolean]
-      def typed?
-        !type.nil?
-      end
+      def typed? = !type.nil?
 
       # Traverses the list with a block (or without it).
       # This methods "flips" List structure with the given monad (obtained from the type).
@@ -313,16 +287,12 @@ module Dry
       # Returns the List monad.
       #
       # @return [Monad]
-      def monad
-        List
-      end
+      def monad = List
 
       # Returns self.
       #
       # @return [List]
-      def to_monad
-        self
-      end
+      def to_monad = self
 
       # Iterates over the list and collects Some values.
       #
@@ -367,15 +337,11 @@ module Dry
       #   end
       #
       # @api private
-      def deconstruct
-        value
-      end
+      def deconstruct = value
 
       private
 
-      def coerce(other)
-        self.class.coerce(other)
-      end
+      def coerce(other) = self.class.coerce(other)
 
       # Empty list
       EMPTY = List.new([].freeze).freeze
@@ -388,17 +354,11 @@ module Dry
 
         attr_reader :type
 
-        def initialize(type)
-          @type = type
-        end
+        def initialize(type) = @type = type
 
-        def [](*args)
-          List.new(args, type)
-        end
+        def [](*args) = List.new(args, type)
 
-        def coerce(value)
-          List.coerce(value, type)
-        end
+        def coerce(value) = List.coerce(value, type)
 
         def pure(val = Undefined, &block)
           value = Undefined.default(val, block)
@@ -433,9 +393,7 @@ module Dry
 
         # List constructor.
         # @return [List]
-        def List(value)
-          List.coerce(value)
-        end
+        def List(value) = List.coerce(value)
       end
     end
 

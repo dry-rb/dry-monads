@@ -14,10 +14,10 @@ module Dry
   module Monads
     # @api private
     def self.loader
-      @loader ||= Zeitwerk::Loader.new.tap do |loader|
-        root = File.expand_path("..", __dir__)
+      @loader ||= ::Zeitwerk::Loader.new.tap do |loader|
+        root = ::File.expand_path("..", __dir__)
         loader.tag = "dry-monads"
-        loader.inflector = Zeitwerk::GemInflector.new("#{root}/dry-monads.rb")
+        loader.inflector = ::Zeitwerk::GemInflector.new("#{root}/dry-monads.rb")
         loader.push_dir(root)
         loader.ignore(
           "#{root}/dry-monads.rb",

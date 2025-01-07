@@ -43,9 +43,7 @@ module Dry
       end
 
       # @private
-      def known_monads
-        @constants.keys
-      end
+      def known_monads = @constants.keys
 
       # @private
       def load_monad(name)
@@ -59,15 +57,13 @@ module Dry
 
       # @private
       def constructors
-        @constructors ||= registry.values.filter_map { |m|
+        @constructors ||= registry.values.filter_map do |m|
           m::Constructors if m.const_defined?(:Constructors)
-        }
+        end
       end
 
       # @private
-      def all_loaded?
-        registry.size.eql?(@constants.size)
-      end
+      def all_loaded? = registry.size.eql?(@constants.size)
     end
   end
 end

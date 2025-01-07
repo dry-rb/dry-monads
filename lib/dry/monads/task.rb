@@ -73,9 +73,7 @@ module Dry
         #
         # @param exc [Exception]
         # @return [Task]
-        def failed(exc)
-          new(Promise.reject(exc))
-        end
+        def failed(exc) = new(Promise.reject(exc))
       end
 
       include ConversionStubs[:to_maybe, :to_result]
@@ -110,9 +108,7 @@ module Dry
       # @param block [Proc]
       # @return [Task]
       # @api public
-      def fmap(&)
-        self.class.new(promise.then(&))
-      end
+      def fmap(&) = self.class.new(promise.then(&))
 
       # Composes two tasks to run one after another.
       # A more common name is `then` exists as an alias.
@@ -148,9 +144,7 @@ module Dry
       #
       # @param block [Proc]
       # @return [Task]
-      def or_fmap(&)
-        self.class.new(promise.rescue(&))
-      end
+      def or_fmap(&) = self.class.new(promise.rescue(&))
 
       # Rescues the error with a block that returns another task.
       #
@@ -180,9 +174,7 @@ module Dry
       #
       # @param block [Proc]
       # @return [Object]
-      def value_or(&)
-        promise.rescue(&).wait.value
-      end
+      def value_or(&) = promise.rescue(&).wait.value
 
       # Blocks the current thread until the task is complete.
       #
@@ -206,21 +198,15 @@ module Dry
       # Whether the computation is complete.
       #
       # @return [Boolean]
-      def complete?
-        promise.complete?
-      end
+      def complete? = promise.complete?
 
       # @return [Class]
-      def monad
-        Task
-      end
+      def monad = Task
 
       # Returns self.
       #
       # @return [Maybe::Some, Maybe::None]
-      def to_monad
-        self
-      end
+      def to_monad = self
 
       # Applies the stored value to the given argument.
       #
@@ -241,9 +227,7 @@ module Dry
       # Maps a successful result to Unit, effectively discards it
       #
       # @return [Task]
-      def discard
-        fmap { Unit }
-      end
+      def discard = fmap { Unit }
 
       private
 
@@ -302,9 +286,7 @@ module Dry
           #
           # @param block [Proc]
           # @return Task
-          def Task(&)
-            Task.new(&)
-          end
+          def Task(&) = Task.new(&)
         end
 
         include Constructors

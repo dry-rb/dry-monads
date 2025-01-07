@@ -46,38 +46,28 @@ module Dry
       end
 
       # Returns true for an instance of a {Maybe::None} monad.
-      def none?
-        is_a?(None)
-      end
+      def none? = is_a?(None)
       alias_method :failure?, :none?
 
       # Returns true for an instance of a {Maybe::Some} monad.
-      def some?
-        is_a?(Some)
-      end
+      def some? = is_a?(Some)
       alias_method :success?, :some?
 
       # Returns self, added to keep the interface compatible with that of Either monad types.
       #
       # @return [Maybe::Some, Maybe::None]
-      def to_maybe
-        self
-      end
+      def to_maybe = self
 
       # Returns self.
       #
       # @return [Maybe::Some, Maybe::None]
-      def to_monad
-        self
-      end
+      def to_monad = self
 
       # Returns the Maybe monad.
       # This is how we're doing polymorphism in Ruby 😕
       #
       # @return [Monad]
-      def monad
-        Maybe
-      end
+      def monad = Maybe
 
       # Represents a value that is present, i.e. not nil.
       #
@@ -96,9 +86,7 @@ module Dry
         #    end
         #
         # @api public
-        def self.[](*value)
-          new(value)
-        end
+        def self.[](*value) = new(value)
 
         def initialize(value = Undefined)
           raise ArgumentError, "nil cannot be some" if value.nil?
@@ -151,9 +139,7 @@ module Dry
         # @param args [Array<Object>] arguments will be transparently passed through to #bind
         # @return [Maybe::Some, Maybe::None] Wrapped result, i.e. nil will be mapped to None,
         #                                    other values will be wrapped with Some
-        def maybe(...)
-          Maybe.coerce(bind(...))
-        end
+        def maybe(...) = Maybe.coerce(bind(...))
 
         # Accepts a block and runs it against the wrapped value.
         # If the block returns a trurhy value the result is self,
@@ -246,26 +232,19 @@ module Dry
         # @param args [Array<Object>] arguments will be passed to the underlying `#or` call
         # @return [Maybe::Some, Maybe::None] Lifted `#or` result, i.e. nil will be mapped to None,
         #                                    other values will be wrapped with Some
-        def or_fmap(...)
-          Maybe.coerce(self.or(...))
-        end
+        def or_fmap(...) = Maybe.coerce(self.or(...))
 
         # @return [String]
-        def to_s
-          "None"
-        end
+        def to_s = "None"
         alias_method :inspect, :to_s
 
         # @api private
-        def eql?(other)
-          other.is_a?(None)
-        end
+        def eql?(other) = other.is_a?(None)
+
         alias_method :==, :eql?
 
         # @private
-        def hash
-          None.instance.object_id
-        end
+        def hash = None.instance.object_id
 
         # Pattern matching
         #
@@ -277,16 +256,12 @@ module Dry
         #   end
         #
         # @api private
-        def deconstruct
-          EMPTY_ARRAY
-        end
+        def deconstruct = EMPTY_ARRAY
 
         # @see Maybe::Some#filter
         #
         # @return [Maybe::None]
-        def filter(_ = Undefined)
-          self
-        end
+        def filter(_ = Undefined) = self
       end
 
       # A module that can be included for easier access to Maybe monads.
@@ -302,9 +277,7 @@ module Dry
         module Constructors
           # @param value [Object] the value to be stored in the monad
           # @return [Maybe::Some, Maybe::None]
-          def Maybe(value)
-            Maybe.coerce(value)
-          end
+          def Maybe(value) = Maybe.coerce(value)
 
           # Some constructor
           #
@@ -322,9 +295,7 @@ module Dry
           end
 
           # @return [Maybe::None]
-          def None
-            None.new(RightBiased::Left.trace_caller)
-          end
+          def None = None.new(RightBiased::Left.trace_caller)
         end
 
         include Constructors
@@ -393,9 +364,7 @@ module Dry
 
       class Failure < Result
         # @return [Maybe::None]
-        def to_maybe
-          Maybe::None.new(trace)
-        end
+        def to_maybe = Maybe::None.new(trace)
       end
     end
 
@@ -415,16 +384,12 @@ module Dry
     class Try
       class Value < Try
         # @return [Maybe]
-        def to_maybe
-          Dry::Monads::Maybe(@value)
-        end
+        def to_maybe = ::Dry::Monads::Maybe(@value)
       end
 
       class Error < Try
         # @return [Maybe::None]
-        def to_maybe
-          Maybe::None.new(RightBiased::Left.trace_caller)
-        end
+        def to_maybe = Maybe::None.new(RightBiased::Left.trace_caller)
       end
     end
 
@@ -433,18 +398,14 @@ module Dry
         # Converts to Maybe::Some
         #
         # @return [Maybe::Some]
-        def to_maybe
-          Maybe.pure(value!)
-        end
+        def to_maybe = Maybe.pure(value!)
       end
 
       class Invalid < Validated
         # Converts to Maybe::None
         #
         # @return [Maybe::None]
-        def to_maybe
-          Maybe::None.new(RightBiased::Left.trace_caller)
-        end
+        def to_maybe = Maybe::None.new(RightBiased::Left.trace_caller)
       end
     end
 

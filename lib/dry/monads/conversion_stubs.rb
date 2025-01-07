@@ -4,7 +4,7 @@ module Dry
   module Monads
     module ConversionStubs
       def self.[](*method_names)
-        Module.new do
+        ::Module.new do
           method_names.each do |name|
             define_method(name) do |*|
               Methods.public_send(name)

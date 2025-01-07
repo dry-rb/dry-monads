@@ -8,11 +8,9 @@ module Dry
       # @see Monads#Result
       # @private
       class Fixed < ::Module
-        def self.[](error, **options)
-          new(error, **options)
-        end
+        def self.[](error, **options) = new(error, **options)
 
-        def initialize(error, **_options)
+        def initialize(error, **)
           super()
 
           @mod = ::Module.new do

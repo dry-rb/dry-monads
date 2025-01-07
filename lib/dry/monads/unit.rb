@@ -19,18 +19,9 @@ module Dry
     #   => Some(Unit)
     #
     Unit = ::Object.new.tap do |unit|
-      def unit.to_s
-        "Unit"
-      end
-
-      def unit.inspect
-        "Unit"
-      end
-
-      def unit.deconstruct
-        EMPTY_ARRAY
-      end
-
+      def unit.to_s = "Unit"
+      def unit.inspect = "Unit"
+      def unit.deconstruct = EMPTY_ARRAY
       unit.freeze
     end
   end
