@@ -1,4 +1,8 @@
 ---
+- version: 1.7.1
+  date: 2025-01-21
+  fixed:
+    - "Fix warnings about unused block arguments (@flash-gordon)"
 - version: 1.7.0
   date: 2025-01-07
   fixed:
