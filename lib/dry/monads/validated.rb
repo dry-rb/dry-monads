@@ -103,12 +103,12 @@ module Dry
         # Ignores values and returns self, see {Invalid#alt_map}
         #
         # @return [Validated::Valid]
-        def alt_map(_ = nil) = self
+        def alt_map(_ = nil, &) = self
 
         # Ignores arguments, returns self
         #
         # @return [Validated::Valid]
-        def or(_ = nil) = self
+        def or(_ = nil, &) = self
 
         # @return [String]
         def inspect
@@ -185,7 +185,7 @@ module Dry
         # Ignores the passed argument and returns self
         #
         # @return [Validated::Invalid]
-        def fmap(_ = nil) = self
+        def fmap(_ = nil, &) = self
 
         # Yields the given callable and returns the result
         #

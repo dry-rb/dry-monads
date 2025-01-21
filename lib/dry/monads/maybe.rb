@@ -261,7 +261,7 @@ module Dry
         # @see Maybe::Some#filter
         #
         # @return [Maybe::None]
-        def filter(_ = Undefined) = self
+        def filter(_ = Undefined, &) = self
       end
 
       # A module that can be included for easier access to Maybe monads.

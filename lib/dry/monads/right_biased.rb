@@ -94,7 +94,7 @@ module Dry
         # Returns value. It exists to keep the interface identical to that of RightBiased::Left
         #
         # @return [Object]
-        def value_or(_val = nil) = @value
+        def value_or(_val = nil, &) = @value
 
         # Applies the stored value to the given argument if the argument has type of Right,
         # otherwise returns the argument.
@@ -316,7 +316,7 @@ module Dry
         # identical to that of {RightBiased::Right}.
         #
         # @return [RightBiased::Left]
-        def and(_) = self
+        def and(_, &) = self
 
         # Pattern matching
         #

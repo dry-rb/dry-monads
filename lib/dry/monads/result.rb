@@ -126,7 +126,7 @@ module Dry
         # Ignores values and returns self, see {Failure#alt_map}
         #
         # @return [Result::Success]
-        def alt_map(_ = nil) = self
+        def alt_map(_ = nil, &) = self
       end
 
       # Represents a value of a failed operation.
@@ -371,7 +371,7 @@ module Dry
         # @param fail [#call] Fallback value
         # @param block [Proc] Fallback block
         # @return [Success<Any>]
-        def to_result(_fail = Unit) = Result::Success.new(@value)
+        def to_result(_fail = Unit, &) = Result::Success.new(@value)
       end
 
       class None < Maybe

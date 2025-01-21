@@ -162,7 +162,7 @@ module Dry
         # @param errors [Class] List of Exception subclasses
         #
         # @return [Try::Value]
-        def recover(*_errors) = self
+        def recover(*_errors, &) = self
       end
 
       # Represents a result of a failed execution.
