@@ -8,6 +8,8 @@ gemspec
 
 group :tools do
   gem "benchmark-ips"
+  gem "debug"
+  gem "irb"
 end
 
 group :docs do
@@ -17,5 +19,6 @@ group :docs do
 end
 
 group :test do
+  gem "debug_inspector"
   gem "dry-types"
 end

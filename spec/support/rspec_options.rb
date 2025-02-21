@@ -11,6 +11,6 @@ RSpec.configure do |config|
   # Collect all failing expectations automatically,
   # without calling aggregate_failures everywhere
   config.define_derived_metadata do |meta|
-    meta[:aggregate_failures] = true
+    meta[:aggregate_failures] = true unless meta.key?(:aggregate_failures)
   end
 end

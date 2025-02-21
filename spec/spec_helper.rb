@@ -11,6 +11,7 @@ require "pathname"
 SPEC_ROOT = Pathname(__FILE__).dirname
 
 begin
+  require "debug"
   require "pry"
   require "pry-byebug"
 rescue LoadError
