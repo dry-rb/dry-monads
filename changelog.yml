@@ -3,7 +3,7 @@
   date: unreleased
   added:
     - |-
-        New extension for RSpec (@flash-gordon in #183):
+      New extension for RSpec (@flash-gordon in #183):
         One of the pain points of testing monads is referencing class constants from specs.
         This extension catches missing class constants, analyzes the call site and
         returns a matching constant.
