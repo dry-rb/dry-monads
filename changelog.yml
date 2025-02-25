@@ -1,4 +1,61 @@
 ---
+- version: 1.8.0
+  date: unreleased
+  added:
+    - | New extension for RSpec (@flash-gordon in #183):
+      One of the pain points of testing monads is referencing class constants from specs.
+      This extension catches missing class constants, analyzes the call site and
+      returns a matching constant.
+
+      Before, this code would raise a `NameError` because `Failure` is a constant
+      that is missing in `Object`:
+
+      ```ruby
+      example "missing constant" do
+        expect(call_operation).to eql(Failure[:some_error, "some message"])
+      end
+      ```
+
+      Now, after enabling the extension, it will return the correct constant:
+
+      ```ruby
+      Dry::Monads.load_extensions(:rspec)
+
+      example "missing constant" do
+        Failure[:some_error, "some message"] # => Failure[:some_error, "some message"]
+      end
+      ```
+
+      Out of the box, the extension will check if `Success`, `Failure`, `Some`, and
+      `None` are referenced from a file ending with `_spec.rb`.
+
+      More involved analysis is possible if you add `debug_inspector` to your Gemfile:
+
+      ```ruby
+      group :test do
+        gem "debug_inspector"
+      end
+      ```
+
+      This will allow referencing constants from other modules, such as rspec helpers.
+
+      The extension also adds new matchers for `Success`, `Failure`, `Some`, and
+      `None` values.
+
+      ```ruby
+      expect(Success(1)).to be_success
+      expect(Success(1)).to be_success(1)
+      expect(Success(1)).to be_success { |x| x > 0 }
+
+      expect(Failure(1)).to be_failure(1)
+
+      expect(Some(1)).to be_some
+      expect(Some(1)).to be_success
+
+      expect(None()).to be_none
+      expect(None()).to be_failure
+      ```
+
 - version: 1.7.1
   date: 2025-01-21
   fixed:
