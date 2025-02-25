@@ -15,9 +15,12 @@ RSpec.describe "RSpec extension" do
     expect(Failure(1)).to be_failure(1)
     expect(Failure(1)).not_to be_failure(2)
     expect(Some(1)).to be_some
+    expect(Some(1)).to be_success
     expect(Some(1)).to be_some(1)
     expect(Some(1)).not_to be_some(2)
     expect(None()).to be_none
+    expect(None()).not_to be_success
+    expect(None()).to be_failure
     expect(None()).not_to be_some
     expect(None()).not_to be_some(1)
   end
