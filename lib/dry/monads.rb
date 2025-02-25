@@ -6,6 +6,7 @@ require "dry/core"
 require "dry/monads/constants"
 require "dry/monads/errors"
 require "dry/monads/registry"
+require "dry/monads/extensions"
 
 module Dry
   # Common, idiomatic monads for Ruby
