@@ -60,7 +60,6 @@ expect(None()).to be_failure
 ```
 
 
-
 [Compare v1.7.1...v1.8.0](https://github.com/dry-rb/dry-monads/compare/v1.7.1...v1.8.0)
 
 ## 1.7.1 2025-01-21
