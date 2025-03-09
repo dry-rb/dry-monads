@@ -21,4 +21,5 @@ end
 group :test do
   gem "debug_inspector"
   gem "dry-types"
+  gem "super_diff"
 end
