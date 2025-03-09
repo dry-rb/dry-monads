@@ -23,6 +23,8 @@ require "dry/monads/all"
 
 Dir["./spec/shared/**/*.rb"].each { |f| require f }
 
+Warning.ignore(/rspec-expectations/)
+Warning.ignore(/super_diff/)
 Warning.process { raise _1 }
 
 module Kernel

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "rspec/matchers"
+
 debug_inspector_available =
   begin
     require "debug_inspector"
