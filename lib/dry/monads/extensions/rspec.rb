@@ -110,7 +110,7 @@ module Dry
 
       Constructors = Monads[:result, :maybe]
 
-      CONSTANTS = %i[Success Failure Some None].to_set
+      CONSTANTS = %i[Success Failure Some None List].to_set
 
       NESTED_CONSTANTS = CONSTANTS.to_set { |c| "::#{c}" }
 
@@ -128,13 +128,15 @@ module Dry
         def name_to_const(name)
           case name
           in :Success
-            Dry::Monads::Result::Success
+            ::Dry::Monads::Result::Success
           in :Failure
-            Dry::Monads::Result::Failure
+            ::Dry::Monads::Result::Failure
           in :Some
-            Dry::Monads::Maybe::Some
+            ::Dry::Monads::Maybe::Some
           in :None
-            Dry::Monads::Maybe::None
+            ::Dry::Monads::Maybe::None
+          in :List
+            ::Dry::Monads::List
           end
         end
       end

@@ -23,6 +23,8 @@ RSpec.describe "RSpec extension" do
     expect(None()).to be_failure
     expect(None()).not_to be_some
     expect(None()).not_to be_some(1)
+    expect(List[]).to be_empty
+    expect(List[1, 2, 3]).not_to be_empty
   end
 
   it "catches missing constants" do
