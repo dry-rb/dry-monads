@@ -253,6 +253,51 @@ RSpec.describe "SuperDiff extension" do
               ]
           DIFF
         end
+
+        example "mix of arrays and hashes" do
+          output = run_spec(<<~RUBY)
+            expect(Failure[:error]).to eql(Failure(:error))
+          RUBY
+
+          expect(output).to eql(<<~DIFF)
+            expected: Failure(:error)
+                 got: Failure[:error]
+
+            (compared using eql?)
+
+              Failure(
+            -   :error
+            +   [
+            +     :error
+            +   ]
+              )
+          DIFF
+        end
+
+        example "mix of array and other values" do
+          output = run_spec(<<~RUBY)
+            expect(Failure[:error]).to eql(1)
+          RUBY
+
+          expect(output).to eql(<<~DIFF)
+            expected: 1
+                 got: Failure[:error]
+
+            (compared using eql?)
+          DIFF
+
+          output = run_spec(<<~RUBY)
+            obj = Object.new
+            expect(obj).to eql(Failure[:error])
+          RUBY
+
+          expect(output).to match(Regexp.new(<<~DIFF.chomp, Regexp::MULTILINE))
+            expected: Failure\\[:error\\]
+                 got: #<Object:0x[0-9a-f]+>
+
+            \\(compared using eql\\?\\)
+          DIFF
+        end
       end
     end
   end
