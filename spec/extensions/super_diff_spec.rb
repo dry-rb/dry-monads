@@ -22,7 +22,7 @@ RSpec.describe "SuperDiff extension" do
         include Dry::Monads::Try::Mixin
 
         before(:all) do
-          Dry::Monads.load_extensions(:super_diff)
+          Dry::Monads.load_extensions(:super_diff, :rspec)
         end
 
         it "fails with a diff" do
@@ -237,22 +237,20 @@ RSpec.describe "SuperDiff extension" do
 
         example "with arrays" do
           output = run_spec(<<~RUBY)
-            expect(Failure([:error, :a])).to eql(Failure([:error, :b]))
+            expect(Failure[:error, :a]).to eql(Failure[:error, :b])
           RUBY
 
           expect(output).to eql(<<~DIFF)
-            expected: Failure([:error, :b])
-                 got: Failure([:error, :a])
+            expected: Failure[:error, :b]
+                 got: Failure[:error, :a]
 
             (compared using eql?)
 
-              Failure(
-                [
-                  :error,
-            -     :b
-            +     :a
-                ]
-              )
+              Failure[
+                :error,
+            -   :b
+            +   :a
+              ]
           DIFF
         end
       end

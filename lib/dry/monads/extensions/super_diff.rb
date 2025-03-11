@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "delegate"
 require "super_diff"
 require "super_diff/rspec"
 
@@ -27,22 +28,57 @@ module Dry
       }.freeze
 
       TOKEN_MAP = {
-        Result::Success => "Success(",
-        Result::Failure => "Failure(",
-        Maybe::Some => "Some(",
-        Maybe::None => "None(",
-        Try::Value => "Value("
+        Result::Success => "Success",
+        Result::Failure => "Failure",
+        Maybe::Some => "Some",
+        Maybe::None => "None",
+        Try::Value => "Value"
       }.freeze
+
+      class WrappedArray < ::SimpleDelegator
+        def is_a?(klass) = klass <= WrappedArray
+      end
 
       module OperationTreeFlatteners
         class MonadicValues < ::SuperDiff::Basic::OperationTreeFlatteners::CustomObject
-          def open_token
-            TOKEN_MAP[operation_tree.underlying_object.class]
+          private
+
+          def initialize(...)
+            super
+
+            obj = operation_tree.underlying_object
+            @klass = obj.class
+            @array = EXTRACT_VALUE[@klass].(obj).is_a?(::Array)
           end
 
-          def close_token = ")"
+          protected
+
+          def array? = @array
+
+          def open_token = "#{TOKEN_MAP[@klass]}#{array? ? "[" : "("}"
+
+          def close_token = array? ? "]" : ")"
 
           def item_prefix_for(_) = ""
+        end
+
+        class WrappedArray < ::SuperDiff::Basic::OperationTreeFlatteners::Array
+          protected
+
+          def build_tiered_lines = inner_lines
+
+          # prevent super_diff from adding a newline after the open token
+          # for arrays
+          def build_lines_for_non_change_operation(*)
+            @indentation_level -= 1
+            super
+          ensure
+            @indentation_level += 1
+          end
+
+          def open_token = ""
+
+          def close_token = ""
         end
       end
 
@@ -50,6 +86,16 @@ module Dry
         class MonadicValues < ::SuperDiff::Basic::OperationTrees::CustomObject
           def operation_tree_flattener_class
             OperationTreeFlatteners::MonadicValues
+          end
+        end
+
+        class WrappedArray < ::SuperDiff::Basic::OperationTrees::Array
+          def self.applies_to?(value)
+            value.is_a?(::Dry::Monads::SuperDiff::WrappedArray)
+          end
+
+          def operation_tree_flattener_class
+            OperationTreeFlatteners::WrappedArray
           end
         end
       end
@@ -67,9 +113,7 @@ module Dry
             OperationTrees::MonadicValues.new([], underlying_object: actual)
           end
 
-          def attribute_names
-            [:value]
-          end
+          def attribute_names = [:value]
 
           private
 
@@ -83,9 +127,24 @@ module Dry
 
             if Unit.equal?(v)
               EMPTY_HASH
+            elsif v.is_a?(::Array)
+              {value: ::Dry::Monads::SuperDiff::WrappedArray.new(v)}
             else
               {value: v}
             end
+          end
+        end
+
+        class WrappedArray < ::SuperDiff::Basic::OperationTreeBuilders::Array
+          def self.applies_to?(expected, actual)
+            expected.is_a?(::Dry::Monads::SuperDiff::WrappedArray) &&
+              actual.is_a?(::Dry::Monads::SuperDiff::WrappedArray)
+          end
+
+          private
+
+          def operation_tree
+            @operation_tree ||= OperationTrees::WrappedArray.new([])
           end
         end
       end
@@ -114,16 +173,23 @@ module Dry
               t1.as_lines_when_rendering_to_lines(
                 collection_bookend: :open
               ) do |t2|
+                v = EXTRACT_VALUE[object.class].(object)
+
                 t2.add_text(TOKEN_MAP[object.class])
 
-                v = EXTRACT_VALUE[object.class].(object)
+                unless v.is_a?(::Array)
+                  t2.add_text("(")
+                end
 
                 unless Unit.equal?(v)
                   t2.nested do |t3|
                     t3.add_inspection_of v
                   end
                 end
-                t2.add_text(")")
+
+                unless v.is_a?(::Array)
+                  t2.add_text(")")
+                end
               end
             end
           end
@@ -137,5 +203,8 @@ SuperDiff.configuration.tap do |config|
   config.prepend_extra_differ_classes(Dry::Monads::SuperDiff::Differs::MonadicValues)
   config.prepend_extra_inspection_tree_builder_classes(
     Dry::Monads::SuperDiff::InspectionTreeBuilders::MonadicValues
+  )
+  config.prepend_extra_operation_tree_builder_classes(
+    Dry::Monads::SuperDiff::OperationTreeBuilders::WrappedArray
   )
 end
