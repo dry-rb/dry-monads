@@ -56,6 +56,47 @@
         expect(None()).to be_none
         expect(None()).to be_failure
         ```
+    - |-
+      New extension for super_diff (@flash-gordon in #184):
+
+        Adds support for improved diff output in specs when using the super_diff gem.
+        This makes it easier to understand the differences between monad values in test failures.
+
+        To use this extension:
+        1. Add super_diff to your Gemfile's test group:
+           ```ruby
+           group :test do
+             gem "super_diff"
+           end
+           ```
+        2. Load the extension:
+           ```ruby
+           require "dry/monads"
+           Dry::Monads.load_extensions(:super_diff)
+           ```
+
+        This will change the diff output for monad values to be more readable.
+
+        Before:
+
+        ```
+        -Success({a: 2, c: 2})
+        +Success({a: 1, b: 2})
+        ```
+
+        After:
+
+        ```
+        Success(
+           {
+        -     a: 2,
+        +     a: 1,
+        -     c: 2
+        +     b: 2
+           }
+        )
+        ```
+
 
 - version: 1.7.1
   date: 2025-01-21
