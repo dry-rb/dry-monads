@@ -19,7 +19,7 @@ module Dry
         Try::Value
       ].freeze
 
-      EXTRACT_VALUE = {
+      EXTRACT_VALUE_MAP = {
         Result::Success => lambda(&:value!),
         Result::Failure => lambda(&:failure),
         Maybe::Some => lambda(&:value!),
@@ -27,8 +27,16 @@ module Dry
         Try::Value => lambda(&:value!)
       }.freeze
 
+      EXTRACT_VALUE = lambda do |v|
+        EXTRACT_VALUE_MAP[v.class].(v)
+      end
+
       IS_ARRAY = lambda do |v|
-        EXTRACT_VALUE[v.class].(v).is_a?(::Array)
+        EXTRACT_VALUE.(v).is_a?(::Array)
+      end
+
+      IS_HASH = lambda do |v|
+        EXTRACT_VALUE.(v).is_a?(::Hash)
       end
 
       TOKEN_MAP = {
@@ -39,30 +47,18 @@ module Dry
         Try::Value => "Value"
       }.freeze
 
-      class Array < ::SimpleDelegator
-        def is_a?(klass) = klass <= Array
+      class Tuple < ::SimpleDelegator
+        def is_a?(klass) = klass <= Tuple
+      end
+
+      class Dict < ::SimpleDelegator
+        def is_a?(klass) = klass <= Dict
       end
 
       module OTFlatteners
-        class RegularConstructor < ::SuperDiff::Basic::OperationTreeFlatteners::CustomObject
-          private
+        module MonasAsCollectionConstructor
+          def call = tiered_lines
 
-          def initialize(...)
-            super
-
-            @klass = operation_tree.underlying_object.class
-          end
-
-          protected
-
-          def open_token = "#{TOKEN_MAP[@klass]}("
-
-          def close_token = ")"
-
-          def item_prefix_for(_) = ""
-        end
-
-        class Array < ::SuperDiff::Basic::OperationTreeFlatteners::Array
           protected
 
           def build_tiered_lines = inner_lines
@@ -81,12 +77,36 @@ module Dry
           def close_token = ""
         end
 
-        class ArrayConstructor < RegularConstructor
+        class RegularConstructor < ::SuperDiff::Basic::OperationTreeFlatteners::CustomObject
+          private
+
+          def initialize(...)
+            super
+
+            @klass = operation_tree.underlying_object.class
+          end
+
+          def open_token = "#{TOKEN_MAP[@klass]}("
+
+          def close_token = ")"
+
+          def item_prefix_for(_) = ""
+        end
+
+        class TupleConstructor < RegularConstructor
           private
 
           def open_token = "#{TOKEN_MAP[@klass]}["
 
           def close_token = "]"
+        end
+
+        class Tuple < ::SuperDiff::Basic::OperationTreeFlatteners::Array
+          include MonasAsCollectionConstructor
+        end
+
+        class Dict < ::SuperDiff::Basic::OperationTreeFlatteners::Hash
+          include MonasAsCollectionConstructor
         end
       end
 
@@ -97,21 +117,27 @@ module Dry
           def operation_tree_flattener_class = OTFlatteners::RegularConstructor
         end
 
-        class ArrayConstructor < RegularConstructor
+        class TupleConstructor < RegularConstructor
           def self.applies_to?(value) = super && IS_ARRAY.call(value)
 
-          def operation_tree_flattener_class = OTFlatteners::ArrayConstructor
+          def operation_tree_flattener_class = OTFlatteners::TupleConstructor
         end
 
-        class Array < ::SuperDiff::Basic::OperationTrees::Array
-          def self.applies_to?(value) = value.is_a?(::Dry::Monads::SuperDiff::Array)
+        class Tuple < ::SuperDiff::Basic::OperationTrees::Array
+          def self.applies_to?(value) = value.is_a?(::Dry::Monads::SuperDiff::Tuple)
 
-          def operation_tree_flattener_class = OTFlatteners::Array
+          def operation_tree_flattener_class = OTFlatteners::Tuple
+        end
+
+        class Dict < ::SuperDiff::Basic::OperationTrees::Hash
+          def self.applies_to?(value) = value.is_a?(::Dry::Monads::SuperDiff::Dict)
+
+          def operation_tree_flattener_class = OTFlatteners::Dict
         end
       end
 
       module OTBuilders
-        class RegularConstructors < ::SuperDiff::Basic::OperationTreeBuilders::CustomObject
+        class CompareDefault < ::SuperDiff::Basic::OperationTreeBuilders::CustomObject
           def self.applies_to?(expected, actual)
             VALUES.include?(expected.class) &&
               actual.instance_of?(expected.class)
@@ -133,7 +159,7 @@ module Dry
           end
 
           def get_value(object)
-            v = EXTRACT_VALUE[object.class].(object)
+            v = EXTRACT_VALUE.(object)
 
             if Unit.equal?(v)
               EMPTY_HASH
@@ -143,20 +169,31 @@ module Dry
           end
         end
 
-        class Array < ::SuperDiff::Basic::OperationTreeBuilders::Array
+        class Tuple < ::SuperDiff::Basic::OperationTreeBuilders::Array
           def self.applies_to?(expected, actual)
-            expected.is_a?(::Dry::Monads::SuperDiff::Array) &&
+            expected.is_a?(::Dry::Monads::SuperDiff::Tuple) &&
               actual.instance_of?(expected.class)
           end
 
           private
 
           def operation_tree
-            @operation_tree ||= OT::Array.new([])
+            @operation_tree ||= OT::Tuple.new([])
           end
         end
 
-        class ArrayConstructors < RegularConstructors
+        class Dict < ::SuperDiff::Basic::OperationTreeBuilders::Hash
+          def self.applies_to?(expected, actual)
+            expected.is_a?(::Dry::Monads::SuperDiff::Dict) &&
+              actual.instance_of?(expected.class)
+          end
+
+          private
+
+          def build_operation_tree = OT::Dict.new([])
+        end
+
+        class CompareTuples < CompareDefault
           def self.applies_to?(expected, actual)
             super && IS_ARRAY.call(expected) && IS_ARRAY.call(actual)
           end
@@ -164,38 +201,60 @@ module Dry
           private
 
           def get_value(object)
-            v = EXTRACT_VALUE[object.class].(object)
+            v = EXTRACT_VALUE.(object)
 
-            {value: ::Dry::Monads::SuperDiff::Array.new(v)}
+            {value: ::Dry::Monads::SuperDiff::Tuple.new(v)}
           end
 
           def build_operation_tree
-            OT::ArrayConstructor.new([], underlying_object: actual)
+            OT::TupleConstructor.new([], underlying_object: actual)
+          end
+        end
+
+        class CompareDicts < CompareDefault
+          def self.applies_to?(expected, actual)
+            super && IS_HASH.call(expected) && IS_HASH.call(actual)
+          end
+
+          private
+
+          def get_value(object)
+            v = EXTRACT_VALUE.(object)
+
+            {value: ::Dry::Monads::SuperDiff::Dict.new(v)}
           end
         end
       end
 
       module Differs
-        class RegularConstructors < ::SuperDiff::Basic::Differs::CustomObject
+        class CompareDefault < ::SuperDiff::Basic::Differs::CustomObject
           def self.applies_to?(expected, actual)
             VALUES.include?(expected.class) &&
               expected.instance_of?(actual.class)
           end
 
-          def operation_tree_builder_class = OTBuilders::RegularConstructors
+          def operation_tree_builder_class = OTBuilders::CompareDefault
         end
 
-        class ArrayConstructors < RegularConstructors
+        class CompareTuples < CompareDefault
           def self.applies_to?(expected, actual)
             super && IS_ARRAY.call(expected) && IS_ARRAY.call(actual)
           end
 
-          def operation_tree_builder_class = OTBuilders::ArrayConstructors
+          def operation_tree_builder_class = OTBuilders::CompareTuples
+        end
+
+        class CompareDicts < CompareDefault
+          def self.applies_to?(expected, actual)
+            super && IS_HASH.call(expected) && IS_HASH.call(actual)
+          end
+
+          def operation_tree_builder_class = OTBuilders::CompareDicts
         end
       end
 
       module ITBuilders
-        class RegularConstructors < ::SuperDiff::Basic::InspectionTreeBuilders::CustomObject
+        class RegularConstructor < ::SuperDiff::Basic::InspectionTreeBuilders::CustomObject
           def self.applies_to?(object)
             VALUES.include?(object.class)
           end
@@ -204,7 +263,7 @@ module Dry
             build_tree do |t2|
               t2.add_text("#{TOKEN_MAP[object.class]}(")
 
-              v = EXTRACT_VALUE[object.class].(object)
+              v = EXTRACT_VALUE.(object)
 
               unless Unit.equal?(v)
                 t2.nested do |t3|
@@ -227,7 +286,7 @@ module Dry
           end
         end
 
-        class ArrayConstructors < RegularConstructors
+        class TupleConstructor < RegularConstructor
           def self.applies_to?(object) = super && IS_ARRAY.call(object)
 
           def call
@@ -235,7 +294,45 @@ module Dry
               t2.add_text(TOKEN_MAP[object.class])
 
               t2.nested do |t3|
-                t3.add_inspection_of EXTRACT_VALUE[object.class].(object)
+                t3.add_inspection_of EXTRACT_VALUE.(object)
+              end
+            end
+          end
+        end
+
+        class DictConstructor < RegularConstructor
+          def self.applies_to?(object) = super && IS_HASH.call(object)
+
+          def call
+            build_tree do |t2|
+              t2.add_text("#{TOKEN_MAP[object.class]}(")
+
+              t2.nested do |t3|
+                t3.add_inspection_of ::Dry::Monads::SuperDiff::Dict.new(
+                  EXTRACT_VALUE.(object)
+                )
+              end
+
+              t2.add_text(")")
+            end
+          end
+        end
+
+        class Dict < ::SuperDiff::Basic::InspectionTreeBuilders::Hash
+          def self.applies_to?(object) = object.is_a?(::Dry::Monads::SuperDiff::Dict)
+
+          def call
+            ::SuperDiff::Core::InspectionTree.new do |t1|
+              t1.only_when empty do |t2|
+                t2.as_lines_when_rendering_to_lines do |t3|
+                  t3.add_text "{}"
+                end
+              end
+
+              t1.only_when nonempty do |t2|
+                t2.nested do |t3|
+                  t3.insert_hash_inspection_of(object)
+                end
               end
             end
           end
@@ -247,14 +344,18 @@ end
 
 SuperDiff.configuration.tap do |config|
   config.prepend_extra_differ_classes(
-    Dry::Monads::SuperDiff::Differs::ArrayConstructors,
-    Dry::Monads::SuperDiff::Differs::RegularConstructors
+    Dry::Monads::SuperDiff::Differs::CompareTuples,
+    Dry::Monads::SuperDiff::Differs::CompareDicts,
+    Dry::Monads::SuperDiff::Differs::CompareDefault
   )
   config.prepend_extra_inspection_tree_builder_classes(
-    Dry::Monads::SuperDiff::ITBuilders::ArrayConstructors,
-    Dry::Monads::SuperDiff::ITBuilders::RegularConstructors
+    Dry::Monads::SuperDiff::ITBuilders::TupleConstructor,
+    Dry::Monads::SuperDiff::ITBuilders::DictConstructor,
+    Dry::Monads::SuperDiff::ITBuilders::RegularConstructor,
+    Dry::Monads::SuperDiff::ITBuilders::Dict
   )
   config.prepend_extra_operation_tree_builder_classes(
-    Dry::Monads::SuperDiff::OTBuilders::Array
+    Dry::Monads::SuperDiff::OTBuilders::Tuple,
+    Dry::Monads::SuperDiff::OTBuilders::Dict
   )
 end

@@ -101,18 +101,60 @@ RSpec.describe "SuperDiff extension" do
           RUBY
 
           expect(output).to eql(<<~DIFF)
-            expected: Success({ a: 2, c: 2 })
-                 got: Success({ a: 1, b: 2 })
+            expected: Success(a: 2, c: 2)
+                 got: Success(a: 1, b: 2)
 
             (compared using eql?)
 
               Success(
-                {
-            -     a: 2,
+            -   a: 2,
+            +   a: 1,
+            -   c: 2
+            +   b: 2
+              )
+          DIFF
+        end
+
+        example "hash with array" do
+          output = run_spec(<<~RUBY)
+            expect(Success(a: 1, b: 2)).to eql(Success[a: 1, b: 2])
+          RUBY
+
+          # TODO: this is not the best diff
+          expect(output).to eql(<<~DIFF)
+            expected: Success[{ a: 1, b: 2 }]
+                 got: Success(a: 1, b: 2)
+
+            (compared using eql?)
+
+              Success(
+            -   [
+            -     {
+            -a: 1,
+            -b: 2
+            -     }
+            -   ]
+            +   {
             +     a: 1,
-            -     c: 2
             +     b: 2
-                }
+            +   }
+              )
+          DIFF
+        end
+
+        example "comparing with empty hash" do
+          output = run_spec(<<~RUBY)
+            expect(Success(a: 1)).to eql(Success({}))
+          RUBY
+
+          expect(output).to eql(<<~DIFF)
+            expected: Success({})
+                 got: Success(a: 1)
+
+            (compared using eql?)
+
+              Success(
+            +   a: 1
               )
           DIFF
         end
@@ -250,6 +292,23 @@ RSpec.describe "SuperDiff extension" do
                 :error,
             -   :b
             +   :a
+              ]
+          DIFF
+        end
+
+        example "with empty array" do
+          output = run_spec(<<~RUBY)
+            expect(Failure[]).to eql(Failure[:error])
+          RUBY
+
+          expect(output).to eql(<<~DIFF)
+            expected: Failure[:error]
+                 got: Failure[]
+
+            (compared using eql?)
+
+              Failure[
+            -   :error
               ]
           DIFF
         end
