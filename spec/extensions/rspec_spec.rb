@@ -9,11 +9,15 @@ RSpec.describe "RSpec extension" do
 
   it "adds constructors and matchers" do
     expect(Success(1)).to be_success
+    expect(Success(1)).to be_a_success
     expect(Success(1)).to be_success(1)
     expect(Success(1)).not_to be_success(2)
+    expect(Success(1)).not_to be_a_success(2)
     expect(Failure(1)).to be_failure
+    expect(Failure(1)).to be_a_failure
     expect(Failure(1)).to be_failure(1)
     expect(Failure(1)).not_to be_failure(2)
+    expect(Failure(1)).not_to be_a_failure(2)
     expect(Some(1)).to be_some
     expect(Some(1)).to be_success
     expect(Some(1)).to be_some(1)

@@ -91,6 +91,8 @@ module Dry
               end
             end
           end
+
+          alias_matcher :"be_a_#{name}", :"be_#{name}"
         end
 
         matcher :be_none do
