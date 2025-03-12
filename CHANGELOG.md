@@ -5,7 +5,7 @@
 
 ### Fixed
 
-- Exclude extensions from loader (fix #185) (@flash-gordon)
+- Exclude extensions from the Zeitwerk loader (fix #185) (@flash-gordon)
 
 
 [Compare v1.8.0...v1.8.1](https://github.com/dry-rb/dry-monads/compare/v1.8.0...v1.8.1)
