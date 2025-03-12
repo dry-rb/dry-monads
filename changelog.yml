@@ -1,7 +1,7 @@
 - version: 1.8.1
   date: 2025-03-12
   fixed:
-    - "Exclude extensions from loader (fix #185) (@flash-gordon)"
+    - "Exclude extensions from the Zeitwerk loader (fix #185) (@flash-gordon)"
 
 - version: 1.8.0
   date: 2025-03-12
