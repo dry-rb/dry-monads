@@ -49,6 +49,7 @@
   expect(Success(1)).to be_success
   expect(Success(1)).to be_success(1)
   expect(Success(1)).to be_success { |x| x > 0 }
+  expect(Success(1)).to be_a_success { |x| x > 0 }
 
   expect(Failure(1)).to be_failure(1)
 
