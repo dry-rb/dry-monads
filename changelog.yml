@@ -1,7 +1,12 @@
+- version: 1.8.2
+  date: 2025-03-15
+  fixed:
+    - "Fix be_* matchers for non-monadic values (@flash-gordon, issue #186)"
+
 - version: 1.8.1
   date: 2025-03-12
   fixed:
-    - "Exclude extensions from the Zeitwerk loader (fix #185) (@flash-gordon)"
+    - "Exclude extensions from the Zeitwerk loader (@flash-gordon, issue #185)"
 
 - version: 1.8.0
   date: 2025-03-12
