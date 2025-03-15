@@ -31,6 +31,20 @@ RSpec.describe "RSpec extension" do
     expect(List[1, 2, 3]).not_to be_empty
   end
 
+  context "clashing with rspec-expectations" do
+    let(:operation) do
+      Class.new {
+        def success? = true
+        def failure? = false
+      }.new
+    end
+
+    it "works" do
+      expect(operation).to be_success
+      expect(operation).not_to be_failure
+    end
+  end
+
   it "catches missing constants" do
     expect(Success(1)).to be_a(Success)
     expect(Failure(1)).to be_a(Failure)
@@ -103,6 +117,36 @@ RSpec.describe "RSpec extension" do
   end
 
   describe Dry::Monads::RSpec::Matchers, aggregate_failures: false do
+    let(:operation) do
+      module Test
+        class Operation
+          def success? = false
+          def failure? = false
+        end
+      end
+
+      Test::Operation.new
+    end
+
+    let(:operation_with_success) do
+      module Test
+        class OperationWithSuccess
+          def success? = true
+        end
+      end
+
+      Test::OperationWithSuccess.new
+    end
+
+    let(:unexpected_object) do
+      module Test
+        class Unexpected
+        end
+      end
+
+      Test::Unexpected.new
+    end
+
     context "error messages" do
       example "success" do
         expect {
@@ -113,7 +157,7 @@ RSpec.describe "RSpec extension" do
           expect(1).to be_success
         }.to raise_error(
           "expected 1 to be one of the following values: Success, " \
-          "Some, Value, but it's Integer"
+          "Some, Value or respond to success?, but it's Integer"
         )
 
         expect {
@@ -126,6 +170,27 @@ RSpec.describe "RSpec extension" do
           "expected Success(1) to not be one of the following values: Success, " \
           "Some, Value, but it is"
         )
+
+        expect {
+          expect(operation).to be_success
+        }.to raise_error(
+          "expected #{operation.inspect}.success? to return truthy value, " \
+          "but it returned false or nil"
+        )
+
+        expect {
+          expect(operation_with_success).not_to be_success
+        }.to raise_error(
+          "expected #{operation_with_success.inspect}.success? to return falsey value, " \
+          "but it returned truthy value"
+        )
+
+        expect {
+          expect(unexpected_object).to be_success
+        }.to raise_error(
+          "expected #{unexpected_object.inspect} to be one of the following values: " \
+          "Success, Some, Value or respond to success?, but it's Test::Unexpected"
+        )
       end
 
       example "failure" do
@@ -137,7 +202,7 @@ RSpec.describe "RSpec extension" do
           expect(1).to be_failure
         }.to raise_error(
           "expected 1 to be one of the following values: Failure, " \
-          "None, Error, but it's Integer"
+          "None, Error or respond to failure?, but it's Integer"
         )
 
         expect {
@@ -159,7 +224,7 @@ RSpec.describe "RSpec extension" do
 
         expect {
           expect(1).to be_some
-        }.to raise_error("expected 1 to be a Some value, but it's Integer")
+        }.to raise_error("expected 1 to be a Some value or respond to some?, but it's Integer")
 
         expect {
           expect(Some(1)).to be_some { |value| value.even? }

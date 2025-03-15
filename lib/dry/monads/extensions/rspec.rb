@@ -16,7 +16,7 @@ module Dry
       module Matchers
         extend ::RSpec::Matchers::DSL
 
-        {
+        PREDICATES = {
           failure: {
             expected_classes: [
               ::Dry::Monads::Result::Failure,
@@ -34,18 +34,24 @@ module Dry
             extract_value: :value!.to_proc
           },
           some: {
-            expected_classes: [
-              ::Dry::Monads::Maybe::Some
-            ],
+            expected_classes: [::Dry::Monads::Maybe::Some],
             extract_value: :value!.to_proc
           }
-        }.each do |name, args|
+        }.freeze
+
+        CONSTRUCTOR_CLASSES = PREDICATES.values.flat_map { |definition|
+          definition[:expected_classes]
+        }.freeze
+
+        PREDICATES.each do |name, args|
           args => { expected_classes:, extract_value: }
           expected_constructors = expected_classes.map(&:name).map do |c|
             c.split("::").last
           end
 
           matcher :"be_#{name}" do |expected = Undefined|
+            predicate = "#{name}?"
+
             match do |actual|
               if expected_classes.any? { |klass| actual.is_a?(klass) }
                 exact_match = actual.is_a?(expected_classes[0])
@@ -59,6 +65,8 @@ module Dry
                 else
                   false
                 end
+              elsif actual.respond_to?(predicate)
+                actual.__send__(predicate)
               else
                 false
               end
@@ -66,12 +74,16 @@ module Dry
 
             failure_message do |actual|
               if expected_classes.none? { |klass| actual.is_a?(klass) }
-                if expected_classes.size > 1
+                if actual.respond_to?(predicate)
+                  "expected #{actual.inspect}.#{predicate} to return truthy value, " \
+                    "but it returned false or nil"
+                elsif expected_classes.size > 1
                   "expected #{actual.inspect} to be one of the following values: " \
-                    "#{expected_constructors.join(", ")}, but it's #{actual.class}"
-                else
-                  "expected #{actual.inspect} to be a #{expected_constructors[0]} value, " \
+                    "#{expected_constructors.join(", ")} or respond to #{predicate}, " \
                     "but it's #{actual.class}"
+                else
+                  "expected #{actual.inspect} to be a #{expected_constructors[0]} value " \
+                    "or respond to #{predicate}, but it's #{actual.class}"
                 end
               elsif actual.is_a?(expected_classes[0]) && block_arg
                 "expected #{actual.inspect} to have a value satisfying the given block"
@@ -82,7 +94,15 @@ module Dry
             end
 
             failure_message_when_negated do |actual|
-              if expected_classes.size > 1
+              if expected_classes.none? { |klass| actual.is_a?(klass) }
+                if actual.respond_to?(predicate)
+                  "expected #{actual.inspect}.#{predicate} to return falsey value, " \
+                    "but it returned truthy value"
+                else
+                  "expected #{actual.inspect} to respond to #{predicate}, " \
+                    "but it doesn't"
+                end
+              elsif expected_classes.size > 1
                 "expected #{actual.inspect} to not be one of the following values: " \
                   "#{expected_constructors.join(", ")}, but it is"
               else
@@ -96,9 +116,7 @@ module Dry
         end
 
         matcher :be_none do
-          match do |actual|
-            actual.is_a?(::Dry::Monads::Maybe::None)
-          end
+          match { |actual| actual.is_a?(::Dry::Monads::Maybe::None) }
 
           failure_message do |actual|
             "expected #{actual.inspect} to be none"
