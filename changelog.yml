@@ -1,3 +1,8 @@
+- version: 1.8.4
+  date: unreleased
+  fixed:
+    - "Fix nested modules not being extended in RSpec (@flash-gordon)"
+
 - version: 1.8.3
   date: 2025-04-04
   fixed:
