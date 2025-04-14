@@ -195,8 +195,8 @@ catch_missing_const = Module.new do
 
   define_method(:include) do |*modules|
     super(*modules).tap do
-      modules.each do |m|
-        m.extend(catch_missing_const) unless m.frozen?
+      modules.flat_map(&:ancestors).uniq.each do |c|
+        c.extend(catch_missing_const) unless c.frozen?
       end
     end
   end

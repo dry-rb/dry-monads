@@ -113,6 +113,12 @@ RSpec.describe "RSpec extension" do
         expect(make_success(1)).to be_success
         expect(make_success(1)).to be_success([1])
       end
+
+      context "nested" do
+        it "makes success" do
+          expect(make_nested_success(1)).to be_success
+        end
+      end
     end
   end
 
