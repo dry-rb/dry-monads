@@ -169,6 +169,17 @@ module Dry
           end
         end
         alias_method :inspect, :to_s
+
+        def pretty_print(pp)
+          pp.text "Some("
+          unless Unit.equal?(@value)
+            pp.group(1) do
+              pp.breakable("")
+              pp.pp(@value)
+            end
+          end
+          pp.text ")"
+        end
       end
 
       # Represents an absence of a value, i.e. the value nil.
@@ -237,6 +248,10 @@ module Dry
         # @return [String]
         def to_s = "None"
         alias_method :inspect, :to_s
+
+        def pretty_print(pp)
+          pp.text "None"
+        end
 
         # @api private
         def eql?(other) = other.is_a?(None)

@@ -52,6 +52,16 @@ RSpec.describe(Dry::Monads::Maybe) do
       expect(subject.inspect).to eql('Some("foo")')
     end
 
+    it "pretty prints" do
+      out = +""
+      PP.pp(subject, out)
+      expect(out).to eql(%{Some("foo")\n})
+
+      out = +""
+      PP.pp(some[unit], out)
+      expect(out).to eql("Some()\n")
+    end
+
     describe ".to_proc" do
       it "returns a constructor block" do
         expect(maybe::Some.to_proc.("foo")).to eql(subject)
@@ -303,6 +313,12 @@ RSpec.describe(Dry::Monads::Maybe) do
 
     it "has custom inspection" do
       expect(subject.inspect).to eql("None")
+    end
+
+    it "pretty prints" do
+      out = +""
+      PP.pp(subject, out)
+      expect(out).to eql(%(None\n))
     end
 
     describe ".missing_method" do
