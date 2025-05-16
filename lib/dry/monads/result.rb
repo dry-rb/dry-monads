@@ -116,6 +116,17 @@ module Dry
         end
         alias_method :inspect, :to_s
 
+        def pretty_print(pp)
+          pp.text "Success("
+          unless Unit.equal?(@value)
+            pp.group(1) do
+              pp.breakable("")
+              pp.pp(@value)
+            end
+          end
+          pp.text ")"
+        end
+
         # Transforms to a Failure instance
         #
         # @return [Result::Failure]
@@ -226,6 +237,17 @@ module Dry
           end
         end
         alias_method :inspect, :to_s
+
+        def pretty_print(pp)
+          pp.text "Failure("
+          unless Unit.equal?(@value)
+            pp.group(1) do
+              pp.breakable("")
+              pp.pp(@value)
+            end
+          end
+          pp.text ")"
+        end
 
         # Transform to a Success instance
         #
