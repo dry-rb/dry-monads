@@ -80,3 +80,5 @@ module Dry
     loader.setup
   end
 end
+
+Dry::Monads.load_extensions(:pretty_print)
