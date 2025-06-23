@@ -9,3 +9,7 @@ end
 Dry::Monads.register_extension(:super_diff) do
   require "dry/monads/extensions/super_diff"
 end
+
+Dry::Monads.register_extension(:pretty_print) do
+  require "dry/monads/extensions/pretty_print"
+end
