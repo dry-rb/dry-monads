@@ -1,5 +1,5 @@
 - version: 1.9.0
-  date: unreleased
+  date: 2025-06-24
   added:
     - "Add `pretty_print` extension for improved output (@paul + @flash-gordon in #189 and #190)"
   fixed:
