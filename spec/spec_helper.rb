@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
 require_relative "support/coverage"
-require_relative "support/warnings"
-require_relative "support/rspec_options"
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 
 require "pathname"
 
-SPEC_ROOT = Pathname(__FILE__).dirname
+SPEC_ROOT = Pathname(__dir__)
 
 begin
   require "debug"
@@ -21,7 +19,13 @@ $VERBOSE = true
 
 require "dry/monads/all"
 
-Dir["./spec/shared/**/*.rb"].each { |f| require f }
+Dir.glob(SPEC_ROOT / "support" / "**" / "*.rb").each do |file|
+  require_relative file
+end
+
+Dir.glob(SPEC_ROOT / "shared" / "**" / "*.rb").each do |file|
+  require_relative file
+end
 
 Warning.ignore(/rspec-expectations/)
 Warning.ignore(/super_diff/)

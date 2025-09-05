@@ -1,0 +1,16 @@
+name:
+  gem: dry-monads
+  constant: Dry::Monads
+github_org: dry-rb
+gemspec:
+  authors: ["Hanakai team"]
+  email: ["info@hanakai.org"]
+  summary: "Common monads for Ruby"
+  development_dependencies:
+    - bundler
+    - rake
+    - rspec
+  runtime_dependencies:
+    - [concurrent-ruby, "~> 1.0"]
+    - [zeitwerk, "~> 2.6"]
+    - [dry-core, "~> 1.1"]
