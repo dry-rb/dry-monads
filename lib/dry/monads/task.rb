@@ -161,8 +161,8 @@ module Dry
           inner.execute
           inner.on_success { child.on_fulfill(_1) }
           inner.on_error { child.on_reject(_1) }
-        rescue StandardError => e
-          child.on_reject(e)
+        rescue StandardError => exception
+          child.on_reject(exception)
         end
         promise.on_success { child.on_fulfill(_1) }
 

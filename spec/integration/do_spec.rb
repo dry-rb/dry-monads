@@ -108,9 +108,9 @@ RSpec.describe(Dry::Monads::Do) do
 
           def transaction
             yield
-          rescue StandardError => e
+          rescue StandardError => exception
             @rolled_back = true
-            raise e
+            raise exception
           end
         end
       end

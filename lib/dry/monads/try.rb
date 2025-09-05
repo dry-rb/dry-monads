@@ -27,8 +27,8 @@ module Dry
         # @return [Try::Value, Try::Error]
         def run(exceptions, f)
           Value.new(exceptions, f.call)
-        rescue *exceptions => e
-          Error.new(e)
+        rescue *exceptions => exception
+          Error.new(exception)
         end
         deprecate :lift, :run
 
@@ -125,8 +125,8 @@ module Dry
         # @return [Object, Try::Error]
         def bind(...)
           super
-        rescue *catchable => e
-          Error.new(e)
+        rescue *catchable => exception
+          Error.new(exception)
         end
 
         # Does the same thing as #bind except it also wraps the value
@@ -143,8 +143,8 @@ module Dry
         # @return [Try::Value, Try::Error]
         def fmap(...)
           Value.new(catchable, bind_call(...))
-        rescue *catchable => e
-          Error.new(e)
+        rescue *catchable => exception
+          Error.new(exception)
         end
 
         # @return [String]

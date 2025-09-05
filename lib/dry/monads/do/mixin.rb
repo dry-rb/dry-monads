@@ -38,8 +38,8 @@ module Dry
         # @api public
         def call
           yield
-        rescue Halt => e
-          e.result
+        rescue Halt => exception
+          exception.result
         end
 
         # @api public

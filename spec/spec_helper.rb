@@ -56,10 +56,12 @@ module TestHelpers
   end
 end
 
-module Dry::Monads
-  def self.unload_monad(name)
-    if registry.key?(name.to_sym)
-      self.registry = registry.except(name.to_sym)
+module Dry
+  module Monads
+    def self.unload_monad(name)
+      if registry.key?(name.to_sym)
+        self.registry = registry.except(name.to_sym)
+      end
     end
   end
 end
