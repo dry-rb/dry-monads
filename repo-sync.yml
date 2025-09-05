@@ -6,6 +6,7 @@ gemspec:
   authors: ["Hanakai team"]
   email: ["info@hanakai.org"]
   summary: "Common monads for Ruby"
+  required_ruby_version: ">= 3.1.0"
   development_dependencies:
     - bundler
     - rake
