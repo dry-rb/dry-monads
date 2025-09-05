@@ -9,9 +9,10 @@ gemspec:
   required_ruby_version: ">= 3.1.0"
   development_dependencies:
     - bundler
+    - debug_inspector
     - rake
     - rspec
   runtime_dependencies:
     - [concurrent-ruby, "~> 1.0"]
-    - [zeitwerk, "~> 2.6"]
     - [dry-core, "~> 1.1"]
+    - [zeitwerk, "~> 2.6"]

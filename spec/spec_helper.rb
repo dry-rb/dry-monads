@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "support/coverage"
+require_relative "support/warnings"
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 
@@ -19,17 +20,15 @@ $VERBOSE = true
 
 require "dry/monads/all"
 
-Dir.glob(SPEC_ROOT / "support" / "**" / "*.rb").each do |file|
-  require_relative file
-end
-
-Dir.glob(SPEC_ROOT / "shared" / "**" / "*.rb").each do |file|
-  require_relative file
-end
+Dir["./spec/shared/**/*.rb"].each { |f| require f }
 
 Warning.ignore(/rspec-expectations/)
 Warning.ignore(/super_diff/)
 Warning.process { raise _1 }
+
+if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4")
+  Warning[:strict_unused_block] = true
+end
 
 module Kernel
   def suppress_warnings
