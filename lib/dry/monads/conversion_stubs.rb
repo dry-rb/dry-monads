@@ -3,6 +3,7 @@
 module Dry
   module Monads
     module ConversionStubs
+      # @rbs (*Symbol method_names) -> void
       def self.[](*method_names)
         ::Module.new do
           method_names.each do |name|
@@ -16,14 +17,17 @@ module Dry
       module Methods
         module_function
 
+        # @rbs () -> Maybe
         def to_maybe
           raise "Load Maybe first with require 'dry/monads/maybe'"
         end
 
+        # @rbs () -> Result
         def to_result
           raise "Load Result first with require 'dry/monads/result'"
         end
 
+        # @rbs () -> Validated
         def to_validated
           raise "Load Validated first with require 'dry/monads/validated'"
         end

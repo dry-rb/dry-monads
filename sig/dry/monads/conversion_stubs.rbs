@@ -1,0 +1,18 @@
+
+
+module Dry
+  module Monads
+    module ConversionStubs
+      def self.[]: (*Symbol method_names) -> void
+
+      module Methods
+        def self?.to_maybe: () -> Maybe
+
+        def self?.to_result: () -> Result
+
+        def self?.to_validated: () -> Validated
+      end
+    end
+  end
+end
+

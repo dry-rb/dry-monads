@@ -1,0 +1,102 @@
+
+
+module Dry
+  module Monads
+    # An implementation of do-notation.
+    #
+    # @see Do.for
+    module Do
+      extend Mixin
+
+      VISIBILITY_WORD: untyped
+
+      # @api private
+      class Halt < StandardError
+        # @api private
+        attr_reader result: untyped
+
+        def initialize: (untyped result) -> untyped
+      end
+
+      # @api private
+      class MethodTracker < ::Module
+        # @api private
+        def initialize: (untyped tracked_methods, untyped base, untyped wrapper) -> untyped
+      end
+
+      # Generates a module that passes a block to methods
+      # that either unwraps a single-valued monadic value or halts
+      # the execution.
+      #
+      # @example A complete example
+      #
+      #   class CreateUser
+      #     include Dry::Monads::Result::Mixin
+      #     include Dry::Monads::Try::Mixin
+      #     include Dry::Monads::Do.for(:call)
+      #
+      #     attr_reader :user_repo
+      #
+      #     def initialize(:user_repo)
+      #       @user_repo = user_repo
+      #     end
+      #
+      #     def call(params)
+      #       json = yield parse_json(params)
+      #       hash = yield validate(json)
+      #
+      #       user_repo.transaction do
+      #         user = yield create_user(hash[:user])
+      #         yield create_profile(user, hash[:profile])
+      #       end
+      #
+      #       Success(user)
+      #     end
+      #
+      #     private
+      #
+      #     def parse_json(params)
+      #       Try(JSON::ParserError) {
+      #         JSON.parse(params)
+      #       }.to_result
+      #     end
+      #
+      #     def validate(json)
+      #       UserSchema.(json).to_monad
+      #     end
+      #
+      #     def create_user(user_data)
+      #       Try(Sequel::Error) {
+      #         user_repo.create(user_data)
+      #       }.to_result
+      #     end
+      #
+      #     def create_profile(user, profile_data)
+      #       Try(Sequel::Error) {
+      #         user_repo.create_profile(user, profile_data)
+      #       }.to_result
+      #     end
+      #   end
+      #
+      # @param [Array<Symbol>] methods
+      # @return [Module]
+      def self.for: (*Symbol methods) -> Module
+
+      # @api private
+      def self.included: (Class | Module base) -> void
+
+      # @api private
+      def self.wrap_method: (untyped target, untyped method, untyped visibility) -> untyped
+
+      # @api private
+      def self.method_visibility: (untyped mod, untyped method) -> untyped
+
+      # @api private
+      def self.coerce_to_monad: (untyped monads) -> untyped
+
+      # @api private
+      def self.halt: (untyped result) -> untyped
+    end
+  end
+end
+

@@ -9,6 +9,7 @@ module Dry
         #
         # @param values [Array<Object>] List elements
         # @return [List]
+        # @rbs (*Object values) -> List
         def [](*values) = new(values)
 
         # Coerces a value to a list. `nil` will be coerced to an empty list.
@@ -16,6 +17,7 @@ module Dry
         # @param value [Object] Value
         # @param type [Monad] Embedded monad type (used in case of list of monadic values)
         # @return [List]
+        # @rbs (Object value, Monad type) -> List
         def coerce(value, type = nil)
           if value.nil?
             List.new([], type)
@@ -36,6 +38,7 @@ module Dry
         #
         # @param value [Object] any object
         # @return [List]
+        # @rbs (?Object value, ?__todo__ type) ?{(?) -> __todo__ } -> List
         def pure(value = Undefined, type = nil, &block)
           if value.equal?(Undefined)
             new([block])
@@ -53,6 +56,7 @@ module Dry
         # @param state [Object.new] Initial state
         # @param type [#pure] Type of list element
         # @return [List]
+        # @rbs (Object state, ?__todo__ type) -> List
         def unfold(state, type = nil)
           xs = []
 
@@ -96,6 +100,7 @@ module Dry
       #
       # @param args [Array<Object>] arguments will be passed to the block or proc
       # @return [List]
+      # @rbs(*Object args) ? { (?) -> __todo__ } -> List
       def bind(*args)
         if block_given?
           List.coerce(value.map { yield(_1, *args) }.reduce([], &:+))
@@ -114,6 +119,7 @@ module Dry
       #
       # @param args [Array<Object>] arguments will be passed to the block or proc
       # @return [List]
+      # @rbs(*Object args) ? { (?) -> __todo__ } -> List
       def fmap(*args)
         if block_given?
           List.new(value.map { yield(_1, *args) })
@@ -127,6 +133,7 @@ module Dry
       # If called without a block, this method returns an enumerator, not a List
       #
       # @return [List,Enumerator]
+      # @rbs () ?{(?) -> __todo__ } -> (List | Enumerator[Object])
       def map(&block)
         if block_given?
           fmap(block)
@@ -142,6 +149,7 @@ module Dry
       #
       # @param other [List] Other list
       # @return [List]
+      # @rbs (List other) -> List
       def +(other) = List.new(to_ary + other.to_ary)
 
       # Returns a string representation of the list.
@@ -150,6 +158,7 @@ module Dry
       #   Dry::Monads::List[1, 2, 3].inspect # => "List[1, 2, 3]"
       #
       # @return [String]
+      # @rbs () -> String
       def inspect
         type_ann = typed? ? "<#{type.name.split("::").last}>" : ""
         "List#{type_ann}#{value.inspect}"
@@ -163,17 +172,20 @@ module Dry
       # Returns the first element.
       #
       # @return [Object]
+      # @rbs () -> Object
       def first = value.first
 
       # Returns the last element.
       #
       # @return [Object]
+      # @rbs () -> Object
       def last = value.last
 
       # Folds the list from the left.
       #
       # @param initial [Object] Initial value
       # @return [Object]
+      # @rbs (Object) {(?) -> __todo__ } -> Object
       def fold_left(initial, &) = value.reduce(initial, &)
       alias_method :foldl, :fold_left
       alias_method :reduce, :fold_left

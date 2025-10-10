@@ -1,0 +1,23 @@
+
+
+module Dry
+  module Monads
+    # An unsuccessful result of extracting a value from a monad.
+    class UnwrapError < ::StandardError
+      attr_reader receiver: untyped
+
+      def initialize: (untyped receiver) -> untyped
+    end
+
+    # An error thrown on returning a Failure of unknown type.
+    class InvalidFailureTypeError < ::StandardError
+      def initialize: (untyped failure) -> untyped
+    end
+
+    # Improper use of None
+    class ConstructorNotAppliedError < ::NoMethodError
+      def initialize: (untyped method_name, untyped constructor_name) -> untyped
+    end
+  end
+end
+

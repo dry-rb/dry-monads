@@ -18,6 +18,11 @@ group :docs do
   gem "yard-junk"
 end
 
+group :sig do
+  gem "rbs"
+  gem "rbs-inline"
+end
+
 group :test do
   gem "debug_inspector"
   gem "dry-types"

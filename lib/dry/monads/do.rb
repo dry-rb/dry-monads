@@ -102,6 +102,7 @@ module Dry
         #
         # @param [Array<Symbol>] methods
         # @return [Module]
+        # @rbs (*Symbol methods) -> Module
         def for(*methods)
           ::Module.new do
             singleton_class.define_method(:included) do |base|
@@ -113,6 +114,7 @@ module Dry
         end
 
         # @api private
+        # @rbs (Class | Module base) -> void
         def included(base)
           super
 

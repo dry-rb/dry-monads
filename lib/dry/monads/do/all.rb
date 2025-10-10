@@ -57,8 +57,9 @@ module Dry
       module All
         # @private
         class MethodTracker < ::Module
-          attr_reader :wrappers
+          attr_reader :wrappers #: Hash[Class | Module, Module]
 
+          # @rbs (Hash[Class | Module, Module] wrappers) -> void
           def initialize(wrappers)
             super()
 
@@ -86,11 +87,13 @@ module Dry
             end
           end
 
+          # @rbs (Class | Module target) -> void
           def extend_object(target)
             super
             target.prepend(wrappers[target])
           end
 
+          # @rbs (Class | Module target, Symbol method) -> void
           def wrap_method(target, method)
             visibility = Do.method_visibility(target, method)
             Do.wrap_method(wrappers[target], method, visibility)
@@ -99,6 +102,7 @@ module Dry
 
         class << self
           # @api private
+          # @rbs (Class | Module base) -> void
           def included(base)
             super
 
@@ -110,6 +114,7 @@ module Dry
           end
 
           # @api private
+          # @rbs (Class klass, __todo__ target) -> void
           def wrap_defined_methods(klass, target)
             klass.public_instance_methods(false).each do |m|
               Do.wrap_method(target, m, :public)
@@ -128,6 +133,7 @@ module Dry
         # @api private
         module InstanceMixin
           # @api private
+          # @rbs (Class | Module object) -> void
           def extended(object)
             super
 

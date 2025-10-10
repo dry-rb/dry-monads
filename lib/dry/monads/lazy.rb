@@ -27,6 +27,7 @@ module Dry
       # Forces the compution and returns its value.
       #
       # @return [Object]
+      # @rbs () -> Object
       def value! = @promise.execute.value!
       alias_method :force!, :value!
 
@@ -34,18 +35,21 @@ module Dry
       # thrown an error it won't be re-raised as opposed to value!/force!.
       #
       # @return [Lazy]
+      # @rbs () -> Lazy
       def force
         @promise.execute
         self
       end
 
       # @return [Boolean]
+      # @rbs () -> bool
       def evaluated? = @promise.complete?
       deprecate :complete?, :evaluated?
 
       undef_method :wait
 
       # @return [String]
+      # @rbs () -> String
       def to_s
         state =
           case promise.state
@@ -76,6 +80,7 @@ module Dry
           #
           # @param block [Proc]
           # @return [Lazy]
+          # @rbs () {(?) -> __todo__ } -> Lazy
           def Lazy(&) = Lazy.new(&)
         end
 
