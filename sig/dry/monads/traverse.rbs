@@ -1,0 +1,11 @@
+
+
+module Dry
+  module Monads
+    # List of default traverse functions for types.
+    # It is implicitly used by List#traverse for
+    # making common cases easier to handle.
+    Traverse: ::Hash[untyped, untyped]
+  end
+end
+

@@ -1,0 +1,274 @@
+
+
+module Dry
+  module Monads
+    # The List monad.
+    class List
+      # Builds a list.
+      #
+      # @param values [Array<Object>] List elements
+      # @return [List]
+      def self.[]: (*untyped values) -> untyped
+
+      # Coerces a value to a list. `nil` will be coerced to an empty list.
+      #
+      # @param value [Object] Value
+      # @param type [Monad] Embedded monad type (used in case of list of monadic values)
+      # @return [List]
+      def self.coerce: (untyped value, ?untyped type) -> untyped
+
+      # Wraps a value with a list.
+      #
+      # @param value [Object] any object
+      # @return [List]
+      def self.pure: (?untyped value, ?untyped type) ?{ (?) -> untyped } -> untyped
+
+      # Iteratively builds a new list from a block returning Maybe values
+      #
+      # @see https://hackage.haskell.org/package/base-4.12.0.0/docs/Data-List.html#g:9
+      #
+      # @param state [Object.new] Initial state
+      # @param type [#pure] Type of list element
+      # @return [List]
+      def self.unfold: (untyped state, ?untyped type) -> untyped
+
+      include Transformer
+
+      # Internal array value
+      attr_reader value: untyped
+
+      # Internal array value
+      attr_reader type: untyped
+
+      # @api private
+      def initialize: (untyped value, ?untyped type) -> untyped
+
+      # Lifts a block/proc and runs it against each member of the list.
+      # The block must return a value coercible to a list.
+      # As in other monads if no block given the first argument will
+      # be treated as callable and used instead.
+      #
+      # @example
+      #   Dry::Monads::List[1, 2].bind { |x| [x + 1] } # => List[2, 3]
+      #   Dry::Monads::List[1, 2].bind(-> x { [x, x + 1] }) # => List[1, 2, 2, 3]
+      #
+      # @param args [Array<Object>] arguments will be passed to the block or proc
+      # @return [List]
+      def bind: (*untyped args) -> untyped
+
+      # Maps a block over the list. Acts as `Array#map`.
+      # As in other monads if no block given the first argument will
+      # be treated as callable and used instead.
+      #
+      # @example
+      #   Dry::Monads::List[1, 2].fmap { |x| x + 1 } # => List[2, 3]
+      #
+      # @param args [Array<Object>] arguments will be passed to the block or proc
+      # @return [List]
+      def fmap: (*untyped args) -> untyped
+
+      # Maps a block over the list. Acts as `Array#map`.
+      # If called without a block, this method returns an enumerator, not a List
+      #
+      # @return [List,Enumerator]
+      def map: () ?{ (?) -> untyped } -> untyped
+
+      # Concatenates two lists.
+      #
+      # @example
+      #   Dry::Monads::List[1, 2] + Dry::Monads::List[3, 4] # => List[1, 2, 3, 4]
+      #
+      # @param other [List] Other list
+      # @return [List]
+      def +: (untyped other) -> untyped
+
+      # Returns a string representation of the list.
+      #
+      # @example
+      #   Dry::Monads::List[1, 2, 3].inspect # => "List[1, 2, 3]"
+      #
+      # @return [String]
+      def inspect: () -> untyped
+
+      # Returns the first element.
+      #
+      # @return [Object]
+      def first: () -> untyped
+
+      # Returns the last element.
+      #
+      # @return [Object]
+      def last: () -> untyped
+
+      # Folds the list from the left.
+      #
+      # @param initial [Object] Initial value
+      # @return [Object]
+      def fold_left: (untyped initial) ?{ (?) -> untyped } -> untyped
+
+      # Folds the list from the right.
+      #
+      # @param initial [Object] Initial value
+      # @return [Object]
+      def fold_right: (untyped initial) -> untyped
+
+      # Whether the list is empty.
+      #
+      # @return [TrueClass, FalseClass]
+      def empty?: () -> untyped
+
+      # Sorts the list.
+      #
+      # @return [List]
+      def sort: () -> untyped
+
+      # Filters elements with a block
+      #
+      # @return [List]
+      def filter: () ?{ (?) -> untyped } -> untyped
+
+      # List size.
+      #
+      # @return [Integer]
+      def size: () -> untyped
+
+      # Reverses the list.
+      #
+      # @return [List]
+      def reverse: () -> untyped
+
+      # Returns the first element wrapped with a `Maybe`.
+      #
+      # @return [Maybe<Object>]
+      def head: () -> untyped
+
+      # Returns list's tail.
+      #
+      # @return [List]
+      def tail: () -> untyped
+
+      # Turns the list into a typed one.
+      # Type is required for some operations like .traverse.
+      #
+      # @param type [Monad] Monad instance
+      # @return [List] Typed list
+      def typed: (?untyped type) -> untyped
+
+      # Whether the list is types
+      #
+      # @return [Boolean]
+      def typed?: () -> untyped
+
+      # Traverses the list with a block (or without it).
+      # This methods "flips" List structure with the given monad (obtained from the type).
+      # Note that traversing requires the list to be typed.
+      # Also if a block given, its returning type must be equal list's type.
+      #
+      # @example
+      #   List<Result>[Success(1), Success(2)].traverse # => Success([1, 2])
+      #   List<Maybe>[Some(1), None, Some(3)].traverse # => None
+      #
+      # @return [Monad] Result is a monadic value
+      def traverse: (?untyped proc) ?{ (?) -> untyped } -> untyped
+
+      # Applies the stored functions to the elements of the given list.
+      #
+      # @param list [List]
+      # @return [List]
+      def apply: (?untyped list) ?{ (?) -> untyped } -> untyped
+
+      # Returns the List monad.
+      #
+      # @return [Monad]
+      def monad: () -> untyped
+
+      # Returns self.
+      #
+      # @return [List]
+      def to_monad: () -> untyped
+
+      # Iterates over the list and collects Some values.
+      #
+      # @example with block syntax
+      #   n = 20
+      #   List[10, 5, 0].collect do |divisor|
+      #     if divisor.zero?
+      #       None()
+      #     else
+      #       Some(n / divisor)
+      #     end
+      #   end
+      #   # => List[2, 4]
+      #
+      # @example without block
+      #   List[Some(5), None(), Some(3)].collect.map { |x| x * 2 }
+      #   # => [10, 6]
+      #
+      # @return [List]
+      def collect: () -> untyped
+
+      # Pattern matching
+      #
+      # @example
+      #   case List[1, 2, 3]
+      #   in List[1, 2, x] then ...
+      #   in List[Integer, _, _] then ...
+      #   in List[0..2, _, _] then ...
+      #   end
+      #
+      # @api private
+      def deconstruct: () -> untyped
+
+      private
+
+      def coerce: (untyped other) -> untyped
+
+      # Empty list
+      EMPTY: untyped
+
+      # @private
+      class ListBuilder
+        attr_reader type: untyped
+
+        def initialize: (untyped type) -> untyped
+
+        def []: (*untyped args) -> untyped
+
+        def coerce: (untyped value) -> untyped
+
+        def pure: (?untyped val) ?{ (?) -> untyped } -> untyped
+      end
+
+      # List of tasks
+      Task: untyped
+
+      # List of results
+      Result: untyped
+
+      # List of maybes
+      Maybe: untyped
+
+      # List of tries
+      Try: untyped
+
+      # List of validation results
+      Validated: untyped
+
+      # List contructors.
+      #
+      # @api public
+      module Mixin
+        # @see Dry::Monads::List
+        List: untyped
+
+        # @see Dry::Monads::List
+        L: untyped
+
+        # List constructor.
+        # @return [List]
+        def List: (untyped value) -> untyped
+      end
+    end
+  end
+end
+

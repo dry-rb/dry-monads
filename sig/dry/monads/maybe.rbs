@@ -1,0 +1,298 @@
+
+
+module Dry
+  module Monads
+    # Represents a value which can exist or not, i.e. it could be nil.
+    #
+    # @api public
+    class Maybe
+      include Transformer
+
+      extend Core::ClassAttributes
+
+      # Wraps the given value with into a Maybe object.
+      #
+      # @param value [Object] value to be stored in the monad
+      # @return [Maybe::Some, Maybe::None]
+      def self.coerce: (untyped value) -> untyped
+
+      # Wraps the given value with `Some`.
+      #
+      # @param value [Object] value to be wrapped with Some
+      # @param block [Object] block to be wrapped with Some
+      # @return [Maybe::Some]
+      def self.pure: (?untyped value) ?{ (?) -> untyped } -> untyped
+
+      # Reutrns a Some wrapper converted to a block
+      #
+      # @return [Proc]
+      def self.to_proc: () -> untyped
+
+      # Returns true for an instance of a {Maybe::None} monad.
+      def none?: () -> untyped
+
+      # Returns true for an instance of a {Maybe::Some} monad.
+      def some?: () -> untyped
+
+      # Returns self, added to keep the interface compatible with that of Either monad types.
+      #
+      # @return [Maybe::Some, Maybe::None]
+      def to_maybe: () -> untyped
+
+      # Returns self.
+      #
+      # @return [Maybe::Some, Maybe::None]
+      def to_monad: () -> untyped
+
+      # Returns the Maybe monad.
+      # This is how we're doing polymorphism in Ruby 😕
+      #
+      # @return [Monad]
+      def monad: () -> untyped
+
+      # Represents a value that is present, i.e. not nil.
+      #
+      # @api public
+      class Some < Maybe
+        include RightBiased::Right
+
+        # Shortcut for Some([...])
+        #
+        #  @example
+        #    include Dry::Monads[:maybe]
+        #
+        #    def call
+        #      Some[200, {}, ['ok']] # => Some([200, {}, ['ok']])
+        #    end
+        #
+        # @api public
+        def self.[]: (*untyped value) -> untyped
+
+        def initialize: (?untyped value) -> untyped
+
+        # Does the same thing as #bind except it also wraps the value
+        # in an instance of Maybe::Some monad. This allows for easier
+        # chaining of calls.
+        #
+        # @example
+        #   Dry::Monads.Some(4).fmap(&:succ).fmap(->(n) { n**2 }) # => Some(25)
+        #
+        # @param args [Array<Object>] arguments will be transparently passed through to #bind
+        # @return [Maybe::Some, Maybe::None] Wrapped result, i.e. nil will be mapped to None,
+        #                                    other values will be wrapped with Some
+        def fmap: () -> untyped
+
+        # Does the same thing as #bind except it also wraps the value
+        # in an instance of the Maybe monad. This allows for easier
+        # chaining of calls.
+        #
+        # @example
+        #   Dry::Monads.Some(4).maybe(&:succ).maybe(->(n) { n**2 }) # => Some(25)
+        #   Dry::Monads.Some(4).maybe(&:succ).maybe(->(_) { nil }) # => None()
+        #
+        # @param args [Array<Object>] arguments will be transparently passed through to #bind
+        # @return [Maybe::Some, Maybe::None] Wrapped result, i.e. nil will be mapped to None,
+        #                                    other values will be wrapped with Some
+        def maybe: () -> untyped
+
+        # Accepts a block and runs it against the wrapped value.
+        # If the block returns a trurhy value the result is self,
+        # otherwise None. If no block is given, the value serves
+        # and its result.
+        #
+        # @param with [#call] positional block
+        # @param block [Proc] block
+        #
+        # @return [Maybe::None, Maybe::Some]
+        def filter: (?untyped with) ?{ (?) -> untyped } -> untyped
+
+        # @return [String]
+        def to_s: () -> untyped
+      end
+
+      # Represents an absence of a value, i.e. the value nil.
+      #
+      # @api public
+      class None < Maybe
+        include RightBiased::Left
+
+        # @api private
+        def self.method_missing: (untyped m, *untyped) -> untyped
+
+        # Line where the value was constructed
+        #
+        # @return [String]
+        attr_reader trace: untyped
+
+        def initialize: (?untyped trace) -> untyped
+
+        # If a block is given passes internal value to it and returns the result,
+        # otherwise simply returns the parameter val.
+        #
+        # @example
+        #   Dry::Monads.None.or('no value') # => "no value"
+        #   Dry::Monads.None.or { Time.now } # => current time
+        #
+        # @param args [Array<Object>] if no block given the first argument will be returned
+        #                             otherwise arguments will be transparently passed to the block
+        # @return [Object]
+        def or: (*untyped args) -> untyped
+
+        # A lifted version of `#or`. Applies `Maybe.coerce` to the passed value or
+        # to the block result.
+        #
+        # @example
+        #   Dry::Monads.None.or_fmap('no value') # => Some("no value")
+        #   Dry::Monads.None.or_fmap { Time.now } # => Some(current time)
+        #
+        # @param args [Array<Object>] arguments will be passed to the underlying `#or` call
+        # @return [Maybe::Some, Maybe::None] Lifted `#or` result, i.e. nil will be mapped to None,
+        #                                    other values will be wrapped with Some
+        def or_fmap: () -> untyped
+
+        # @return [String]
+        def to_s: () -> untyped
+
+        # @api private
+        def eql?: (untyped other) -> untyped
+
+        # @private
+        def hash: () -> untyped
+
+        # Pattern matching
+        #
+        # @example
+        #   case Some(:foo)
+        #   in Some(Integer) then ...
+        #   in Some(:bar) then ...
+        #   in None() then ...
+        #   end
+        #
+        # @api private
+        def deconstruct: () -> untyped
+
+        # @see Maybe::Some#filter
+        #
+        # @return [Maybe::None]
+        def filter: (?untyped _) ?{ (?) -> untyped } -> untyped
+      end
+
+      # A module that can be included for easier access to Maybe monads.
+      module Mixin
+        # @see Dry::Monads::Maybe
+        Maybe: untyped
+
+        # @see Maybe::Some
+        Some: untyped
+
+        # @see Maybe::None
+        None: untyped
+
+        # @private
+        module Constructors
+          # @param value [Object] the value to be stored in the monad
+          # @return [Maybe::Some, Maybe::None]
+          def Maybe: (untyped value) -> untyped
+
+          # Some constructor
+          #
+          # @overload Some(value)
+          #   @param value [Object] any value except `nil`
+          #   @return [Maybe::Some]
+          #
+          # @overload Some(&block)
+          #   @param block [Proc] a block to be wrapped with Some
+          #   @return [Maybe::Some]
+          def Some: (?untyped value) ?{ (?) -> untyped } -> untyped
+
+          # @return [Maybe::None]
+          def None: () -> untyped
+        end
+
+        include Constructors
+      end
+
+      # Utilities for working with hashes storing Maybe values
+      module Hash
+        # Traverses a hash with maybe values. If any value is None then None is returned
+        #
+        # @example
+        #   Maybe::Hash.all(foo: Some(1), bar: Some(2)) # => Some(foo: 1, bar: 2)
+        #   Maybe::Hash.all(foo: Some(1), bar: None())  # => None()
+        #   Maybe::Hash.all(foo: None(), bar: Some(2))  # => None()
+        #
+        # @param hash [::Hash<Object,Maybe>]
+        # @return [Maybe<::Hash>]
+        def self.all: (untyped hash, ?untyped trace) -> untyped
+
+        # Traverses a hash with maybe values. Some values are unwrapped, keys with
+        # None values are removed
+        #
+        # @example
+        #   Maybe::Hash.filter(foo: Some(1), bar: Some(2)) # => { foo: 1, bar: 2 }
+        #   Maybe::Hash.filter(foo: Some(1), bar: None())  # => { foo: 1 }
+        #   Maybe::Hash.filter(foo: None(), bar: Some(2))  # => { bar: 2 }
+        #
+        # @param hash [::Hash<Object,Maybe>]
+        # @return [::Hash]
+        def self.filter: (untyped hash) -> untyped
+      end
+    end
+
+    extend Maybe::Mixin::Constructors
+
+    # @see Maybe::Some
+    Some: untyped
+
+    # @see Maybe::None
+    None: untyped
+
+    class Result
+      class Success < Result
+        # @return [Maybe]
+        def to_maybe: () -> untyped
+      end
+
+      class Failure < Result
+        # @return [Maybe::None]
+        def to_maybe: () -> untyped
+      end
+    end
+
+    class Task
+      # Converts to Maybe. Blocks the current thread if required.
+      #
+      # @return [Maybe]
+      def to_maybe: () -> untyped
+    end
+
+    class Try
+      class Value < Try
+        # @return [Maybe]
+        def to_maybe: () -> untyped
+      end
+
+      class Error < Try
+        # @return [Maybe::None]
+        def to_maybe: () -> untyped
+      end
+    end
+
+    class Validated
+      class Valid < Validated
+        # Converts to Maybe::Some
+        #
+        # @return [Maybe::Some]
+        def to_maybe: () -> untyped
+      end
+
+      class Invalid < Validated
+        # Converts to Maybe::None
+        #
+        # @return [Maybe::None]
+        def to_maybe: () -> untyped
+      end
+    end
+  end
+end
+
