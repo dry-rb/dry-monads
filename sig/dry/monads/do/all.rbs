@@ -56,32 +56,32 @@ module Dry
       module All
         # @private
         class MethodTracker < ::Module
-          attr_reader wrappers: untyped
+          attr_reader wrappers: ::Hash[::Class | ::Module, ::Module]
 
-          def initialize: (untyped wrappers) -> untyped
+          def initialize: (::Hash[::Class | ::Module, ::Module] wrappers) -> void
 
-          def extend_object: (untyped target) -> untyped
+          def extend_object: (::Class | ::Module target) -> void
 
-          def wrap_method: (untyped target, untyped method) -> untyped
+          def wrap_method: (::Class | ::Module target, ::Symbol method) -> void
         end
 
         # @api private
-        def self.included: (untyped base) -> untyped
+        def self.included: (::Class | ::Module base) -> void
 
         # @api private
-        def self.wrap_defined_methods: (untyped klass, untyped target) -> untyped
+        def self.wrap_defined_methods: (::Class | ::Module klass, ::Module target) -> void
 
         # @api private
         module InstanceMixin
           # @api private
-          def extended: (untyped object) -> untyped
+          def extended: (::Class | ::Module object) -> void
         end
 
         extend InstanceMixin
       end
     end
 
-    def warn: (untyped message, ?category: untyped, **untyped) -> untyped
+    def warn: (::String message, ?category: ::Symbol?, **__todo__) -> void
   end
 end
 
