@@ -6,10 +6,10 @@ module Dry
   # @api public
   module Monads
     # @api private
-    def self.loader: () -> untyped
+    def self.loader: () -> Zeitwerk::Loader
 
     # @private
-    def self.included: (untyped base) -> untyped
+    def self.included: (::Class | ::Module base) -> void
 
     # Build a module with cherry-picked monads.
     # It saves a bit of typing when you add multiple
@@ -40,7 +40,7 @@ module Dry
     # @param [Array<Symbol>] monads
     # @return [Module]
     # @api public
-    def self.[]: (*untyped monads) -> untyped
+    def self.[]: (*::Symbol monads) -> void
   end
 end
 
