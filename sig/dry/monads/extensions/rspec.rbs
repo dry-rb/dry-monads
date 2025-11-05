@@ -1,0 +1,26 @@
+
+
+module Dry
+  module Monads
+    module RSpec
+      module Matchers
+        extend ::RSpec::Matchers::DSL
+
+        PREDICATES: untyped
+
+        CONSTRUCTOR_CLASSES: untyped
+      end
+
+      Constructors: untyped
+
+      CONSTANTS: untyped
+
+      NESTED_CONSTANTS: untyped
+
+      def self.resolve_constant_name: (untyped name) -> untyped
+
+      def self.name_to_const: (untyped name) -> untyped
+    end
+  end
+end
+
