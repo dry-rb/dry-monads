@@ -16,7 +16,7 @@ module Dry
     #
     # @example with Maybe
     #   Maybe(Unit)
-    #   => Some(Unit)
+    #   Some(Unit)
     #
     Unit = ::Object.new.tap do |unit|
       def unit.to_s = "Unit"
