@@ -368,7 +368,7 @@ module Dry
       class Some < Maybe
         # Converts to Sucess(value!)
         #
-        # @param fail [#call] Fallback value
+        # @param _fail [#call] Fallback value
         # @param block [Proc] Fallback block
         # @return [Success<Any>]
         def to_result(_fail = Unit, &) = Result::Success.new(@value)

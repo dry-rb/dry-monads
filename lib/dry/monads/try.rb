@@ -159,7 +159,7 @@ module Dry
 
         # Ignores values and returns self, see {Try::Error#recover}
         #
-        # @param errors [Class] List of Exception subclasses
+        # @param _errors [Class] List of Exception subclasses
         #
         # @return [Try::Value]
         def recover(*_errors, &) = self
