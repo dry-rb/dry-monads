@@ -59,7 +59,7 @@ module Dry
         #
         #     attr_reader :user_repo
         #
-        #     def initialize(:user_repo)
+        #     def initialize(user_repo)
         #       @user_repo = user_repo
         #     end
         #
