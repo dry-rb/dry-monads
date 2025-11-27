@@ -8,7 +8,7 @@ gemspec
 
 group :tools do
   gem "benchmark-ips"
-  gem "debug"
+  gem "debug", platforms: :mri
   gem "irb"
 end
 
@@ -19,7 +19,7 @@ group :docs do
 end
 
 group :test do
-  gem "debug_inspector"
+  gem "debug_inspector", platforms: :mri
   gem "dry-types"
   gem "super_diff"
 end
