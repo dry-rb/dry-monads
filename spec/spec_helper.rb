@@ -27,7 +27,11 @@ Warning.ignore(/super_diff/)
 Warning.process { raise _1 }
 
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4")
-  Warning[:strict_unused_block] = true
+  begin
+    Warning[:strict_unused_block] = true
+  rescue ArgumentError
+    # ignore
+  end
 end
 
 module Kernel
