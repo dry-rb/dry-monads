@@ -25,7 +25,7 @@ RSpec.describe "pattern matching" do
 
       it "matches on the value's keys when value acts like a hash" do
         expect(
-          (Value({code: 101, foo: :bar}) in { code: 101 })
+          (Value({code: 101, foo: :bar}) in {code: 101})
         ).to be(true)
       end
 
@@ -76,7 +76,7 @@ RSpec.describe "pattern matching" do
 
       it "matches on the value's keys when value acts like a hash" do
         expect(
-          (Success({code: 101, foo: :bar}) in { code: 101 })
+          (Success({code: 101, foo: :bar}) in {code: 101})
         ).to be(true)
       end
 
@@ -108,7 +108,7 @@ RSpec.describe "pattern matching" do
 
       it "matches on the value's keys when value acts like a hash" do
         expect(
-          (Failure({code: 101, foo: :bar}) in { code: 101 })
+          (Failure({code: 101, foo: :bar}) in {code: 101})
         ).to be(true)
       end
 
@@ -144,7 +144,7 @@ RSpec.describe "pattern matching" do
 
       it "matches on the value's keys when value acts like a hash" do
         expect(
-          (Some({code: 101, foo: :bar}) in { code: 101 })
+          (Some({code: 101, foo: :bar}) in {code: 101})
         ).to be(true)
       end
 

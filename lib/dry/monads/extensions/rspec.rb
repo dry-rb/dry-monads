@@ -44,7 +44,7 @@ module Dry
         }.freeze
 
         PREDICATES.each do |name, args|
-          args => { expected_classes:, extract_value: }
+          args => {expected_classes:, extract_value:}
           expected_constructors = expected_classes.map(&:name).map do |c|
             c.split("::").last
           end
