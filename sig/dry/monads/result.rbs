@@ -1,0 +1,357 @@
+
+
+module Dry
+  module Monads
+    # Represents an operation which either succeeded or failed.
+    #
+    # @api public
+    class Result
+      include Transformer
+
+      # @return [Object] Successful result
+      attr_reader success: untyped
+
+      # @return [Object] Error
+      attr_reader failure: untyped
+
+      # Wraps the given value with Success.
+      #
+      # @overload pure(value)
+      #   @param value [Object]
+      #   @return [Result::Success]
+      #
+      # @overload pure(&block)
+      #   @param block [Proc] a block to be wrapped with Success
+      #   @return [Result::Success]
+      def self.pure: (?untyped value) ?{ (?) -> untyped } -> untyped
+
+      # Returns self, added to keep the interface compatible with other monads.
+      #
+      # @return [Result::Success, Result::Failure]
+      def to_result: () -> untyped
+
+      # Returns self.
+      #
+      # @return [Result::Success, Result::Failure]
+      def to_monad: () -> untyped
+
+      # Returns the Result monad.
+      # This is how we're doing polymorphism in Ruby 😕
+      #
+      # @return [Monad]
+      def monad: () -> untyped
+
+      # Represents a value of a successful operation.
+      #
+      # @api public
+      class Success < Result
+        include RightBiased::Right
+
+        # Shortcut for Success([...])
+        #
+        #  @example
+        #    include Dry::Monads[:result]
+        #
+        #    def call
+        #      Success[200, {}, ['ok']] # => Success([200, {}, ['ok']])
+        #    end
+        #
+        # @api public
+        def self.[]: (*untyped value) -> untyped
+
+        # @param value [Object] a value of a successful operation
+        def initialize: (untyped value) -> untyped
+
+        # Apply the second function to value.
+        #
+        # @api public
+        def result: (untyped _, untyped f) -> untyped
+
+        # Returns false
+        def failure?: () -> untyped
+
+        # Returns true
+        def success?: () -> untyped
+
+        # Does the same thing as #bind except it also wraps the value
+        # in an instance of Result::Success monad. This allows for easier
+        # chaining of calls.
+        #
+        # @example
+        #   Dry::Monads.Success(4).fmap(&:succ).fmap(->(n) { n**2 }) # => Success(25)
+        #
+        # @param args [Array<Object>] arguments will be transparently passed through to #bind
+        # @return [Result::Success]
+        def fmap: () -> untyped
+
+        # Returns result of applying first function to the internal value.
+        #
+        # @example
+        #   Dry::Monads.Success(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 2
+        #
+        # @param f [#call] Function to apply
+        # @param _ [#call] Ignored
+        # @return [Any] Return value of `f`
+        def either: (untyped f, untyped _) -> untyped
+
+        # @return [String]
+        def to_s: () -> untyped
+
+        # Transforms to a Failure instance
+        #
+        # @return [Result::Failure]
+        def flip: () -> untyped
+
+        # Ignores values and returns self, see {Failure#alt_map}
+        #
+        # @return [Result::Success]
+        def alt_map: (?untyped _) ?{ (?) -> untyped } -> untyped
+      end
+
+      # Represents a value of a failed operation.
+      #
+      # @api public
+      class Failure < Result
+        include RightBiased::Left
+
+        # Shortcut for Failure([...])
+        #
+        #  @example
+        #    include Dry::Monads[:result]
+        #
+        #    def call
+        #      Failure[:error, :not_found] # => Failure([:error, :not_found])
+        #    end
+        #
+        # @api public
+        def self.[]: (*untyped value) -> untyped
+
+        # Returns a constructor proc
+        #
+        # @return [Proc]
+        def self.to_proc: () -> untyped
+
+        # Line where the value was constructed
+        #
+        # @return [String]
+        # @api public
+        attr_reader trace: untyped
+
+        # @param value [Object] failure value
+        # @param trace [String] caller line
+        def initialize: (untyped value, ?untyped trace) -> untyped
+
+        # @private
+        def failure: () -> untyped
+
+        # Apply the first function to value.
+        #
+        # @api public
+        def result: (untyped f, untyped _) -> untyped
+
+        # Returns true
+        def failure?: () -> untyped
+
+        # Returns false
+        def success?: () -> untyped
+
+        # If a block is given passes internal value to it and returns the result,
+        # otherwise simply returns the first argument.
+        #
+        # @example
+        #   Dry::Monads.Failure(ArgumentError.new('error message')).or(&:message)
+        #   # => "error message"
+        #
+        # @param args [Array<Object>] arguments that will be passed to a block
+        #                             if one was given, otherwise the first
+        #                             value will be returned
+        # @return [Object]
+        def or: (*untyped args) -> untyped
+
+        # A lifted version of `#or`. Wraps the passed value or the block
+        # result with Result::Success.
+        #
+        # @example
+        #   Dry::Monads.Failure.new('no value').or_fmap('value') # => Success("value")
+        #   Dry::Monads.Failure.new('no value').or_fmap { 'value' } # => Success("value")
+        #
+        # @param args [Array<Object>] arguments will be passed to the underlying `#or` call
+        # @return [Result::Success] Wrapped value
+        def or_fmap: () -> untyped
+
+        # @return [String]
+        def to_s: () -> untyped
+
+        # Transform to a Success instance
+        #
+        # @return [Result::Success]
+        def flip: () -> untyped
+
+        # @see RightBiased::Left#value_or
+        def value_or: (?untyped val) -> untyped
+
+        # @param other [Result]
+        # @return [Boolean]
+        def ===: (untyped other) -> untyped
+
+        # Returns result of applying second function to the internal value.
+        #
+        # @example
+        #   Dry::Monads.Failure(1).either(-> x { x + 1 }, -> x { x + 2 }) # => 3
+        #
+        # @param _ [#call] Ignored
+        # @param g [#call] Function to call
+        # @return [Any] Return value of `g`
+        def either: (untyped _, untyped g) -> untyped
+
+        # Lifts a block/proc over Failure
+        #
+        # @overload alt_map(proc)
+        #   @param proc [#call]
+        #   @return [Result::Failure]
+        #
+        # @overload alt_map
+        #   @param block [Proc]
+        #   @return [Result::Failure]
+        def alt_map: (?untyped proc) ?{ (?) -> untyped } -> untyped
+      end
+
+      # A module that can be included for easier access to Result monads.
+      #
+      # @api public
+      module Mixin
+        # @see Result::Success
+        Success: untyped
+
+        # @see Result::Failure
+        Failure: untyped
+
+        # Value constructors
+        module Constructors
+          # Success constructor
+          #
+          # @overload Success(value)
+          #   @param value [Object]
+          #   @return [Result::Success]
+          #
+          # @overload Success(&block)
+          #   @param block [Proc] a block to be wrapped with Success
+          #   @return [Result::Success]
+          def Success: (?untyped value) ?{ (?) -> untyped } -> untyped
+
+          # Failure constructor
+          #
+          # @overload Success(value)
+          #   @param value [Object]
+          #   @return [Result::Failure]
+          #
+          # @overload Success(&block)
+          #   @param block [Proc] a block to be wrapped with Failure
+          #   @return [Result::Failure]
+          def Failure: (?untyped value) ?{ (?) -> untyped } -> untyped
+        end
+
+        include Constructors
+      end
+    end
+
+    extend Result::Mixin::Constructors
+
+    # @see Result::Success
+    Success: untyped
+
+    # @see Result::Failure
+    Failure: untyped
+
+    # Creates a module that has two methods: `Success` and `Failure`.
+    # `Success` is identical to {Result::Mixin::Constructors#Success} and Failure
+    # rejects values that don't conform the value of the `error`
+    # parameter. This is essentially a Result type with the `Failure` part
+    # fixed.
+    #
+    # @example using dry-types
+    #   module Types
+    #     include Dry::Types.module
+    #   end
+    #
+    #   class Operation
+    #     # :user_not_found and :account_not_found are the only
+    #     # values allowed as failure results
+    #     Error =
+    #       Types.Value(:user_not_found) |
+    #       Types.Value(:account_not_found)
+    #
+    #     include Dry::Monads::Result(Error)
+    #
+    #     def find_account(id)
+    #       account = acount_repo.find(id)
+    #
+    #       account ? Success(account) : Failure(:account_not_found)
+    #     end
+    #
+    #     def find_user(id)
+    #       # ...
+    #     end
+    #   end
+    #
+    # @param error [#===] the type of allowed failures
+    # @return [Module]
+    def self.Result: (untyped error, **untyped options) -> untyped
+
+    class Maybe
+      class Some < Maybe
+        # Converts to Sucess(value!)
+        #
+        # @param fail [#call] Fallback value
+        # @param block [Proc] Fallback block
+        # @return [Success<Any>]
+        def to_result: (?untyped _fail) ?{ (?) -> untyped } -> untyped
+      end
+
+      class None < Maybe
+        # Converts to Failure(fallback_value)
+        #
+        # @param fail [#call] Fallback value
+        # @param block [Proc] Fallback block
+        # @return [Failure<Any>]
+        def to_result: (?untyped fail) -> untyped
+      end
+    end
+
+    class Task
+      # Converts to Result. Blocks the current thread if required.
+      #
+      # @return [Result]
+      def to_result: () -> untyped
+    end
+
+    class Try
+      class Value < Try
+        # @return [Result::Success]
+        def to_result: () -> untyped
+      end
+
+      class Error < Try
+        # @return [Result::Failure]
+        def to_result: () -> untyped
+      end
+    end
+
+    class Validated
+      class Valid < Validated
+        # Converts to Result::Success
+        #
+        # @return [Result::Success]
+        def to_result: () -> untyped
+      end
+
+      class Invalid < Validated
+        # Converts to Result::Failure
+        #
+        # @return [Result::Failure]
+        def to_result: () -> untyped
+      end
+    end
+  end
+end
+

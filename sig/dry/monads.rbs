@@ -1,0 +1,46 @@
+
+
+module Dry
+  # Common, idiomatic monads for Ruby
+  #
+  # @api public
+  module Monads
+    # @api private
+    def self.loader: () -> Zeitwerk::Loader
+
+    # @private
+    def self.included: (::Class | ::Module base) -> void
+
+    # Build a module with cherry-picked monads.
+    # It saves a bit of typing when you add multiple
+    # monads to one class. Not loaded monads get loaded automatically.
+    #
+    # @example
+    #   require 'dry/monads'
+    #
+    #   class CreateUser
+    #     include Dry::Monads[:result, :do]
+    #
+    #     def initialize(repo, send_email)
+    #       @repo = repo
+    #       @send_email = send_email
+    #     end
+    #
+    #     def call(name)
+    #       if @repo.user_exist?(name)
+    #         Failure(:user_exists)
+    #       else
+    #         user = yield @repo.add_user(name)
+    #         yield @send_email.(user)
+    #         Success(user)
+    #       end
+    #     end
+    #   end
+    #
+    # @param [Array<Symbol>] monads
+    # @return [Module]
+    # @api public
+    def self.[]: (*::Symbol monads) -> void
+  end
+end
+

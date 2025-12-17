@@ -14,6 +14,7 @@ module Dry
   # @api public
   module Monads
     # @api private
+    # @rbs () -> Zeitwerk::Loader
     def self.loader
       @loader ||= ::Zeitwerk::Loader.new.tap do |loader|
         root = ::File.expand_path("..", __dir__)
@@ -31,6 +32,7 @@ module Dry
     end
 
     # @private
+    # @rbs (::Class | ::Module base) -> void
     def self.included(base)
       if all_loaded?
         base.include(*constructors)
@@ -68,6 +70,7 @@ module Dry
     # @param [Array<Symbol>] monads
     # @return [Module]
     # @api public
+    # @rbs (*::Symbol monads) -> void
     def self.[](*monads)
       monads.sort!
       @mixins.fetch_or_store(monads.hash) do
