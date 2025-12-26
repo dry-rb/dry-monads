@@ -11,22 +11,29 @@ RSpec.describe "RSpec extension" do
     expect(Success(1)).to be_success
     expect(Success(1)).to be_a_success
     expect(Success(1)).to be_success(1)
+    expect(Success(1)).to be_success(an_instance_of(Integer))
     expect(Success(1)).not_to be_success(2)
     expect(Success(1)).not_to be_a_success(2)
+    expect(Success(1)).not_to be_success(an_instance_of(String))
     expect(Failure(1)).to be_failure
     expect(Failure(1)).to be_a_failure
     expect(Failure(1)).to be_failure(1)
+    expect(Failure(1)).to be_failure(an_instance_of(Integer))
     expect(Failure(1)).not_to be_failure(2)
     expect(Failure(1)).not_to be_a_failure(2)
+    expect(Failure(1)).not_to be_failure(an_instance_of(String))
     expect(Some(1)).to be_some
     expect(Some(1)).to be_success
     expect(Some(1)).to be_some(1)
+    expect(Some(1)).to be_some(an_instance_of(Integer))
     expect(Some(1)).not_to be_some(2)
+    expect(Some(1)).not_to be_some(an_instance_of(String))
     expect(None()).to be_none
     expect(None()).not_to be_success
     expect(None()).to be_failure
     expect(None()).not_to be_some
     expect(None()).not_to be_some(1)
+    expect(None()).not_to be_some(an_instance_of(Integer))
     expect(List[]).to be_empty
     expect(List[1, 2, 3]).not_to be_empty
   end
