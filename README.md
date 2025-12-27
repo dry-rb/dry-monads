@@ -3,7 +3,7 @@
 [rubygem]: https://rubygems.org/gems/dry-monads
 [actions]: https://github.com/dry-rb/dry-monads/actions
 
-# dry-monads [![Gem Version](https://badge.fury.io/rb/dry-monads.svg)][rubygem] [![CI Status](https://github.com/dry-rb/dry-monads/workflows/CI/badge.svg)][actions]
+# dry-monads (test) [![Gem Version](https://badge.fury.io/rb/dry-monads.svg)][rubygem] [![CI Status](https://github.com/dry-rb/dry-monads/workflows/CI/badge.svg)][actions]
 
 ## Links
 
@@ -14,4 +14,3 @@
 ## License
 
 See `LICENSE` file.
-
