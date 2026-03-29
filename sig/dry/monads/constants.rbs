@@ -1,0 +1,8 @@
+
+
+module Dry
+  module Monads
+    include Core::Constants
+  end
+end
+
