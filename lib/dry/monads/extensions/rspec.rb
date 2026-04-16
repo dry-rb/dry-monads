@@ -49,8 +49,9 @@ module Dry
             c.split("::").last
           end
 
-          matcher :"be_#{name}" do |expected = Undefined|
+          matcher :"be_#{name}" do |*expected_args|
             predicate = "#{name}?"
+            expected = expected_args.fetch(0, Undefined)
 
             match do |actual|
               if expected_classes.any? { |klass| actual.is_a?(klass) }
