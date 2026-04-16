@@ -1,0 +1,20 @@
+
+
+module Dry
+  module Monads
+    class Result
+      # @see Monads#Result
+      # @private
+      class Fixed < ::Module
+        def self.[]: (untyped error, **untyped options) -> untyped
+
+        def initialize: (untyped error, **untyped) -> untyped
+
+        private
+
+        def included: (untyped base) -> untyped
+      end
+    end
+  end
+end
+
