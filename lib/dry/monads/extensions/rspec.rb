@@ -159,6 +159,37 @@ module Dry
             ::Dry::Monads::List
           end
         end
+
+        def rspec_example_context?(location)
+          example_group_instance = ::RSpec.current_example&.example_group_instance
+          return false unless example_group_instance
+
+          spec_example_block?(location) || example_group_method?(example_group_instance, location)
+        end
+
+        private
+
+        def spec_example_block?(location)
+          location.path.end_with?("_spec.rb") && location.label.include?("block")
+        end
+
+        def example_group_method?(example_group_instance, location)
+          method_name = caller_method_name(location)
+          return false unless method_name
+
+          owner = example_group_instance.method(method_name).owner
+
+          ![::BasicObject, ::Kernel, ::Object].include?(owner)
+        rescue NameError
+          false
+        end
+
+        def caller_method_name(location)
+          label = location.label.to_s
+          return nil if label.include?("block")
+
+          label.split(/[.#]/).last&.to_sym
+        end
       end
     end
   end
@@ -185,7 +216,7 @@ catch_missing_const = Module.new do
     def const_missing(name)
       const_name = Dry::Monads::RSpec.resolve_constant_name(name)
 
-      if const_name && caller_locations(1, 1).first.path.end_with?("_spec.rb")
+      if const_name && Dry::Monads::RSpec.rspec_example_context?(caller_locations(1, 1).first)
         Dry::Monads::RSpec.name_to_const(const_name)
       else
         super
