@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "super_diff"
+require "tempfile"
 
 RSpec.describe "SuperDiff extension" do
   let(:output_start_marker) do
@@ -12,7 +13,7 @@ RSpec.describe "SuperDiff extension" do
   end
 
   def run_spec(code)
-    temp_spec = Tempfile.new(["failing_spec", ".rb"])
+    temp_spec = Tempfile.new(["failing", "_spec.rb"])
     temp_spec.write(<<~RUBY)
       require "dry/monads"
 
