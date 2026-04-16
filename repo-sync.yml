@@ -2,8 +2,6 @@ name:
   gem: dry-monads
   constant: Dry::Monads
 github_org: dry-rb
-ci:
-  jruby: false
 gemspec:
   authors: ["Hanakai team"]
   email: ["info@hanakai.org"]
