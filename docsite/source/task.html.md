@@ -97,7 +97,7 @@ Task[:immediate] { 1/0 }.or_fmap { 0 } # => Task(value=0)
 
 ### Extracting result
 
-Getting the result of a task is an unsafe operation, it blocks the current thread until the task is finished, then returns the value or raises an exception if the evaluation wasn't sucessful. It effectively cancels all niceties of tasks so you shouldn't use it in production code.
+Getting the result of a task is an unsafe operation, it blocks the current thread until the task is finished, then returns the value or raises an exception if the evaluation wasn't successful. It effectively cancels all niceties of tasks so you shouldn't use it in production code.
 
 ```ruby
 Task { 0 }.value! # => 0
