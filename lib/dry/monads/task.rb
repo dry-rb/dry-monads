@@ -140,7 +140,7 @@ module Dry
       end
       alias_method :inspect, :to_s
 
-      # Tranforms the error if the computation wasn't successful.
+      # Transforms the error if the computation wasn't successful.
       #
       # @param block [Proc]
       # @return [Task]
