@@ -405,7 +405,7 @@ RSpec.describe(Dry::Monads::Maybe) do
         expect(result).to eql(some["baz"])
       end
 
-      it "tranforms nil to None" do
+      it "transforms nil to None" do
         expect(subject.or_fmap(nil)).to eql(none)
       end
     end
