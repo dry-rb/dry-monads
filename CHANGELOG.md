@@ -19,7 +19,19 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Security
 
-[Unreleased]: https://github.com/dry-rb/dry-operation/compare/v1.9.0...main
+[Unreleased]: https://github.com/dry-rb/dry-monads/compare/v1.10.0...main
+
+## [1.10.0] - 2026-04-24
+
+### Added
+
+- Support for JRuby (via fixes to RSpec extension). (@katafrakt in #200 & #201, @flash-gordon in c6967b6)
+
+### Fixed
+
+- Fix param names and Ruby syntax in API doc examples. (@mensfeld in #196)
+
+[1.10.0]: https://github.com/dry-rb/dry-monads/compare/v1.9.0...v1.10.0
 
 ## [1.9.0] - 2025-06-24
 
