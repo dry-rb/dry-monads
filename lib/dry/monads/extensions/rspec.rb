@@ -62,7 +62,7 @@ module Dry
                 elsif Undefined.equal?(expected)
                   true
                 elsif exact_match
-                  extract_value.call(actual) == expected
+                  values_match? expected, extract_value.call(actual)
                 else
                   false
                 end
