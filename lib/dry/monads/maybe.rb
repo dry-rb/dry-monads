@@ -142,9 +142,9 @@ module Dry
         def maybe(...) = Maybe.coerce(bind(...))
 
         # Accepts a block and runs it against the wrapped value.
-        # If the block returns a trurhy value the result is self,
+        # If the block returns a truthy value the result is self,
         # otherwise None. If no block is given, the value serves
-        # and its result.
+        # as its result.
         #
         # @param with [#call] positional block
         # @param block [Proc] block
