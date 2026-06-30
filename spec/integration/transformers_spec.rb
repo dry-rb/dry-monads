@@ -69,23 +69,25 @@ RSpec.describe(Dry::Monads::Transformer) do
   context "3-level composition" do
     context "list of results" do
       subject(:value) {
-        list[success.(some.("success")),
-             success.(none),
-             failure.(some.("failure")),
-             failure.(none)]
+        list[
+          success.(some.("success")),
+          success.(none),
+          failure.(some.("failure")),
+          failure.(none)
+        ]
       }
 
       context "using fmap3" do
         example "lifting a block" do
           expect(value.fmap3(&:upcase))
             .to eql(list[success.(some.("SUCCESS")), success.(none),
-                         failure.(some.("failure")), failure.(none)])
+              failure.(some.("failure")), failure.(none)])
         end
 
         example "lifting a proc" do
           expect(value.fmap3(-> v { v.upcase }))
             .to eql(list[success.(some.("SUCCESS")), success.(none),
-                         failure.(some.("failure")), failure.(none)])
+              failure.(some.("failure")), failure.(none)])
         end
       end
     end

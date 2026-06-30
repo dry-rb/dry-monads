@@ -388,10 +388,10 @@ RSpec.describe(Dry::Monads::Do) do
         class Test::Operation
           def call
             result = yield List::Validated[
-                             Valid(1),
-                             Valid(2),
-                             Valid(3)
-                           ]
+              Valid(1),
+              Valid(2),
+              Valid(3)
+            ]
 
             Success(result)
           end
@@ -408,10 +408,10 @@ RSpec.describe(Dry::Monads::Do) do
         class Test::Operation
           def call
             result = yield List::Validated[
-                             Valid(1),
-                             Invalid(2),
-                             Invalid(3)
-                           ]
+              Valid(1),
+              Invalid(2),
+              Invalid(3)
+            ]
 
             Success(result)
           end
