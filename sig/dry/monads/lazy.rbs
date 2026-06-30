@@ -1,0 +1,52 @@
+
+
+module Dry
+  module Monads
+    # Lazy is a twin of Task which is always executed on the current thread.
+    # The underlying mechanism provided by concurrent-ruby ensures the given
+    # computation is evaluated not more than once (compare with the built-in
+    # lazy assignement ||= which does not guarantee this).
+    class Lazy < Task
+      # @private
+      def self.new: (?untyped promise) ?{ (?) -> untyped } -> untyped
+
+      # Forces the compution and returns its value.
+      #
+      # @return [Object]
+      def value!: () -> untyped
+
+      # Forces the computation. Note that if the computation
+      # thrown an error it won't be re-raised as opposed to value!/force!.
+      #
+      # @return [Lazy]
+      def force: () -> untyped
+
+      # @return [Boolean]
+      def evaluated?: () -> untyped
+
+      # @return [String]
+      def to_s: () -> untyped
+
+      # Lazy constructors
+      module Mixin
+        # @see Dry::Monads::Lazy
+        Lazy: untyped
+
+        # @see Dry::Monads::Unit
+        Unit: untyped
+
+        # Lazy constructors
+        module Constructors
+          # Lazy computation contructor
+          #
+          # @param block [Proc]
+          # @return [Lazy]
+          def Lazy: () ?{ (?) -> untyped } -> untyped
+        end
+
+        include Constructors
+      end
+    end
+  end
+end
+

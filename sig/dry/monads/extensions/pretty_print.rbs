@@ -1,0 +1,20 @@
+
+
+module Dry
+  module Monads
+    module Extensions
+      module PrettyPrint
+        class PrintValue < ::Module
+          def initialize: (untyped constructor, ?accessor: untyped) -> untyped
+        end
+
+        class LazyPrintValue < ::Module
+          def initialize: (untyped constructor, ?success_prefix: untyped, ?error_prefix: untyped) -> untyped
+        end
+      end
+
+      def pretty_print: (untyped pp) -> untyped
+    end
+  end
+end
+
