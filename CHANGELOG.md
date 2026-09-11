@@ -9,11 +9,49 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Added
 
+- New `:json` extension, which builds a `JSON::Coder` that reads and writes monads. It needs the json gem 2.15.0 or later. (@timriley in #209)
+
+  ```ruby
+  Dry::Monads.load_extensions(:json)
+
+  coder = Dry::Monads.json_coder
+  coder.dump(Some(3)) # => %({"json_class":"Dry::Monads::Maybe::Some","value":3})
+  coder.load(%({"json_class":"Dry::Monads::Maybe::Some","value":3})) # => Some(3)
+  ```
+
+  Give `json_coder` an `as_json:` and an `on_load:` callback to handle your own types in the same coder. Both run after the monad callbacks, and your types and monads can nest inside each other:
+
+  ```ruby
+  coder = Dry::Monads.json_coder(
+    as_json: ->(object, *) {
+      object.is_a?(Time) ? {"json_class" => "Time", "value" => object.iso8601} : object
+    },
+    on_load: ->(value) {
+      value.is_a?(Hash) && value["json_class"] == "Time" ? Time.iso8601(value["value"]) : value
+    }
+  )
+  ```
+
 ### Changed
 
 ### Deprecated
 
 ### Removed
+
+- **Breaking**: removed `json/add/dry/monads/maybe`. The json gem 3.0 removed the whole `json/add` mechanism, so monads can no longer hook into `JSON.dump` and `JSON.load` globally. Use the new `:json` extension instead. (@timriley in #209)
+
+  ```ruby
+  # before
+  require "json/add/dry/monads/maybe"
+  JSON.unsafe_load(JSON.dump(data))
+
+  # after
+  Dry::Monads.load_extensions(:json)
+  coder = Dry::Monads.json_coder
+  coder.load(coder.dump(data))
+  ```
+
+  The JSON serialization format is the same as before, so JSON written by the old serializer still loads. One behavior differs: `JSON::Coder` will always raise a `JSON::GeneratorError` when it sees an object with no JSON counterpart raises, instead of falling back to `to_s`.
 
 ### Fixed
 

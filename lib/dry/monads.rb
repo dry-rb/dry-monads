@@ -23,7 +23,6 @@ module Dry
         loader.ignore(
           "#{root}/dry-monads.rb",
           "#{root}/dry/monads/{all,constants,errors,registry,version}.rb",
-          "#{root}/json/**/*.rb",
           "#{root}/dry/monads/extensions.rb",
           "#{root}/dry/monads/extensions/**/*.rb"
         )

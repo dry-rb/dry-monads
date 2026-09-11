@@ -13,3 +13,7 @@ end
 Dry::Monads.register_extension(:pretty_print) do
   require "dry/monads/extensions/pretty_print"
 end
+
+Dry::Monads.register_extension(:json) do
+  require "dry/monads/extensions/json"
+end
