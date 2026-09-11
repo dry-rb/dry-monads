@@ -9,6 +9,22 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+[Unreleased]: https://github.com/dry-rb/dry-monads/compare/v1.10.0...main
+
+## [1.11.0] - 2026-09-11
+
+### Added
+
 - New `:json` extension, which builds a `JSON::Coder` that reads and writes monads. It needs the json gem 2.15.0 or later. (@timriley in #209)
 
   ```ruby
@@ -32,10 +48,6 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
   )
   ```
 
-### Changed
-
-### Deprecated
-
 ### Removed
 
 - **Breaking**: removed `json/add/dry/monads/maybe`. The json gem 3.0 removed the whole `json/add` mechanism, so monads can no longer hook into `JSON.dump` and `JSON.load` globally. Use the new `:json` extension instead. (@timriley in #209)
@@ -53,11 +65,7 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
   The JSON serialization format is the same as before, so JSON written by the old serializer still loads. One behavior differs: `JSON::Coder` will always raise a `JSON::GeneratorError` when it sees an object with no JSON counterpart raises, instead of falling back to `to_s`.
 
-### Fixed
-
-### Security
-
-[Unreleased]: https://github.com/dry-rb/dry-monads/compare/v1.10.0...main
+[1.11.0]: https://github.com/dry-rb/dry-monads/compare/v1.10.0...v1.11.0
 
 ## [1.10.0] - 2026-04-24
 
