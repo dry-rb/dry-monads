@@ -104,7 +104,10 @@ RSpec.describe "pretty print" do
     end
 
     specify "not terminated" do
-      expect(pretty_print(task { sleep 0.1; 2 })).to eql(%{Task(?)\n})
+      queue = Queue.new
+      expect(pretty_print(task { queue.pop; 2 })).to eql(%{Task(?)\n})
+    ensure
+      queue << nil
     end
 
     specify "fulfilled" do
