@@ -1,0 +1,28 @@
+
+
+module Dry
+  # Common, idiomatic monads for Ruby
+  #
+  # @api private
+  module Monads
+    attr_reader registry: untyped
+
+    private def self.registry=: (untyped registry) -> untyped
+
+    # @private
+    private def self.register_mixin: (untyped name, untyped mod) -> untyped
+
+    # @private
+    private def self.known_monads: () -> untyped
+
+    # @private
+    private def self.load_monad: (untyped name) -> untyped
+
+    # @private
+    private def self.constructors: () -> untyped
+
+    # @private
+    private def self.all_loaded?: () -> untyped
+  end
+end
+

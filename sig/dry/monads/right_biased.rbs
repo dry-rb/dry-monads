@@ -1,0 +1,280 @@
+
+
+module Dry
+  module Monads
+    # A common module for right-biased monads, such as Result/Either, Maybe, and Try.
+    module RightBiased
+      # Right part
+      #
+      # @api public
+      module Right
+        # @private
+        def self.included: (untyped m) -> untyped
+
+        # Unwraps the underlying value
+        #
+        # @return [Object]
+        def value!: () -> untyped
+
+        # Calls the passed in Proc object with value stored in self
+        # and returns the result.
+        #
+        # If proc is nil, it expects a block to be given and will yield to it.
+        #
+        # @example
+        #   Dry::Monads.Right(4).bind(&:succ) # => 5
+        #
+        # @param [Array<Object>] args arguments that will be passed to a block
+        #                             if one was given, otherwise the first
+        #                             value assumed to be a Proc (callable)
+        #                             object and the rest of args will be passed
+        #                             to this object along with the internal value
+        # @return [Object] result of calling proc or block on the internal value
+        def bind: (*untyped args, **untyped kwargs) -> untyped
+
+        # Does the same thing as #bind except it returns the original monad
+        # when the result is a Right.
+        #
+        # @example
+        #   Dry::Monads.Right(4).tee { Right('ok') } # => Right(4)
+        #   Dry::Monads.Right(4).tee { Left('fail') } # => Left('fail')
+        #
+        # @param [Array<Object>] args arguments will be transparently passed through to #bind
+        # @return [RightBiased::Right]
+        def tee: () -> untyped
+
+        # Abstract method for lifting a block over the monad type.
+        # Must be implemented for a right-biased monad.
+        #
+        # @return [RightBiased::Right]
+        def fmap: () -> untyped
+
+        # Ignores arguments and returns self. It exists to keep the interface
+        # identical to that of {RightBiased::Left}.
+        #
+        # @return [RightBiased::Right]
+        def or: () -> untyped
+
+        # Ignores arguments and returns self. It exists to keep the interface
+        # identical to that of {RightBiased::Left}.
+        #
+        # @param _alt [RightBiased::Right, RightBiased::Left]
+        #
+        # @return [RightBiased::Right]
+        def |: (untyped _alt) -> untyped
+
+        # A lifted version of `#or`. For {RightBiased::Right} acts in the same way as `#or`,
+        # that is returns itselt.
+        #
+        # @return [RightBiased::Right]
+        def or_fmap: () -> untyped
+
+        # Returns value. It exists to keep the interface identical to that of RightBiased::Left
+        #
+        # @return [Object]
+        def value_or: (?untyped _val) ?{ (?) -> untyped } -> untyped
+
+        # Applies the stored value to the given argument if the argument has type of Right,
+        # otherwise returns the argument.
+        #
+        # @example happy path
+        #   create_user = Dry::Monads::Success(CreateUser.new)
+        #   name = Success("John")
+        #   create_user.apply(name) # equivalent to CreateUser.new.call("John")
+        #
+        # @example unhappy path
+        #   name = Failure(:name_missing)
+        #   create_user.apply(name) # => Failure(:name_missing)
+        #
+        # @return [RightBiased::Left,RightBiased::Right]
+        def apply: (?untyped val) ?{ (?) -> untyped } -> untyped
+
+        # @param other [Object]
+        # @return [Boolean]
+        def ===: (untyped other) -> untyped
+
+        # Maps the value to Dry::Monads::Unit, useful when you don't care
+        # about the actual value.
+        #
+        # @example
+        #   Dry::Monads::Success(:success).discard
+        #   # => Success(Unit)
+        #
+        # @return [RightBiased::Right]
+        def discard: () -> untyped
+
+        # Removes one level of monad structure by joining two values.
+        #
+        # @example
+        #   include Dry::Monads::Result::Mixin
+        #   Success(Success(5)).flatten # => Success(5)
+        #   Success(Failure(:not_a_number)).flatten # => Failure(:not_a_number)
+        #   Failure(:not_a_number).flatten # => Failure(:not_a_number)
+        #
+        # @return [RightBiased::Right,RightBiased::Left]
+        def flatten: () -> untyped
+
+        # Combines the wrapped value with another monadic value.
+        # If both values are right-sided, yields a block and passes a tuple
+        # of values there. If no block given, returns a tuple of values wrapped with
+        # a monadic structure.
+        #
+        # @example
+        #   include Dry::Monads::Result::Mixin
+        #
+        #   Success(3).and(Success(5)) # => Success([3, 5])
+        #   Success(3).and(Failure(:not_a_number)) # => Failure(:not_a_number)
+        #   Failure(:not_a_number).and(Success(5)) # => Failure(:not_a_number)
+        #   Success(3).and(Success(5)) { |a, b| a + b } # => Success(8)
+        #
+        # @param mb [RightBiased::Left,RightBiased::Right]
+        #
+        # @return [RightBiased::Left,RightBiased::Right]
+        def and: (untyped mb) -> untyped
+
+        # Pattern matching
+        #
+        # @example
+        #   case Success(x)
+        #   in Success(Integer) then ...
+        #   in Success(2..100) then ...
+        #   in Success(2..200 => code) then ...
+        #   end
+        #
+        # @api private
+        def deconstruct: () -> untyped
+
+        # Pattern matching hash values
+        #
+        # @example
+        #   case Success(x)
+        #   in Success(code: 200...300) then :ok
+        #   in Success(code: 300...400) then :redirect
+        #   in Success(code: 400...500) then :user_error
+        #   in Success(code: 500...600) then :server_error
+        #   end
+        #
+        # @api private
+        def deconstruct_keys: (untyped keys) -> untyped
+
+        private
+
+        # @api private
+        def destructure: (untyped value) -> untyped
+
+        # @api private
+        def curry: () -> untyped
+      end
+
+      # Left/wrong/erroneous part
+      #
+      # @api public
+      module Left
+        # @private
+        # @return [String] Caller location
+        def self.trace_caller: () -> untyped
+
+        # Raises an error on accessing internal value
+        def value!: () -> untyped
+
+        # Ignores the input parameter and returns self. It exists to keep the interface
+        # identical to that of {RightBiased::Right}.
+        #
+        # @return [RightBiased::Left]
+        def bind: () -> untyped
+
+        # Ignores the input parameter and returns self. It exists to keep the interface
+        # identical to that of {RightBiased::Right}.
+        #
+        # @return [RightBiased::Left]
+        def tee: () -> untyped
+
+        # Ignores the input parameter and returns self. It exists to keep the interface
+        # identical to that of {RightBiased::Right}.
+        #
+        # @return [RightBiased::Left]
+        def fmap: () -> untyped
+
+        # Left-biased #bind version.
+        #
+        # @example
+        #   Dry::Monads.Left(ArgumentError.new('error message')).or(&:message) # => "error message"
+        #   Dry::Monads.None.or('no value') # => "no value"
+        #   Dry::Monads.None.or { Time.now } # => current time
+        #
+        # @return [Object]
+        def or: () -> untyped
+
+        # Returns the passed value. Works in pair with {RightBiased::Right#|}.
+        #
+        # @param alt [RightBiased::Right, RightBiased::Left]
+        #
+        # @return [RightBiased::Right, RightBiased::Left]
+        def |: (untyped alt) -> untyped
+
+        # A lifted version of `#or`. This is basically `#or` + `#fmap`.
+        #
+        # @example
+        #   Dry::Monads.None.or_fmap('no value') # => Some("no value")
+        #   Dry::Monads.None.or_fmap { Time.now } # => Some(current time)
+        #
+        # @return [RightBiased::Left, RightBiased::Right]
+        def or_fmap: () -> untyped
+
+        # Returns the passed value
+        #
+        # @return [Object]
+        def value_or: (?untyped val) -> untyped
+
+        # Ignores the input parameter and returns self. It exists to keep the interface
+        # identical to that of {RightBiased::Right}.
+        #
+        # @return [RightBiased::Left]
+        def apply: () -> untyped
+
+        # Returns self back. It exists to keep the interface
+        # identical to that of {RightBiased::Right}.
+        #
+        # @return [RightBiased::Left]
+        def discard: () -> untyped
+
+        # Returns self back. It exists to keep the interface
+        # identical to that of {RightBiased::Right}.
+        #
+        # @return [RightBiased::Left]
+        def flatten: () -> untyped
+
+        # Returns self back. It exists to keep the interface
+        # identical to that of {RightBiased::Right}.
+        #
+        # @return [RightBiased::Left]
+        def and: (untyped _) ?{ (?) -> untyped } -> untyped
+
+        # Pattern matching
+        #
+        # @example
+        #   case Success(x)
+        #   in Success(Integer) then ...
+        #   in Success(2..100) then ...
+        #   in Success(2..200 => code) then ...
+        #   in Failure(_) then ...
+        #   end
+        #
+        # @api private
+        def deconstruct: () -> untyped
+
+        # Pattern matching hash values
+        #
+        # @example
+        #   case Failure(x)
+        #   in Failure(code: 400...500) then :user_error
+        #   in Failure(code: 500...600) then :server_error
+        #   end
+        #
+        # @api private
+        def deconstruct_keys: (untyped keys) -> untyped
+      end
+    end
+  end
+end
+

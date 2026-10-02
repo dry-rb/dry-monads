@@ -1,0 +1,18 @@
+
+
+module Dry
+  module Monads
+    module ConversionStubs
+      def self.[]: (*untyped method_names) -> untyped
+
+      module Methods
+        def self?.to_maybe: () -> untyped
+
+        def self?.to_result: () -> untyped
+
+        def self?.to_validated: () -> untyped
+      end
+    end
+  end
+end
+
