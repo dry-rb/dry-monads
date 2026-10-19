@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# The extension hooks `const_missing` globally, so make loading it again a no-op
+return if defined?(::Dry::Monads::RSpec::MissingConstants)
+
 require "rspec/matchers"
 
 debug_inspector_available =
@@ -161,6 +164,26 @@ module Dry
           end
         end
 
+        def catch_missing_constants_in_nesting(example_group)
+          block = example_group.metadata[:block]
+          return unless block
+
+          block.binding.eval("Module.nesting", __FILE__, __LINE__).each do |mod|
+            mod.extend(MissingConstants) unless mod.frozen?
+          end
+        end
+
+        def example_group_caller?(debug_context)
+          (2...debug_context.backtrace_locations.size).each do |index|
+            caller_binding = debug_context.frame_binding(index)
+            next unless caller_binding
+
+            return caller_binding.receiver.is_a?(::RSpec::Core::ExampleGroup)
+          end
+
+          false
+        end
+
         def rspec_example_context?(location)
           example_group_instance = ::RSpec.current_example&.example_group_instance
           return false unless example_group_instance
@@ -196,14 +219,14 @@ module Dry
   end
 end
 
-catch_missing_const = Module.new do
+Dry::Monads::RSpec::MissingConstants = Module.new do
   if debug_inspector_available
     def const_missing(name)
       const_name = Dry::Monads::RSpec.resolve_constant_name(name)
 
       if const_name
         DebugInspector.open do |dc|
-          if dc.frame_binding(2).receiver.is_a?(RSpec::Core::ExampleGroup)
+          if Dry::Monads::RSpec.example_group_caller?(dc)
             Dry::Monads::RSpec.name_to_const(const_name)
           else
             super
@@ -224,20 +247,25 @@ catch_missing_const = Module.new do
       end
     end
   end
+end
 
+Dry::Monads::RSpec::MissingConstants.module_eval do
   define_method(:include) do |*modules|
     super(*modules).tap do
       modules.flat_map(&:ancestors).uniq.each do |c|
-        c.extend(catch_missing_const) unless c.frozen?
+        c.extend(Dry::Monads::RSpec::MissingConstants) unless c.frozen?
       end
     end
   end
 end
 
-Object.extend(catch_missing_const)
+Object.extend(Dry::Monads::RSpec::MissingConstants)
 
 RSpec.configure do |config|
   config.include Dry::Monads::RSpec::Matchers
   config.include Dry::Monads::RSpec::Constructors
-  config.extend(catch_missing_const)
+  config.extend(Dry::Monads::RSpec::MissingConstants)
+  config.on_example_group_definition do |example_group|
+    Dry::Monads::RSpec.catch_missing_constants_in_nesting(example_group)
+  end
 end
