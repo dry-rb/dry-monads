@@ -2,8 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Break Versioning](https://www.taoensso.com/break-versioning).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Break Versioning](https://www.taoensso.com/break-versioning).
 
 ## [Unreleased]
 
@@ -19,7 +18,15 @@ and this project adheres to [Break Versioning](https://www.taoensso.com/break-ve
 
 ### Security
 
-[Unreleased]: https://github.com/dry-rb/dry-monads/compare/v1.10.0...main
+[Unreleased]: https://github.com/dry-rb/dry-monads/compare/v1.11.1...main
+
+## [1.11.1] - 2026-11-19
+
+### Fixed
+
+- Work around a [JRuby bug](https://github.com/jruby/jruby/issues/10115). (@timriley in #213)
+
+[1.11.1]: https://github.com/dry-rb/dry-monads/compare/v1.11.0...v1.11.1
 
 ## [1.11.0] - 2026-09-11
 
