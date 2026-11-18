@@ -72,7 +72,19 @@ module Dry
       @mixins.fetch_or_store(monads.hash) do
         monads.each { load_monad(_1) }
         mixins = monads.map { registry.fetch(_1) }
-        ::Module.new { include(*mixins) }.freeze
+        type_constants = mixins.each_with_object({}) do |mixin, h|
+          mixin.constants(false).each do |name|
+            value = mixin.const_get(name)
+            h[name] = value if value.is_a?(::Class)
+          end
+        end
+        mod = ::Module.new { include(*mixins) }
+        mod.define_singleton_method(:extended) do |base|
+          type_constants.each do |name, value|
+            base.const_set(name, value) unless base.const_defined?(name, false)
+          end
+        end
+        mod.freeze
       end
     end
 

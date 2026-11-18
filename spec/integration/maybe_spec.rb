@@ -202,4 +202,14 @@ RSpec.describe(Dry::Monads::Maybe) do
       expect(match.(Some(-1))).to eql(:else)
     end
   end
+
+  describe "extend with pattern matching" do
+    it "makes type constants accessible via the class namespace" do
+      stub_const("ExtendConstantTest", Class.new)
+      ExtendConstantTest.extend(Dry::Monads[:maybe])
+
+      expect(ExtendConstantTest::Some).to be(Dry::Monads::Maybe::Some)
+      expect(ExtendConstantTest::None).to be(Dry::Monads::Maybe::None)
+    end
+  end
 end

@@ -16,6 +16,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 
+- The `:rspec` extension now catches missing `Success`, `Failure`, `Some`, `None` and `List` constants in specs nested in a module, e.g. `module Namespace; RSpec.describe ...` (fixes #192)
+- The `:rspec` extension no longer raises `NoMethodError` instead of `NameError` when `Module#const_get` looks up one of those constants outside of a spec example
+- Loading the `:rspec` extension file a second time no longer warns about redefined constants
+
 ### Security
 
 [Unreleased]: https://github.com/dry-rb/dry-monads/compare/v1.11.1...main
