@@ -106,8 +106,8 @@ module Dry
         # @param args [Array<Object>] arguments will be transparently passed through to #bind
         # @return [Maybe::Some, Maybe::None] Wrapped result, i.e. nil will be mapped to None,
         #                                    other values will be wrapped with Some
-        def fmap(...)
-          next_value = bind(...)
+        def fmap(*, **, &)
+          next_value = bind(*, **, &)
 
           if next_value.nil?
             if self.class.warn_on_implicit_nil_coercion
