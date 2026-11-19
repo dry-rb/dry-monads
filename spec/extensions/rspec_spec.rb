@@ -253,3 +253,94 @@ RSpec.describe "RSpec extension" do
     end
   end
 end
+
+module RSpecExtNamespace
+  RSpec.describe "RSpec extension in a namespaced spec" do
+    before(:all) do
+      Dry::Monads.load_extensions(:rspec)
+    end
+
+    it "catches missing constants" do
+      expect(Failure[:invalid]).to be_failure
+      expect(Success[1]).to be_success([1])
+      expect(Failure(1)).to be_a(Failure)
+      expect(Some(1)).to be_a(Some)
+      expect(None()).to be_a(None)
+      expect(List[1]).to be_a(List)
+    end
+  end
+
+  module Helper
+    def build_failure = Failure[:from_helper]
+  end
+
+  RSpec.describe "RSpec extension with a helper module in a namespaced spec" do
+    include Helper
+
+    it "catches missing constants in the helper" do
+      expect(build_failure).to be_failure(%i[from_helper])
+    end
+  end
+end
+
+RSpec.describe "RSpec extension loaded twice" do
+  it "hooks constants only once and does not warn" do
+    path = Gem.find_files("dry/monads/extensions/rspec.rb").first
+    hook = Dry::Monads::RSpec::MissingConstants
+
+    expect { load path }.not_to output.to_stderr
+    expect(Object.singleton_class.ancestors.count(hook)).to be(1)
+    expect(Dry::Monads::RSpec::MissingConstants).to be(hook)
+  end
+end
+
+RSpec.describe "RSpec extension scope" do
+  def hooked?(mod) = mod.singleton_class.ancestors.include?(Dry::Monads::RSpec::MissingConstants)
+
+  it "does not hook modules that do not wrap a spec" do
+    expect(hooked?(Module.new)).to be(false)
+    expect(hooked?(Module.new { include Comparable })).to be(false)
+  end
+end
+
+module RSpecExtOwnConstantNamespace
+  class Failure; end
+
+  RSpec.describe "RSpec extension in a namespace defining its own Failure" do
+    it "prefers the namespace's constant" do
+      expect(Failure).to equal(RSpecExtOwnConstantNamespace::Failure)
+    end
+  end
+end
+
+module RSpecExtFrozenNamespace
+  RSpec.describe "RSpec extension in a frozen namespace" do
+    it "catches missing constants" do
+      expect(Failure[:invalid]).to be_failure
+    end
+  end
+
+  freeze
+end
+
+module RSpecExtNonSpecNamespace
+  require_relative "../fixtures/missing_constant"
+
+  RSpec.describe "RSpec extension and application code" do
+    def raise_exactly_name_error(pattern)
+      raise_error do |error|
+        expect(error.class).to be(NameError)
+        expect(error.message).to match(pattern)
+      end
+    end
+
+    it "does not catch constants referenced by application code" do
+      expect { MissingConstant.new.(1) }.to raise_exactly_name_error(/Success/)
+      expect { MissingConstant.new.lookup(:Success) }.to raise_exactly_name_error(/Success/)
+    end
+
+    it "does not catch unrelated missing constants" do
+      expect { NoSuchConstant }.to raise_exactly_name_error(/NoSuchConstant/)
+    end
+  end
+end
