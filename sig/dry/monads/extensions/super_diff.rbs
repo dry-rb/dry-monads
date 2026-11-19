@@ -1,0 +1,198 @@
+
+
+module Dry
+  module Monads
+    module SuperDiff
+      VALUES: untyped
+
+      EXTRACT_VALUE_MAP: untyped
+
+      EXTRACT_VALUE: untyped
+
+      IS_ARRAY: untyped
+
+      IS_HASH: untyped
+
+      TOKEN_MAP: untyped
+
+      class Tuple < ::SimpleDelegator
+        def is_a?: (untyped klass) -> untyped
+      end
+
+      class Dict < ::SimpleDelegator
+        def is_a?: (untyped klass) -> untyped
+      end
+
+      module OTFlatteners
+        module MonasAsCollectionConstructor
+          def call: () -> untyped
+
+          def build_tiered_lines: () -> untyped
+
+          # prevent super_diff from adding a newline after the open token
+          # for arrays
+          def build_lines_for_non_change_operation: (*untyped) -> untyped
+
+          def open_token: () -> untyped
+
+          def close_token: () -> untyped
+        end
+
+        class RegularConstructor < ::SuperDiff::Basic::OperationTreeFlatteners::CustomObject
+          private
+
+          def initialize: () -> untyped
+
+          def open_token: () -> untyped
+
+          def close_token: () -> untyped
+
+          def item_prefix_for: (untyped _) -> untyped
+        end
+
+        class TupleConstructor < RegularConstructor
+          private
+
+          def open_token: () -> untyped
+
+          def close_token: () -> untyped
+        end
+
+        class Tuple < ::SuperDiff::Basic::OperationTreeFlatteners::Array
+          include MonasAsCollectionConstructor
+        end
+
+        class Dict < ::SuperDiff::Basic::OperationTreeFlatteners::Hash
+          include MonasAsCollectionConstructor
+        end
+      end
+
+      module OT
+        class RegularConstructor < ::SuperDiff::Basic::OperationTrees::CustomObject
+          def self.applies_to?: (untyped value) -> untyped
+
+          def operation_tree_flattener_class: () -> untyped
+        end
+
+        class TupleConstructor < RegularConstructor
+          def self.applies_to?: (untyped value) -> untyped
+
+          def operation_tree_flattener_class: () -> untyped
+        end
+
+        class Tuple < ::SuperDiff::Basic::OperationTrees::Array
+          def self.applies_to?: (untyped value) -> untyped
+
+          def operation_tree_flattener_class: () -> untyped
+        end
+
+        class Dict < ::SuperDiff::Basic::OperationTrees::Hash
+          def self.applies_to?: (untyped value) -> untyped
+
+          def operation_tree_flattener_class: () -> untyped
+        end
+      end
+
+      module OTBuilders
+        class CompareDefault < ::SuperDiff::Basic::OperationTreeBuilders::CustomObject
+          def self.applies_to?: (untyped expected, untyped actual) -> untyped
+
+          def build_operation_tree: () -> untyped
+
+          def attribute_names: () -> untyped
+
+          private
+
+          def establish_expected_and_actual_attributes: () -> untyped
+
+          def get_value: (untyped object) -> untyped
+        end
+
+        class Tuple < ::SuperDiff::Basic::OperationTreeBuilders::Array
+          def self.applies_to?: (untyped expected, untyped actual) -> untyped
+
+          private
+
+          def operation_tree: () -> untyped
+        end
+
+        class Dict < ::SuperDiff::Basic::OperationTreeBuilders::Hash
+          def self.applies_to?: (untyped expected, untyped actual) -> untyped
+
+          private
+
+          def build_operation_tree: () -> untyped
+        end
+
+        class CompareTuples < CompareDefault
+          def self.applies_to?: (untyped expected, untyped actual) -> untyped
+
+          private
+
+          def get_value: (untyped object) -> untyped
+
+          def build_operation_tree: () -> untyped
+        end
+
+        class CompareDicts < CompareDefault
+          def self.applies_to?: (untyped expected, untyped actual) -> untyped
+
+          private
+
+          def get_value: (untyped object) -> untyped
+        end
+      end
+
+      module Differs
+        class CompareDefault < ::SuperDiff::Basic::Differs::CustomObject
+          def self.applies_to?: (untyped expected, untyped actual) -> untyped
+
+          def operation_tree_builder_class: () -> untyped
+        end
+
+        class CompareTuples < CompareDefault
+          def self.applies_to?: (untyped expected, untyped actual) -> untyped
+
+          def operation_tree_builder_class: () -> untyped
+        end
+
+        class CompareDicts < CompareDefault
+          def self.applies_to?: (untyped expected, untyped actual) -> untyped
+
+          def operation_tree_builder_class: () -> untyped
+        end
+      end
+
+      module ITBuilders
+        class RegularConstructor < ::SuperDiff::Basic::InspectionTreeBuilders::CustomObject
+          def self.applies_to?: (untyped object) -> untyped
+
+          def call: () -> untyped
+
+          private
+
+          def build_tree: () ?{ (?) -> untyped } -> untyped
+        end
+
+        class TupleConstructor < RegularConstructor
+          def self.applies_to?: (untyped object) -> untyped
+
+          def call: () -> untyped
+        end
+
+        class DictConstructor < RegularConstructor
+          def self.applies_to?: (untyped object) -> untyped
+
+          def call: () -> untyped
+        end
+
+        class Dict < ::SuperDiff::Basic::InspectionTreeBuilders::Hash
+          def self.applies_to?: (untyped object) -> untyped
+
+          def call: () -> untyped
+        end
+      end
+    end
+  end
+end
+

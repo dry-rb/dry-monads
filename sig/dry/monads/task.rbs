@@ -1,0 +1,192 @@
+
+
+module Dry
+  module Monads
+    # The Task monad represents an async computation. The implementation
+    # is a rather thin wrapper of Concurrent::Promise from the concurrent-ruby.
+    # The API supports setting a custom executor from concurrent-ruby.
+    #
+    # @api public
+    class Task
+      # @api private
+      class Promise < ::Concurrent::Promise
+      end
+
+      # Creates a Task from a block
+      #
+      # @overload new(promise)
+      #   @param promise [Promise]
+      #   @return [Task]
+      #
+      # @overload new(&block)
+      #   @param block [Proc] a task to run
+      #   @return [Task]
+      def self.new: (?untyped promise) ?{ (?) -> untyped } -> untyped
+
+      # Creates a Task with the given executor
+      #
+      # @example providing an executor instance, using Ruby 2.5+ syntax
+      #   IO = Concurrent::ThreadPoolExecutor.new
+      #   Task[IO] { do_http_request }
+      #
+      # @example using a predefined executor
+      #    Task[:fast] { do_quick_task }
+      #
+      # @param executor [Concurrent::AbstractExecutorService,Symbol]
+      #   Either an executor instance
+      #   or a name of predefined global
+      #   from concurrent-ruby
+      #
+      # @return [Task]
+      def self.[]: (untyped executor) ?{ (?) -> untyped } -> untyped
+
+      # Returns a completed task from the given value
+      #
+      # @overload pure(value)
+      #   @param value [Object]
+      #   @return [Task]
+      #
+      # @overload pure(&block)
+      #   @param block [Proc]
+      #   @return [Task]
+      def self.pure: (?untyped value) ?{ (?) -> untyped } -> untyped
+
+      # Returns a failed task from the given exception
+      #
+      # @param exc [Exception]
+      # @return [Task]
+      def self.failed: (untyped exc) -> untyped
+
+      # @api private
+      attr_reader promise: untyped
+
+      # @api private
+      def initialize: (untyped promise) -> untyped
+
+      # Retrieves the value of the computation.
+      # Blocks current thread if the underlying promise
+      # hasn't been complete yet.
+      # Throws an error if the computation failed.
+      #
+      # @return [Object]
+      # @api public
+      def value!: () -> untyped
+
+      # Lifts a block over the Task monad.
+      #
+      # @param block [Proc]
+      # @return [Task]
+      # @api public
+      def fmap: () ?{ (?) -> untyped } -> untyped
+
+      # Composes two tasks to run one after another.
+      # A more common name is `then` exists as an alias.
+      #
+      # @param block [Proc] A block that yields the result of the current task
+      #                     and returns another task
+      # @return [Task]
+      def bind: () ?{ (?) -> untyped } -> untyped
+
+      # @return [String]
+      def to_s: () -> untyped
+
+      # Tranforms the error if the computation wasn't successful.
+      #
+      # @param block [Proc]
+      # @return [Task]
+      def or_fmap: () ?{ (?) -> untyped } -> untyped
+
+      # Rescues the error with a block that returns another task.
+      #
+      # @param block [Proc]
+      # @return [Object]
+      def or: () ?{ (?) -> untyped } -> untyped
+
+      # Extracts the resulting value if the computation was successful
+      # otherwise yields the block and returns its result.
+      #
+      # @param block [Proc]
+      # @return [Object]
+      def value_or: () ?{ (?) -> untyped } -> untyped
+
+      # Blocks the current thread until the task is complete.
+      #
+      # @return [Task]
+      def wait: (?untyped timeout) -> untyped
+
+      # Compares two tasks. Note, it works
+      # good enough only for complete tasks.
+      #
+      # @return [Boolean]
+      def ==: (untyped other) -> untyped
+
+      # Whether the computation is complete.
+      #
+      # @return [Boolean]
+      def complete?: () -> untyped
+
+      # @return [Class]
+      def monad: () -> untyped
+
+      # Returns self.
+      #
+      # @return [Maybe::Some, Maybe::None]
+      def to_monad: () -> untyped
+
+      # Applies the stored value to the given argument.
+      #
+      # @example
+      #   Task.
+      #     pure { |x, y| x ** y }.
+      #     apply(Task { 2 }).
+      #     apply(Task { 3 }).
+      #     to_maybe # => Some(8)
+      #
+      # @param val [Task]
+      # @return [Task]
+      def apply: (?untyped val) ?{ (?) -> untyped } -> untyped
+
+      # Maps a successful result to Unit, effectively discards it
+      #
+      # @return [Task]
+      def discard: () -> untyped
+
+      private
+
+      # @api private
+      def curry: (untyped value) -> untyped
+
+      # @api private
+      def compare_promises: (untyped x, untyped y) -> untyped
+
+      # Task constructors.
+      #
+      # @api public
+      module Mixin
+        # @private
+        Task: untyped
+
+        # @see Dry::Monads::Unit
+        Unit: untyped
+
+        # Created a mixin with the given executor injected.
+        #
+        # @param executor [Concurrent::AbstractExecutorService,Symbol]
+        # @return [Module]
+        def self.[]: (untyped executor) -> untyped
+
+        # Task constructors
+        module Constructors
+          # Builds a new Task instance.
+          #
+          # @param block [Proc]
+          # @return Task
+          def Task: () ?{ (?) -> untyped } -> untyped
+        end
+
+        include Constructors
+      end
+    end
+  end
+end
+

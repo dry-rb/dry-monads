@@ -4,6 +4,11 @@
 
 gem "rake", ">= 12.3.3"
 
+group :sig do
+  gem "rbs"
+  gem "rbs-inline"
+end
+
 group :test do
   gem "simplecov", require: false, platforms: :ruby
   gem "simplecov-cobertura", require: false, platforms: :ruby

@@ -1,0 +1,9 @@
+
+
+module Dry
+  module Monads
+    # Gem version
+    VERSION: ::String
+  end
+end
+

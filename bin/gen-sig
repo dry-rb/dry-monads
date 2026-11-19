@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "fileutils"
+require "pathname"
+
+root_path = Pathname.new(File.expand_path("../", __dir__))
+
+manifest_path = root_path.join("sig/manifest.yaml")
+manifest      = manifest_path.exist? ? manifest_path.read : "dependencies: []"
+
+FileUtils.rm_rf(root_path.join("sig"))
+
+system "rbs-inline lib --opt-out --output=./sig"
+
+EMPTY_COMMENT_BEFORE_CODE = /
+  ^[ \t]*\#[ \t]*\n
+  (?=^[ \t]*[^#\s])
+/mx
+EMPTY_STRING = ""
+GENERATED_LINE = /^ *# Generated from .+.rb with RBS::Inline *$/
+RBS_COMMENT_BLOCK = /
+  ^[ \t]*\#[ \t]*@rbs.*\n
+  (?:^[ \t]*\#.*\n)*
+/x
+
+root_path.glob("sig/**/*.rbs").each do |file|
+  contents = file.read
+
+  contents.gsub!(GENERATED_LINE, EMPTY_STRING)
+    &.gsub!(RBS_COMMENT_BLOCK, EMPTY_STRING)
+    &.gsub!(EMPTY_COMMENT_BEFORE_CODE, EMPTY_STRING)
+    &.strip
+
+  if contents.nil? || contents.strip.empty?
+    File.delete(file)
+  else
+    File.write(file, "#{contents}\n")
+  end
+end
+
+File.write(manifest_path, manifest)

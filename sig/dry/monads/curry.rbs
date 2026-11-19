@@ -1,0 +1,12 @@
+
+
+module Dry
+  module Monads
+    # @private
+    module Curry
+      # @private
+      def self.call: (untyped value) -> untyped
+    end
+  end
+end
+

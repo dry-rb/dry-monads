@@ -1,0 +1,21 @@
+
+
+# Inspired by standard library implementation
+# for Time serialization/deserialization see (json/lib/json/add/time.rb)
+module Dry
+  module Monads
+    class Maybe
+      # Deserializes JSON string by using Dry::Monads::Maybe#lift method
+      def self.json_create: (untyped serialized) -> untyped
+
+      # Returns a hash, that will be turned into a JSON object and represent this
+      # object.
+      def as_json: (*untyped, **untyped) -> untyped
+
+      # Stores class name (Dry::Monads::Maybe::Some or Dry::Monads::Maybe::None)
+      # with the monad value as JSON string
+      def to_json: () -> untyped
+    end
+  end
+end
+
